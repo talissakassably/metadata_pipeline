@@ -14,9 +14,9 @@ Workflow:
         -> save extracted metadata as JSON
 
 Usage in terminal:
-    python extract_metadata_pipeline.py path/to/dataset --extensions .nwb
-    python extract_metadata_pipeline.py path/to/dataset --extensions .nwb .abf .smr
-    python extract_metadata_pipeline.py path/to/bids_dataset --bids
+    py extraction/extract_metadata_pipeline.py path/to/dataset --extensions .nwb
+    py extraction/extract_metadata_pipeline.py path/to/dataset --extensions .nio .pkl
+    py extraction/extract_metadata_pipeline.py path/to/bids_dataset --bids
 
 Usage in notebook:
     %run metadata_pipeline/extraction/extract_metadata_pipeline.py path/to/dataset --extensions .nwb
@@ -33,22 +33,35 @@ import sys
 import json
 import argparse
 from datetime import datetime
-from extraction.extract_nwb_metadata import extract_nwb_metadata
+
 
 # ---------------------------------------------------------------------
 # Import local modules
 # ---------------------------------------------------------------------
 
-# Allows the script to be run from different folders
+# Current file:
+# metadata_pipeline/extraction/extract_metadata_pipeline.py
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Parent folder:
+# metadata_pipeline/
 PIPELINE_DIR = os.path.dirname(CURRENT_DIR)
 
+# Add folders to Python path so local imports work when running the script
 if PIPELINE_DIR not in sys.path:
     sys.path.append(PIPELINE_DIR)
 
+if CURRENT_DIR not in sys.path:
+    sys.path.append(CURRENT_DIR)
+
 from data_preparation.find_file import find_file
-from extraction.extract_neo_metadata import extract_neo_metadata
-from extraction.extract_bids_metadata import extract_bids_metadata
+from extract_neo_metadata import extract_neo_metadata
+from extract_bids_metadata import extract_bids_metadata
+
+try:
+    from extract_nwb_metadata import extract_nwb_metadata
+except ImportError:
+    extract_nwb_metadata = None
 
 
 # ---------------------------------------------------------------------
@@ -62,11 +75,16 @@ def extract_metadata_from_file(file_path, root_dir):
     For now:
         Most electrophysiology formats are handled through Neo when supported.
 
+    NWB:
+        If the file is .nwb, the pipeline tries to extract both:
+            - general Neo metadata
+            - NWB-specific metadata using pynwb
+
     Later:
-        NWB-specific extraction using pynwb can be added here.
+        More specific extractors can be added here for .pkl, .nio, etc.
     """
 
-    extension = os.path.splitext(file_path)[1]
+    extension = os.path.splitext(file_path)[1].lower()
 
     neo_extensions = [
         ".nwb",
@@ -79,18 +97,34 @@ def extract_metadata_from_file(file_path, root_dir):
         ".kwik",
         ".h5",
         ".mat",
+        ".nio",
+        ".pkl",
     ]
 
     if extension == ".nwb":
+
         metadata = {
+            "path": os.path.relpath(file_path, root_dir),
+            "file_name": os.path.basename(file_path),
+            "file_extension": extension,
             "neo_metadata": extract_neo_metadata(file_path, root_dir),
-            "nwb_metadata": extract_nwb_metadata(file_path, root_dir),
+            "nwb_metadata": None,
         }
 
+        if extract_nwb_metadata is not None:
+            metadata["nwb_metadata"] = extract_nwb_metadata(file_path, root_dir)
+        else:
+            metadata["nwb_metadata"] = {
+                "readable_with_pynwb": False,
+                "error": "extract_nwb_metadata.py not found or pynwb import failed",
+            }
+
     elif extension in neo_extensions:
+
         metadata = extract_neo_metadata(file_path, root_dir)
 
     else:
+
         metadata = {
             "path": os.path.relpath(file_path, root_dir),
             "file_name": os.path.basename(file_path),
@@ -155,6 +189,7 @@ def extract_metadata_pipeline(folder, extensions=None, bids=False, output_folder
     # ---------------------------------------------------------
 
     if len(extensions) > 0:
+
         file_list = find_file(
             folder=folder,
             extensions=extensions,
@@ -212,7 +247,7 @@ if __name__ == "__main__":
         "--extensions",
         nargs="*",
         default=[],
-        help="File extensions to search, for example .nwb .abf .smr"
+        help="File extensions to search, for example .nwb .abf .smr .nio .pkl"
     )
 
     parser.add_argument(
