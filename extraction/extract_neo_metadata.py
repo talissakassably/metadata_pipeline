@@ -20,6 +20,27 @@ import os
 from neo import get_io
 
 
+def read_neo_file(file_path):
+    """
+    Read one file with Neo.
+
+    Some formats support lazy loading, others do not.
+    Therefore, the function first tries lazy=True, then lazy=False.
+    """
+
+    io = get_io(file_path)
+
+    try:
+        data = io.read(lazy=True)[0]
+        loading_mode = "lazy"
+    except Exception:
+        print("Lazy loading failed, trying without lazy loading:", os.path.basename(file_path))
+        data = io.read(lazy=False)[0]
+        loading_mode = "non_lazy"
+
+    return io, data, loading_mode
+
+
 def extract_neo_metadata(file_path, root_dir):
     """
     input:
@@ -39,14 +60,15 @@ def extract_neo_metadata(file_path, root_dir):
         "file_name": os.path.basename(file_path),
         "file_extension": os.path.splitext(file_path)[1],
         "readable_with_neo": False,
+        "loading_mode": None,
         "error": None,
     }
 
     try:
-        io = get_io(file_path)
-        data = io.read(lazy=True)[0]
+        io, data, loading_mode = read_neo_file(file_path)
 
         metadata["readable_with_neo"] = True
+        metadata["loading_mode"] = loading_mode
         metadata["neo_io_class"] = io.__class__.__name__
         metadata["n_segments"] = len(data.segments)
 
@@ -71,8 +93,6 @@ def extract_neo_metadata(file_path, root_dir):
 
             for signal in segment.analogsignals:
 
-                # Signal shape is generally:
-                # number of samples x number of channels
                 if len(signal.shape) == 1:
                     n_channels = 1
                 else:

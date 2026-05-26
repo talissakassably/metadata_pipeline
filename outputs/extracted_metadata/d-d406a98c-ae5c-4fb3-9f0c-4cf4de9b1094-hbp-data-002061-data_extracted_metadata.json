@@ -1,0 +1,366 @@
+{
+    "dataset_name": "d-d406a98c-ae5c-4fb3-9f0c-4cf4de9b1094-hbp-data-002061-data",
+    "dataset_folder": "C:\\Users\\tkassably\\Downloads\\d-d406a98c-ae5c-4fb3-9f0c-4cf4de9b1094-hbp-data-002061-data",
+    "date_extraction": "2026-05-26 13:53:41",
+    "extensions_searched": [
+        ".nio",
+        ".pkl"
+    ],
+    "bids_extraction": false,
+    "n_files_found": 44,
+    "files": [
+        {
+            "path": "neo_rat-14_190130.pkl",
+            "file_name": "neo_rat-14_190130.pkl",
+            "file_extension": ".pkl",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given"
+        },
+        {
+            "path": "neo_rat-14_190131.pkl",
+            "file_name": "neo_rat-14_190131.pkl",
+            "file_extension": ".pkl",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "No module named 'neo.core.channelindex'"
+        },
+        {
+            "path": "neo_rat-14_190202.pkl",
+            "file_name": "neo_rat-14_190202.pkl",
+            "file_extension": ".pkl",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "No module named 'neo.core.channelindex'"
+        },
+        {
+            "path": "neo_rat-14_190202_lfps.nio",
+            "file_name": "neo_rat-14_190202_lfps.nio",
+            "file_extension": ".nio",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "nio is not a supported format of any IO."
+        },
+        {
+            "path": "neo_rat-14_190204.pkl",
+            "file_name": "neo_rat-14_190204.pkl",
+            "file_extension": ".pkl",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given"
+        },
+        {
+            "path": "neo_rat-14_190204_lfps.nio",
+            "file_name": "neo_rat-14_190204_lfps.nio",
+            "file_extension": ".nio",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "nio is not a supported format of any IO."
+        },
+        {
+            "path": "neo_rat-14_190205.pkl",
+            "file_name": "neo_rat-14_190205.pkl",
+            "file_extension": ".pkl",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given"
+        },
+        {
+            "path": "neo_rat-14_190206.pkl",
+            "file_name": "neo_rat-14_190206.pkl",
+            "file_extension": ".pkl",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "No module named 'neo.core.channelindex'"
+        },
+        {
+            "path": "neo_rat-14_190206_lfps.nio",
+            "file_name": "neo_rat-14_190206_lfps.nio",
+            "file_extension": ".nio",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "nio is not a supported format of any IO."
+        },
+        {
+            "path": "neo_rat-14_190207.pkl",
+            "file_name": "neo_rat-14_190207.pkl",
+            "file_extension": ".pkl",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "No module named 'neo.core.channelindex'"
+        },
+        {
+            "path": "neo_rat-16_181012.pkl",
+            "file_name": "neo_rat-16_181012.pkl",
+            "file_extension": ".pkl",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given"
+        },
+        {
+            "path": "neo_rat-16_181013.pkl",
+            "file_name": "neo_rat-16_181013.pkl",
+            "file_extension": ".pkl",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given"
+        },
+        {
+            "path": "neo_rat-16_181013_lfps_clean.nio",
+            "file_name": "neo_rat-16_181013_lfps_clean.nio",
+            "file_extension": ".nio",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "nio is not a supported format of any IO."
+        },
+        {
+            "path": "neo_rat-16_181015.pkl",
+            "file_name": "neo_rat-16_181015.pkl",
+            "file_extension": ".pkl",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given"
+        },
+        {
+            "path": "neo_rat-16_181016.pkl",
+            "file_name": "neo_rat-16_181016.pkl",
+            "file_extension": ".pkl",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given"
+        },
+        {
+            "path": "neo_rat-16_181016_lfps.nio",
+            "file_name": "neo_rat-16_181016_lfps.nio",
+            "file_extension": ".nio",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "nio is not a supported format of any IO."
+        },
+        {
+            "path": "neo_rat-16_181021.pkl",
+            "file_name": "neo_rat-16_181021.pkl",
+            "file_extension": ".pkl",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given"
+        },
+        {
+            "path": "neo_rat-16_181021_lfps.nio",
+            "file_name": "neo_rat-16_181021_lfps.nio",
+            "file_extension": ".nio",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "nio is not a supported format of any IO."
+        },
+        {
+            "path": "neo_rat-16_181022.pkl",
+            "file_name": "neo_rat-16_181022.pkl",
+            "file_extension": ".pkl",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given"
+        },
+        {
+            "path": "neo_rat-16_181022_lfps.nio",
+            "file_name": "neo_rat-16_181022_lfps.nio",
+            "file_extension": ".nio",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "nio is not a supported format of any IO."
+        },
+        {
+            "path": "neo_rat-16_181023.pkl",
+            "file_name": "neo_rat-16_181023.pkl",
+            "file_extension": ".pkl",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given"
+        },
+        {
+            "path": "neo_rat-16_181023_lfps.nio",
+            "file_name": "neo_rat-16_181023_lfps.nio",
+            "file_extension": ".nio",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "nio is not a supported format of any IO."
+        },
+        {
+            "path": "neo_rat-16_181024.pkl",
+            "file_name": "neo_rat-16_181024.pkl",
+            "file_extension": ".pkl",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given"
+        },
+        {
+            "path": "neo_rat-16_181024_lfps.nio",
+            "file_name": "neo_rat-16_181024_lfps.nio",
+            "file_extension": ".nio",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "nio is not a supported format of any IO."
+        },
+        {
+            "path": "neo_rat-16_181025.pkl",
+            "file_name": "neo_rat-16_181025.pkl",
+            "file_extension": ".pkl",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given"
+        },
+        {
+            "path": "neo_rat-16_181025_lfps.nio",
+            "file_name": "neo_rat-16_181025_lfps.nio",
+            "file_extension": ".nio",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "nio is not a supported format of any IO."
+        },
+        {
+            "path": "neo_rat-16_181029.pkl",
+            "file_name": "neo_rat-16_181029.pkl",
+            "file_extension": ".pkl",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given"
+        },
+        {
+            "path": "neo_rat-16_181029_lfps.nio",
+            "file_name": "neo_rat-16_181029_lfps.nio",
+            "file_extension": ".nio",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "nio is not a supported format of any IO."
+        },
+        {
+            "path": "neo_rat-26_190625.pkl",
+            "file_name": "neo_rat-26_190625.pkl",
+            "file_extension": ".pkl",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given"
+        },
+        {
+            "path": "neo_rat-26_190625_lfps.nio",
+            "file_name": "neo_rat-26_190625_lfps.nio",
+            "file_extension": ".nio",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "nio is not a supported format of any IO."
+        },
+        {
+            "path": "neo_rat-26_190626.pkl",
+            "file_name": "neo_rat-26_190626.pkl",
+            "file_extension": ".pkl",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given"
+        },
+        {
+            "path": "neo_rat-26_190626_lfps.nio",
+            "file_name": "neo_rat-26_190626_lfps.nio",
+            "file_extension": ".nio",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "nio is not a supported format of any IO."
+        },
+        {
+            "path": "neo_rat-26_190627.pkl",
+            "file_name": "neo_rat-26_190627.pkl",
+            "file_extension": ".pkl",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given"
+        },
+        {
+            "path": "neo_rat-26_190627_lfps.nio",
+            "file_name": "neo_rat-26_190627_lfps.nio",
+            "file_extension": ".nio",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "nio is not a supported format of any IO."
+        },
+        {
+            "path": "neo_rat-26_190702.pkl",
+            "file_name": "neo_rat-26_190702.pkl",
+            "file_extension": ".pkl",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given"
+        },
+        {
+            "path": "neo_rat-26_190702_lfps.nio",
+            "file_name": "neo_rat-26_190702_lfps.nio",
+            "file_extension": ".nio",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "nio is not a supported format of any IO."
+        },
+        {
+            "path": "neo_rat-27_191128.pkl",
+            "file_name": "neo_rat-27_191128.pkl",
+            "file_extension": ".pkl",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given"
+        },
+        {
+            "path": "neo_rat-27_191128_lfps.nio",
+            "file_name": "neo_rat-27_191128_lfps.nio",
+            "file_extension": ".nio",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "nio is not a supported format of any IO."
+        },
+        {
+            "path": "neo_rat-27_191204.pkl",
+            "file_name": "neo_rat-27_191204.pkl",
+            "file_extension": ".pkl",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given"
+        },
+        {
+            "path": "neo_rat-27_191204_lfps.nio",
+            "file_name": "neo_rat-27_191204_lfps.nio",
+            "file_extension": ".nio",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "nio is not a supported format of any IO."
+        },
+        {
+            "path": "neo_rat-27_191209.pkl",
+            "file_name": "neo_rat-27_191209.pkl",
+            "file_extension": ".pkl",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given"
+        },
+        {
+            "path": "neo_rat-27_191209_lfps.nio",
+            "file_name": "neo_rat-27_191209_lfps.nio",
+            "file_extension": ".nio",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "nio is not a supported format of any IO."
+        },
+        {
+            "path": "neo_rat-27_191210.pkl",
+            "file_name": "neo_rat-27_191210.pkl",
+            "file_extension": ".pkl",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given"
+        },
+        {
+            "path": "neo_rat-27_191210_lfps.nio",
+            "file_name": "neo_rat-27_191210_lfps.nio",
+            "file_extension": ".nio",
+            "readable_with_neo": false,
+            "loading_mode": null,
+            "error": "nio is not a supported format of any IO."
+        }
+    ],
+    "bids_metadata": null
+}
