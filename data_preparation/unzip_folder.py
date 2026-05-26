@@ -1,18 +1,10 @@
 # -*- coding: utf-8 -*-
 
 """
-To facilitate data exploration and annotation.
+Unzip a downloaded dataset folder.
 
 Aim:
     Find and unzip a zip file in a chosen directory.
-
-Usage in terminal:
-    python unzip_folder.py path/to/folder
-
-Authors:
-    Talissa Kassably
-Based on script by:
-    Alix E. Bonard
 """
 
 import os
@@ -26,12 +18,11 @@ def find_zip_file(directory):
 
     output:
         zip_path: str
-            path to the first zip file found
     """
 
     zip_files = []
 
-    for folder_path, sub_folder, files in os.walk(directory):
+    for folder_path, sub_folders, files in os.walk(directory):
         for file in files:
             if file.endswith(".zip"):
                 zip_files.append(os.path.join(folder_path, file))
@@ -39,19 +30,14 @@ def find_zip_file(directory):
     if len(zip_files) == 0:
         raise FileNotFoundError("No zip file found in this directory")
 
-    zip_path = zip_files[0]
-
-    return zip_path
+    return zip_files[0]
 
 
 def unzip_folder(zip_path, directory=None):
     """
     input:
         zip_path: str
-            path to the zip file
-
-        directory: str
-            folder where the zip file should be extracted
+        directory: str or None
 
     output:
         extracted_folder: str

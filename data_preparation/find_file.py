@@ -1,38 +1,25 @@
 # -*- coding: utf-8 -*-
 
 """
-To facilitate data exploration and annotation.
+Find data files in a dataset folder.
 
 Aim:
-    Find data files in a dataset folder.
+    Recursively find files with selected extensions.
 
-Usage in terminal:
-    python find_file.py path/to/folder .nwb
-
-Usage in notebook:
-    %run path/to/find_file.py path/to/folder .nwb
-
-Authors:
-    Talissa Kassably
-Based on script by:
-    Alix E. Bonard
+Usage:
+    py data_preparation/find_file.py path/to/folder .nwb .pkl
 """
 
 import os
 import json
 
 
-def find_file(folder, extensions, output_json="file_list.json"):
+def find_file(folder, extensions, output_json=None):
     """
     input:
         folder: str
-            path to the dataset folder
-
-        extensions: str or list
-            file extension(s), for example ".nwb" or [".nwb", ".abf"]
-
-        output_json: str
-            name of the json file where the list will be saved
+        extensions: str or list of str
+        output_json: optional path to save file list
 
     output:
         file_list: list of file paths
@@ -41,18 +28,24 @@ def find_file(folder, extensions, output_json="file_list.json"):
     if isinstance(extensions, str):
         extensions = [extensions]
 
+    extensions = [ext.lower() for ext in extensions]
+
     file_list = []
 
-    for path_folder, sub_folder, files in os.walk(folder):
+    for path_folder, sub_folders, files in os.walk(folder):
         for file in files:
-            for extension in extensions:
-                if file.endswith(extension):
-                    file_list.append(os.path.join(path_folder, file))
+            extension = os.path.splitext(file)[1].lower()
 
-    with open(output_json, "w", encoding="utf-8") as f:
-        json.dump(file_list, f, indent=4)
+            if extension in extensions:
+                file_list.append(os.path.join(path_folder, file))
 
-    print("File_list generated")
+    file_list = sorted(file_list)
+
+    if output_json is not None:
+        with open(output_json, "w", encoding="utf-8") as f:
+            json.dump(file_list, f, indent=4)
+
+    print("File list generated")
     print(len(file_list), "file(s) found")
 
     return file_list
@@ -64,4 +57,4 @@ if __name__ == "__main__":
     folder = sys.argv[1]
     extensions = sys.argv[2:]
 
-    find_file(folder, extensions)
+    find_file(folder, extensions, output_json="file_list.json")

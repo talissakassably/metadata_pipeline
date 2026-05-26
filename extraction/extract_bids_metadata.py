@@ -1,53 +1,31 @@
 # -*- coding: utf-8 -*-
 
 """
-To facilitate automatic metadata extraction from BIDS-like neuroimaging datasets.
-
-Aim:
-    Extract simple metadata from BIDS folders:
-        - dataset_description.json
-        - JSON sidecar files
-        - participants.tsv if present
-
-This module is used by:
-    extract_metadata_pipeline.py
-
-Authors:
-    Talissa Kassably
+Extract BIDS-like neuroimaging metadata.
 """
 
 import os
 import json
 import csv
 
+from utils import make_json_safe
+
 
 def read_json_file(json_path):
     """
-    input:
-        json_path: str
-
-    output:
-        content: dict
+    Read one JSON file safely.
     """
 
     try:
         with open(json_path, "r", encoding="utf-8") as f:
-            content = json.load(f)
+            return json.load(f)
     except Exception as error:
-        content = {
-            "error": str(error)
-        }
-
-    return content
+        return {"error": str(error)}
 
 
 def read_tsv_file(tsv_path):
     """
-    input:
-        tsv_path: str
-
-    output:
-        rows: list of dictionaries
+    Read one TSV file safely.
     """
 
     rows = []
@@ -55,12 +33,12 @@ def read_tsv_file(tsv_path):
     try:
         with open(tsv_path, "r", encoding="utf-8") as f:
             reader = csv.DictReader(f, delimiter="\t")
+
             for row in reader:
                 rows.append(row)
+
     except Exception as error:
-        rows.append({
-            "error": str(error)
-        })
+        rows.append({"error": str(error)})
 
     return rows
 
@@ -69,21 +47,22 @@ def extract_bids_metadata(folder):
     """
     input:
         folder: str
-            path to a BIDS-like dataset folder
 
     output:
-        metadata: dict
-            extracted BIDS metadata
+        BIDS metadata dictionary
     """
 
     metadata = {
+        "attempted": True,
+        "success": True,
         "bids_folder": os.path.abspath(folder),
         "dataset_description": None,
         "participants": None,
+        "subject_folders": [],
+        "n_subject_folders": 0,
         "json_sidecars": [],
         "n_json_sidecars": 0,
-        "n_subject_folders": 0,
-        "subject_folders": [],
+        "modality_folders": [],
     }
 
     dataset_description_path = os.path.join(folder, "dataset_description.json")
@@ -96,28 +75,34 @@ def extract_bids_metadata(folder):
     if os.path.exists(participants_path):
         metadata["participants"] = read_tsv_file(participants_path)
 
-    subject_folders = []
+    modality_folders = set()
+
+    for path_folder, sub_folders, files in os.walk(folder):
+
+        folder_name = os.path.basename(path_folder)
+
+        if folder_name not in ["", os.path.basename(folder)]:
+            if not folder_name.startswith("sub-"):
+                modality_folders.add(folder_name)
+
+        for file in files:
+            if file.endswith(".json") and file != "dataset_description.json":
+
+                json_path = os.path.join(path_folder, file)
+
+                metadata["json_sidecars"].append({
+                    "path": os.path.relpath(json_path, folder),
+                    "content": read_json_file(json_path),
+                })
 
     for item in os.listdir(folder):
         item_path = os.path.join(folder, item)
+
         if os.path.isdir(item_path) and item.startswith("sub-"):
-            subject_folders.append(item)
+            metadata["subject_folders"].append(item)
 
-    metadata["subject_folders"] = subject_folders
-    metadata["n_subject_folders"] = len(subject_folders)
+    metadata["n_subject_folders"] = len(metadata["subject_folders"])
+    metadata["n_json_sidecars"] = len(metadata["json_sidecars"])
+    metadata["modality_folders"] = sorted(list(modality_folders))
 
-    json_sidecars = []
-
-    for path_folder, sub_folder, files in os.walk(folder):
-        for file in files:
-            if file.endswith(".json") and file != "dataset_description.json":
-                json_path = os.path.join(path_folder, file)
-                json_sidecars.append({
-                    "path": os.path.relpath(json_path, folder),
-                    "content": read_json_file(json_path)
-                })
-
-    metadata["json_sidecars"] = json_sidecars
-    metadata["n_json_sidecars"] = len(json_sidecars)
-
-    return metadata
+    return make_json_safe(metadata)

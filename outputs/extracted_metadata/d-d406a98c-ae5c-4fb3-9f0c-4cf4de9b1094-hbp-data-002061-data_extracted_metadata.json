@@ -1,0 +1,1234 @@
+{
+    "dataset_name": "d-d406a98c-ae5c-4fb3-9f0c-4cf4de9b1094-hbp-data-002061-data",
+    "dataset_folder": "C:\\Users\\tkassably\\Downloads\\d-d406a98c-ae5c-4fb3-9f0c-4cf4de9b1094-hbp-data-002061-data",
+    "date_extraction": "2026-05-26 16:49:52",
+    "extensions_searched": [
+        ".pkl",
+        ".nio"
+    ],
+    "n_files_found": 44,
+    "files": [
+        {
+            "file_metadata": {
+                "path": "neo_rat-14_190130.pkl",
+                "file_name": "neo_rat-14_190130.pkl",
+                "file_extension": ".pkl",
+                "file_size_bytes": 83320749,
+                "file_size_mb": 79.461,
+                "last_modified": "2026-05-26 12:49:43",
+                "rat_id": "rat-14",
+                "session_date": "190130",
+                "data_label": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "object_summary": null
+            },
+            "nwb_extraction": null,
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-14_190131.pkl",
+                "file_name": "neo_rat-14_190131.pkl",
+                "file_extension": ".pkl",
+                "file_size_bytes": 386078036,
+                "file_size_mb": 368.193,
+                "last_modified": "2026-05-26 12:49:45",
+                "rat_id": "rat-14",
+                "session_date": "190131",
+                "data_label": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "No module named 'neo.core.channelindex'",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "No module named 'neo.core.channelindex'",
+                "object_summary": null
+            },
+            "nwb_extraction": null,
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-14_190202.pkl",
+                "file_name": "neo_rat-14_190202.pkl",
+                "file_extension": ".pkl",
+                "file_size_bytes": 193784385,
+                "file_size_mb": 184.807,
+                "last_modified": "2026-05-26 12:49:45",
+                "rat_id": "rat-14",
+                "session_date": "190202",
+                "data_label": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "No module named 'neo.core.channelindex'",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "No module named 'neo.core.channelindex'",
+                "object_summary": null
+            },
+            "nwb_extraction": null,
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-14_190202_lfps.nio",
+                "file_name": "neo_rat-14_190202_lfps.nio",
+                "file_extension": ".nio",
+                "file_size_bytes": 942372893,
+                "file_size_mb": 898.717,
+                "last_modified": "2026-05-26 12:49:49",
+                "rat_id": "rat-14",
+                "session_date": "190202",
+                "data_label": "lfps"
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "nio is not a supported format of any IO.",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": null,
+            "nwb_extraction": null,
+            "notes": [
+                ".nio is not recognized as a standard Neo IO format by the current environment. File-level metadata and Neo attempt are recorded."
+            ]
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-14_190204.pkl",
+                "file_name": "neo_rat-14_190204.pkl",
+                "file_extension": ".pkl",
+                "file_size_bytes": 175131979,
+                "file_size_mb": 167.019,
+                "last_modified": "2026-05-26 12:49:50",
+                "rat_id": "rat-14",
+                "session_date": "190204",
+                "data_label": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "object_summary": null
+            },
+            "nwb_extraction": null,
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-14_190204_lfps.nio",
+                "file_name": "neo_rat-14_190204_lfps.nio",
+                "file_extension": ".nio",
+                "file_size_bytes": 1147434525,
+                "file_size_mb": 1094.279,
+                "last_modified": "2026-05-26 12:49:55",
+                "rat_id": "rat-14",
+                "session_date": "190204",
+                "data_label": "lfps"
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "nio is not a supported format of any IO.",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": null,
+            "nwb_extraction": null,
+            "notes": [
+                ".nio is not recognized as a standard Neo IO format by the current environment. File-level metadata and Neo attempt are recorded."
+            ]
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-14_190205.pkl",
+                "file_name": "neo_rat-14_190205.pkl",
+                "file_extension": ".pkl",
+                "file_size_bytes": 183209888,
+                "file_size_mb": 174.723,
+                "last_modified": "2026-05-26 12:49:56",
+                "rat_id": "rat-14",
+                "session_date": "190205",
+                "data_label": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "object_summary": null
+            },
+            "nwb_extraction": null,
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-14_190206.pkl",
+                "file_name": "neo_rat-14_190206.pkl",
+                "file_extension": ".pkl",
+                "file_size_bytes": 184542524,
+                "file_size_mb": 175.993,
+                "last_modified": "2026-05-26 12:49:57",
+                "rat_id": "rat-14",
+                "session_date": "190206",
+                "data_label": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "No module named 'neo.core.channelindex'",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "No module named 'neo.core.channelindex'",
+                "object_summary": null
+            },
+            "nwb_extraction": null,
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-14_190206_lfps.nio",
+                "file_name": "neo_rat-14_190206_lfps.nio",
+                "file_extension": ".nio",
+                "file_size_bytes": 1086420509,
+                "file_size_mb": 1036.091,
+                "last_modified": "2026-05-26 12:50:01",
+                "rat_id": "rat-14",
+                "session_date": "190206",
+                "data_label": "lfps"
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "nio is not a supported format of any IO.",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": null,
+            "nwb_extraction": null,
+            "notes": [
+                ".nio is not recognized as a standard Neo IO format by the current environment. File-level metadata and Neo attempt are recorded."
+            ]
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-14_190207.pkl",
+                "file_name": "neo_rat-14_190207.pkl",
+                "file_extension": ".pkl",
+                "file_size_bytes": 221573109,
+                "file_size_mb": 211.309,
+                "last_modified": "2026-05-26 12:50:02",
+                "rat_id": "rat-14",
+                "session_date": "190207",
+                "data_label": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "No module named 'neo.core.channelindex'",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "No module named 'neo.core.channelindex'",
+                "object_summary": null
+            },
+            "nwb_extraction": null,
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-16_181012.pkl",
+                "file_name": "neo_rat-16_181012.pkl",
+                "file_extension": ".pkl",
+                "file_size_bytes": 192360361,
+                "file_size_mb": 183.449,
+                "last_modified": "2026-05-26 12:50:03",
+                "rat_id": "rat-16",
+                "session_date": "181012",
+                "data_label": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "object_summary": null
+            },
+            "nwb_extraction": null,
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-16_181013.pkl",
+                "file_name": "neo_rat-16_181013.pkl",
+                "file_extension": ".pkl",
+                "file_size_bytes": 193490010,
+                "file_size_mb": 184.526,
+                "last_modified": "2026-05-26 12:50:04",
+                "rat_id": "rat-16",
+                "session_date": "181013",
+                "data_label": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "object_summary": null
+            },
+            "nwb_extraction": null,
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-16_181013_lfps_clean.nio",
+                "file_name": "neo_rat-16_181013_lfps_clean.nio",
+                "file_extension": ".nio",
+                "file_size_bytes": 824908120,
+                "file_size_mb": 786.694,
+                "last_modified": "2026-05-26 12:50:08",
+                "rat_id": "rat-16",
+                "session_date": "181013",
+                "data_label": "lfps_clean"
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "nio is not a supported format of any IO.",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": null,
+            "nwb_extraction": null,
+            "notes": [
+                ".nio is not recognized as a standard Neo IO format by the current environment. File-level metadata and Neo attempt are recorded."
+            ]
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-16_181015.pkl",
+                "file_name": "neo_rat-16_181015.pkl",
+                "file_extension": ".pkl",
+                "file_size_bytes": 146403551,
+                "file_size_mb": 139.621,
+                "last_modified": "2026-05-26 12:50:08",
+                "rat_id": "rat-16",
+                "session_date": "181015",
+                "data_label": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "object_summary": null
+            },
+            "nwb_extraction": null,
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-16_181016.pkl",
+                "file_name": "neo_rat-16_181016.pkl",
+                "file_extension": ".pkl",
+                "file_size_bytes": 270058825,
+                "file_size_mb": 257.548,
+                "last_modified": "2026-05-26 12:50:09",
+                "rat_id": "rat-16",
+                "session_date": "181016",
+                "data_label": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "object_summary": null
+            },
+            "nwb_extraction": null,
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-16_181016_lfps.nio",
+                "file_name": "neo_rat-16_181016_lfps.nio",
+                "file_extension": ".nio",
+                "file_size_bytes": 1735817141,
+                "file_size_mb": 1655.404,
+                "last_modified": "2026-05-26 12:50:17",
+                "rat_id": "rat-16",
+                "session_date": "181016",
+                "data_label": "lfps"
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "nio is not a supported format of any IO.",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": null,
+            "nwb_extraction": null,
+            "notes": [
+                ".nio is not recognized as a standard Neo IO format by the current environment. File-level metadata and Neo attempt are recorded."
+            ]
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-16_181021.pkl",
+                "file_name": "neo_rat-16_181021.pkl",
+                "file_extension": ".pkl",
+                "file_size_bytes": 223237121,
+                "file_size_mb": 212.896,
+                "last_modified": "2026-05-26 12:50:18",
+                "rat_id": "rat-16",
+                "session_date": "181021",
+                "data_label": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "object_summary": null
+            },
+            "nwb_extraction": null,
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-16_181021_lfps.nio",
+                "file_name": "neo_rat-16_181021_lfps.nio",
+                "file_extension": ".nio",
+                "file_size_bytes": 1307801525,
+                "file_size_mb": 1247.217,
+                "last_modified": "2026-05-26 12:50:23",
+                "rat_id": "rat-16",
+                "session_date": "181021",
+                "data_label": "lfps"
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "nio is not a supported format of any IO.",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": null,
+            "nwb_extraction": null,
+            "notes": [
+                ".nio is not recognized as a standard Neo IO format by the current environment. File-level metadata and Neo attempt are recorded."
+            ]
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-16_181022.pkl",
+                "file_name": "neo_rat-16_181022.pkl",
+                "file_extension": ".pkl",
+                "file_size_bytes": 309904723,
+                "file_size_mb": 295.548,
+                "last_modified": "2026-05-26 12:50:25",
+                "rat_id": "rat-16",
+                "session_date": "181022",
+                "data_label": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "object_summary": null
+            },
+            "nwb_extraction": null,
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-16_181022_lfps.nio",
+                "file_name": "neo_rat-16_181022_lfps.nio",
+                "file_extension": ".nio",
+                "file_size_bytes": 2756368428,
+                "file_size_mb": 2628.678,
+                "last_modified": "2026-05-26 12:50:36",
+                "rat_id": "rat-16",
+                "session_date": "181022",
+                "data_label": "lfps"
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "nio is not a supported format of any IO.",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": null,
+            "nwb_extraction": null,
+            "notes": [
+                ".nio is not recognized as a standard Neo IO format by the current environment. File-level metadata and Neo attempt are recorded."
+            ]
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-16_181023.pkl",
+                "file_name": "neo_rat-16_181023.pkl",
+                "file_extension": ".pkl",
+                "file_size_bytes": 283370864,
+                "file_size_mb": 270.244,
+                "last_modified": "2026-05-26 12:50:38",
+                "rat_id": "rat-16",
+                "session_date": "181023",
+                "data_label": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "object_summary": null
+            },
+            "nwb_extraction": null,
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-16_181023_lfps.nio",
+                "file_name": "neo_rat-16_181023_lfps.nio",
+                "file_extension": ".nio",
+                "file_size_bytes": 2837239852,
+                "file_size_mb": 2705.803,
+                "last_modified": "2026-05-26 12:50:50",
+                "rat_id": "rat-16",
+                "session_date": "181023",
+                "data_label": "lfps"
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "nio is not a supported format of any IO.",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": null,
+            "nwb_extraction": null,
+            "notes": [
+                ".nio is not recognized as a standard Neo IO format by the current environment. File-level metadata and Neo attempt are recorded."
+            ]
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-16_181024.pkl",
+                "file_name": "neo_rat-16_181024.pkl",
+                "file_extension": ".pkl",
+                "file_size_bytes": 199728906,
+                "file_size_mb": 190.476,
+                "last_modified": "2026-05-26 12:50:50",
+                "rat_id": "rat-16",
+                "session_date": "181024",
+                "data_label": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "object_summary": null
+            },
+            "nwb_extraction": null,
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-16_181024_lfps.nio",
+                "file_name": "neo_rat-16_181024_lfps.nio",
+                "file_extension": ".nio",
+                "file_size_bytes": 1440774069,
+                "file_size_mb": 1374.029,
+                "last_modified": "2026-05-26 12:50:57",
+                "rat_id": "rat-16",
+                "session_date": "181024",
+                "data_label": "lfps"
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "nio is not a supported format of any IO.",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": null,
+            "nwb_extraction": null,
+            "notes": [
+                ".nio is not recognized as a standard Neo IO format by the current environment. File-level metadata and Neo attempt are recorded."
+            ]
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-16_181025.pkl",
+                "file_name": "neo_rat-16_181025.pkl",
+                "file_extension": ".pkl",
+                "file_size_bytes": 224105395,
+                "file_size_mb": 213.724,
+                "last_modified": "2026-05-26 12:50:57",
+                "rat_id": "rat-16",
+                "session_date": "181025",
+                "data_label": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "object_summary": null
+            },
+            "nwb_extraction": null,
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-16_181025_lfps.nio",
+                "file_name": "neo_rat-16_181025_lfps.nio",
+                "file_extension": ".nio",
+                "file_size_bytes": 1369143733,
+                "file_size_mb": 1305.717,
+                "last_modified": "2026-05-26 12:51:03",
+                "rat_id": "rat-16",
+                "session_date": "181025",
+                "data_label": "lfps"
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "nio is not a supported format of any IO.",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": null,
+            "nwb_extraction": null,
+            "notes": [
+                ".nio is not recognized as a standard Neo IO format by the current environment. File-level metadata and Neo attempt are recorded."
+            ]
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-16_181029.pkl",
+                "file_name": "neo_rat-16_181029.pkl",
+                "file_extension": ".pkl",
+                "file_size_bytes": 293184449,
+                "file_size_mb": 279.602,
+                "last_modified": "2026-05-26 12:51:05",
+                "rat_id": "rat-16",
+                "session_date": "181029",
+                "data_label": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "object_summary": null
+            },
+            "nwb_extraction": null,
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-16_181029_lfps.nio",
+                "file_name": "neo_rat-16_181029_lfps.nio",
+                "file_extension": ".nio",
+                "file_size_bytes": 1838077996,
+                "file_size_mb": 1752.928,
+                "last_modified": "2026-05-26 12:51:12",
+                "rat_id": "rat-16",
+                "session_date": "181029",
+                "data_label": "lfps"
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "nio is not a supported format of any IO.",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": null,
+            "nwb_extraction": null,
+            "notes": [
+                ".nio is not recognized as a standard Neo IO format by the current environment. File-level metadata and Neo attempt are recorded."
+            ]
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-26_190625.pkl",
+                "file_name": "neo_rat-26_190625.pkl",
+                "file_extension": ".pkl",
+                "file_size_bytes": 108005843,
+                "file_size_mb": 103.002,
+                "last_modified": "2026-05-26 12:51:13",
+                "rat_id": "rat-26",
+                "session_date": "190625",
+                "data_label": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "object_summary": null
+            },
+            "nwb_extraction": null,
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-26_190625_lfps.nio",
+                "file_name": "neo_rat-26_190625_lfps.nio",
+                "file_extension": ".nio",
+                "file_size_bytes": 742159901,
+                "file_size_mb": 707.779,
+                "last_modified": "2026-05-26 12:51:16",
+                "rat_id": "rat-26",
+                "session_date": "190625",
+                "data_label": "lfps"
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "nio is not a supported format of any IO.",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": null,
+            "nwb_extraction": null,
+            "notes": [
+                ".nio is not recognized as a standard Neo IO format by the current environment. File-level metadata and Neo attempt are recorded."
+            ]
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-26_190626.pkl",
+                "file_name": "neo_rat-26_190626.pkl",
+                "file_extension": ".pkl",
+                "file_size_bytes": 151801057,
+                "file_size_mb": 144.769,
+                "last_modified": "2026-05-26 12:51:17",
+                "rat_id": "rat-26",
+                "session_date": "190626",
+                "data_label": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "object_summary": null
+            },
+            "nwb_extraction": null,
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-26_190626_lfps.nio",
+                "file_name": "neo_rat-26_190626_lfps.nio",
+                "file_extension": ".nio",
+                "file_size_bytes": 1086158365,
+                "file_size_mb": 1035.841,
+                "last_modified": "2026-05-26 12:51:21",
+                "rat_id": "rat-26",
+                "session_date": "190626",
+                "data_label": "lfps"
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "nio is not a supported format of any IO.",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": null,
+            "nwb_extraction": null,
+            "notes": [
+                ".nio is not recognized as a standard Neo IO format by the current environment. File-level metadata and Neo attempt are recorded."
+            ]
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-26_190627.pkl",
+                "file_name": "neo_rat-26_190627.pkl",
+                "file_extension": ".pkl",
+                "file_size_bytes": 97112467,
+                "file_size_mb": 92.614,
+                "last_modified": "2026-05-26 12:51:22",
+                "rat_id": "rat-26",
+                "session_date": "190627",
+                "data_label": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "object_summary": null
+            },
+            "nwb_extraction": null,
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-26_190627_lfps.nio",
+                "file_name": "neo_rat-26_190627_lfps.nio",
+                "file_extension": ".nio",
+                "file_size_bytes": 753301021,
+                "file_size_mb": 718.404,
+                "last_modified": "2026-05-26 12:51:25",
+                "rat_id": "rat-26",
+                "session_date": "190627",
+                "data_label": "lfps"
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "nio is not a supported format of any IO.",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": null,
+            "nwb_extraction": null,
+            "notes": [
+                ".nio is not recognized as a standard Neo IO format by the current environment. File-level metadata and Neo attempt are recorded."
+            ]
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-26_190702.pkl",
+                "file_name": "neo_rat-26_190702.pkl",
+                "file_extension": ".pkl",
+                "file_size_bytes": 257867153,
+                "file_size_mb": 245.921,
+                "last_modified": "2026-05-26 12:51:26",
+                "rat_id": "rat-26",
+                "session_date": "190702",
+                "data_label": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "object_summary": null
+            },
+            "nwb_extraction": null,
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-26_190702_lfps.nio",
+                "file_name": "neo_rat-26_190702_lfps.nio",
+                "file_extension": ".nio",
+                "file_size_bytes": 1760089722,
+                "file_size_mb": 1678.552,
+                "last_modified": "2026-05-26 12:51:34",
+                "rat_id": "rat-26",
+                "session_date": "190702",
+                "data_label": "lfps"
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "nio is not a supported format of any IO.",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": null,
+            "nwb_extraction": null,
+            "notes": [
+                ".nio is not recognized as a standard Neo IO format by the current environment. File-level metadata and Neo attempt are recorded."
+            ]
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-27_191128.pkl",
+                "file_name": "neo_rat-27_191128.pkl",
+                "file_extension": ".pkl",
+                "file_size_bytes": 117751038,
+                "file_size_mb": 112.296,
+                "last_modified": "2026-05-26 12:51:35",
+                "rat_id": "rat-27",
+                "session_date": "191128",
+                "data_label": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "object_summary": null
+            },
+            "nwb_extraction": null,
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-27_191128_lfps.nio",
+                "file_name": "neo_rat-27_191128_lfps.nio",
+                "file_extension": ".nio",
+                "file_size_bytes": 914751704,
+                "file_size_mb": 872.375,
+                "last_modified": "2026-05-26 12:51:39",
+                "rat_id": "rat-27",
+                "session_date": "191128",
+                "data_label": "lfps"
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "nio is not a supported format of any IO.",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": null,
+            "nwb_extraction": null,
+            "notes": [
+                ".nio is not recognized as a standard Neo IO format by the current environment. File-level metadata and Neo attempt are recorded."
+            ]
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-27_191204.pkl",
+                "file_name": "neo_rat-27_191204.pkl",
+                "file_extension": ".pkl",
+                "file_size_bytes": 239031827,
+                "file_size_mb": 227.959,
+                "last_modified": "2026-05-26 12:51:40",
+                "rat_id": "rat-27",
+                "session_date": "191204",
+                "data_label": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "object_summary": null
+            },
+            "nwb_extraction": null,
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-27_191204_lfps.nio",
+                "file_name": "neo_rat-27_191204_lfps.nio",
+                "file_extension": ".nio",
+                "file_size_bytes": 1132557853,
+                "file_size_mb": 1080.091,
+                "last_modified": "2026-05-26 12:51:45",
+                "rat_id": "rat-27",
+                "session_date": "191204",
+                "data_label": "lfps"
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "nio is not a supported format of any IO.",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": null,
+            "nwb_extraction": null,
+            "notes": [
+                ".nio is not recognized as a standard Neo IO format by the current environment. File-level metadata and Neo attempt are recorded."
+            ]
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-27_191209.pkl",
+                "file_name": "neo_rat-27_191209.pkl",
+                "file_extension": ".pkl",
+                "file_size_bytes": 352672658,
+                "file_size_mb": 336.335,
+                "last_modified": "2026-05-26 12:51:47",
+                "rat_id": "rat-27",
+                "session_date": "191209",
+                "data_label": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "object_summary": null
+            },
+            "nwb_extraction": null,
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-27_191209_lfps.nio",
+                "file_name": "neo_rat-27_191209_lfps.nio",
+                "file_extension": ".nio",
+                "file_size_bytes": 2631587450,
+                "file_size_mb": 2509.677,
+                "last_modified": "2026-05-26 12:51:59",
+                "rat_id": "rat-27",
+                "session_date": "191209",
+                "data_label": "lfps"
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "nio is not a supported format of any IO.",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": null,
+            "nwb_extraction": null,
+            "notes": [
+                ".nio is not recognized as a standard Neo IO format by the current environment. File-level metadata and Neo attempt are recorded."
+            ]
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-27_191210.pkl",
+                "file_name": "neo_rat-27_191210.pkl",
+                "file_extension": ".pkl",
+                "file_size_bytes": 251275008,
+                "file_size_mb": 239.635,
+                "last_modified": "2026-05-26 12:52:00",
+                "rat_id": "rat-27",
+                "session_date": "191210",
+                "data_label": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "_new_IrregularlySampledSignal() takes from 3 to 13 positional arguments but 14 were given",
+                "object_summary": null
+            },
+            "nwb_extraction": null,
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "neo_rat-27_191210_lfps.nio",
+                "file_name": "neo_rat-27_191210_lfps.nio",
+                "file_extension": ".nio",
+                "file_size_bytes": 1602647581,
+                "file_size_mb": 1528.404,
+                "last_modified": "2026-05-26 12:52:08",
+                "rat_id": "rat-27",
+                "session_date": "191210",
+                "data_label": "lfps"
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "nio is not a supported format of any IO.",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "pickle_extraction": null,
+            "nwb_extraction": null,
+            "notes": [
+                ".nio is not recognized as a standard Neo IO format by the current environment. File-level metadata and Neo attempt are recorded."
+            ]
+        }
+    ],
+    "sessions_metadata": {
+        "sessions_files_found": [
+            "sessions_df.csv"
+        ],
+        "sessions_tables": [
+            {
+                "path": "sessions_df.csv",
+                "readable": true,
+                "error": null,
+                "n_rows": 25,
+                "n_columns": 3,
+                "columns": [
+                    "Unnamed: 0",
+                    "animal",
+                    "date"
+                ],
+                "preview": [
+                    {
+                        "Unnamed: 0": "rat-14_190130",
+                        "animal": "rat-14",
+                        "date": 190130
+                    },
+                    {
+                        "Unnamed: 0": "rat-14_190131",
+                        "animal": "rat-14",
+                        "date": 190131
+                    },
+                    {
+                        "Unnamed: 0": "rat-14_190202",
+                        "animal": "rat-14",
+                        "date": 190202
+                    },
+                    {
+                        "Unnamed: 0": "rat-14_190204",
+                        "animal": "rat-14",
+                        "date": 190204
+                    },
+                    {
+                        "Unnamed: 0": "rat-14_190205",
+                        "animal": "rat-14",
+                        "date": 190205
+                    }
+                ]
+            }
+        ]
+    },
+    "bids_metadata": null
+}
