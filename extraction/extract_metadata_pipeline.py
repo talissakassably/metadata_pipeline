@@ -10,15 +10,16 @@ Workflow:
     dataset folder
         -> find data files
         -> extract metadata depending on file format
+        -> optionally extract BIDS metadata
         -> save extracted metadata as JSON
 
 Usage in terminal:
-    python extract_metadata_pipeline.py path/to/dataset .nwb
-    python extract_metadata_pipeline.py path/to/dataset .abf
-    python extract_metadata_pipeline.py path/to/dataset .nwb .abf .smr
+    python extract_metadata_pipeline.py path/to/dataset --extensions .nwb
+    python extract_metadata_pipeline.py path/to/dataset --extensions .nwb .abf .smr
+    python extract_metadata_pipeline.py path/to/bids_dataset --bids
 
 Usage in notebook:
-    %run metadata_pipeline/extraction/extract_metadata_pipeline.py path/to/dataset .nwb
+    %run metadata_pipeline/extraction/extract_metadata_pipeline.py path/to/dataset --extensions .nwb
 
 Authors:
     Talissa Kassably
@@ -28,161 +29,30 @@ Based on scripts by:
 """
 
 import os
-import json
 import sys
+import json
+import argparse
 from datetime import datetime
+from extraction.extract_nwb_metadata import extract_nwb_metadata
 
-from neo import get_io
+# ---------------------------------------------------------------------
+# Import local modules
+# ---------------------------------------------------------------------
+
+# Allows the script to be run from different folders
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+PIPELINE_DIR = os.path.dirname(CURRENT_DIR)
+
+if PIPELINE_DIR not in sys.path:
+    sys.path.append(PIPELINE_DIR)
+
+from data_preparation.find_file import find_file
+from extraction.extract_neo_metadata import extract_neo_metadata
+from extraction.extract_bids_metadata import extract_bids_metadata
 
 
 # ---------------------------------------------------------------------
-# 1. Find data files
-# ---------------------------------------------------------------------
-
-def find_file(folder, extensions):
-    """
-    Find data files in a dataset folder.
-
-    input:
-        folder: str
-            path to the dataset folder
-
-        extensions: list
-            list of file extensions, for example [".nwb"] or [".abf", ".smr"]
-
-    output:
-        file_list: list
-            list of file paths
-    """
-
-    file_list = []
-
-    for path_folder, sub_folder, files in os.walk(folder):
-        for file in files:
-            for extension in extensions:
-                if file.endswith(extension):
-                    file_list.append(os.path.join(path_folder, file))
-
-    with open("file_list.json", "w") as f:
-        json.dump(file_list, f, indent=4)
-
-    print("File_list generated")
-    print(len(file_list), "file(s) found")
-
-    return file_list
-
-
-# ---------------------------------------------------------------------
-# 2. Extract metadata from Neo-readable files
-# ---------------------------------------------------------------------
-
-def extract_neo_metadata(file_path, root_dir):
-    """
-    Extract technical metadata from one file readable by Neo.
-
-    input:
-        file_path: str
-            path to one data file
-
-        root_dir: str
-            root folder of the dataset
-
-    output:
-        metadata: dict
-            extracted metadata for this file
-    """
-
-    metadata = {
-        "path": os.path.relpath(file_path, root_dir),
-        "file_name": os.path.basename(file_path),
-        "file_extension": os.path.splitext(file_path)[1],
-        "readable_with_neo": False,
-        "error": None,
-    }
-
-    try:
-        io = get_io(file_path)
-        data = io.read(lazy=True)[0]
-
-        metadata["readable_with_neo"] = True
-        metadata["neo_io_class"] = io.__class__.__name__
-        metadata["n_segments"] = len(data.segments)
-
-        n_analogsignals = 0
-        n_spiketrains = 0
-        n_events = 0
-        n_epochs = 0
-
-        n_channels_per_segment = []
-        sampling_rates = []
-        units = []
-        durations = []
-
-        for segment in data.segments:
-
-            n_analogsignals += len(segment.analogsignals)
-            n_spiketrains += len(segment.spiketrains)
-            n_events += len(segment.events)
-            n_epochs += len(segment.epochs)
-
-            segment_channels = 0
-
-            for signal in segment.analogsignals:
-
-                # signal shape is generally:
-                # number of samples x number of channels
-                if len(signal.shape) == 1:
-                    n_channels = 1
-                else:
-                    n_channels = signal.shape[1]
-
-                segment_channels += n_channels
-
-                try:
-                    sampling_rates.append(
-                        signal.sampling_rate.rescale("Hz").item()
-                    )
-                except Exception:
-                    pass
-
-                try:
-                    units.append(
-                        signal.units.dimensionality.string
-                    )
-                except Exception:
-                    pass
-
-                try:
-                    duration = (signal.t_stop - signal.t_start).rescale("s").item()
-                    durations.append(duration)
-                except Exception:
-                    pass
-
-            n_channels_per_segment.append(segment_channels)
-
-        metadata["n_analogsignals"] = n_analogsignals
-        metadata["n_spiketrains"] = n_spiketrains
-        metadata["n_events"] = n_events
-        metadata["n_epochs"] = n_epochs
-
-        metadata["n_channels_per_segment"] = list(set(n_channels_per_segment))
-        metadata["sampling_rates_hz"] = list(set(sampling_rates))
-        metadata["units"] = list(set(units))
-        metadata["durations_s"] = list(set(durations))
-
-        metadata["has_analogsignals"] = n_analogsignals > 0
-        metadata["has_spiketrains"] = n_spiketrains > 0
-        metadata["has_events"] = n_events > 0
-        metadata["has_epochs"] = n_epochs > 0
-
-    except Exception as error:
-        metadata["error"] = str(error)
-
-    return metadata
-
-
-# ---------------------------------------------------------------------
-# 3. Format-specific extraction dispatcher
+# Format-specific extraction dispatcher
 # ---------------------------------------------------------------------
 
 def extract_metadata_from_file(file_path, root_dir):
@@ -190,11 +60,10 @@ def extract_metadata_from_file(file_path, root_dir):
     Decide which extraction method should be used depending on the file format.
 
     For now:
-        .nwb, .abf, .smr, .plx, .nev, .nsx, .edf, etc.
-        are handled through Neo when supported.
+        Most electrophysiology formats are handled through Neo when supported.
 
     Later:
-        BIDS-specific extraction can be added here.
+        NWB-specific extraction using pynwb can be added here.
     """
 
     extension = os.path.splitext(file_path)[1]
@@ -212,7 +81,13 @@ def extract_metadata_from_file(file_path, root_dir):
         ".mat",
     ]
 
-    if extension in neo_extensions:
+    if extension == ".nwb":
+        metadata = {
+            "neo_metadata": extract_neo_metadata(file_path, root_dir),
+            "nwb_metadata": extract_nwb_metadata(file_path, root_dir),
+        }
+
+    elif extension in neo_extensions:
         metadata = extract_neo_metadata(file_path, root_dir)
 
     else:
@@ -228,66 +103,135 @@ def extract_metadata_from_file(file_path, root_dir):
 
 
 # ---------------------------------------------------------------------
-# 4. Run full extraction pipeline
+# Main extraction pipeline
 # ---------------------------------------------------------------------
 
-def extract_metadata_pipeline(folder, extensions):
+def extract_metadata_pipeline(folder, extensions=None, bids=False, output_folder=None):
     """
-    Main metadata extraction pipeline.
-
     input:
         folder: str
-            path to dataset folder
+            path to the dataset folder
 
         extensions: list
-            list of file extensions to search
+            list of file extensions to search for electrophysiology data
+
+        bids: bool
+            if True, extract BIDS-like metadata from the folder
+
+        output_folder: str
+            folder where outputs will be saved
 
     output:
         dataset_metadata: dict
-            metadata extracted from all selected files
     """
 
+    if extensions is None:
+        extensions = []
+
+    if output_folder is None:
+        output_folder = os.path.join(
+            PIPELINE_DIR,
+            "outputs",
+            "extracted_metadata"
+        )
+
+    os.makedirs(output_folder, exist_ok=True)
+
+    dataset_name = os.path.basename(os.path.abspath(folder))
+
     dataset_metadata = {
+        "dataset_name": dataset_name,
         "dataset_folder": os.path.abspath(folder),
         "date_extraction": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "extensions_searched": extensions,
+        "bids_extraction": bids,
         "n_files_found": 0,
         "files": [],
+        "bids_metadata": None,
     }
 
-    file_list = find_file(folder, extensions)
+    # ---------------------------------------------------------
+    # Extract metadata from electrophysiology files
+    # ---------------------------------------------------------
 
-    dataset_metadata["n_files_found"] = len(file_list)
+    if len(extensions) > 0:
+        file_list = find_file(
+            folder=folder,
+            extensions=extensions,
+            output_json=os.path.join(output_folder, dataset_name + "_file_list.json")
+        )
 
-    for file_path in file_list:
-        print("Extracting metadata from:", os.path.basename(file_path))
+        dataset_metadata["n_files_found"] = len(file_list)
 
-        file_metadata = extract_metadata_from_file(file_path, folder)
-        dataset_metadata["files"].append(file_metadata)
+        for file_path in file_list:
+            print("Extracting metadata from:", os.path.basename(file_path))
 
-    output_name = "extracted_metadata.json"
+            file_metadata = extract_metadata_from_file(file_path, folder)
+            dataset_metadata["files"].append(file_metadata)
 
-    with open(output_name, "w") as f:
+    # ---------------------------------------------------------
+    # Extract metadata from BIDS-like dataset
+    # ---------------------------------------------------------
+
+    if bids:
+        print("Extracting BIDS metadata from:", folder)
+        bids_metadata = extract_bids_metadata(folder)
+        dataset_metadata["bids_metadata"] = bids_metadata
+
+    # ---------------------------------------------------------
+    # Save output
+    # ---------------------------------------------------------
+
+    output_json = os.path.join(output_folder, dataset_name + "_extracted_metadata.json")
+
+    with open(output_json, "w", encoding="utf-8") as f:
         json.dump(dataset_metadata, f, indent=4)
 
-    print("Extracted_metadata generated")
-    print("Output file:", output_name)
+    print("Extracted metadata generated")
+    print("Output file:", output_json)
 
     return dataset_metadata
 
 
 # ---------------------------------------------------------------------
-# 5. Terminal execution
+# Terminal execution
 # ---------------------------------------------------------------------
 
 if __name__ == "__main__":
 
-    folder = sys.argv[1]
-    extensions = sys.argv[2:]
+    parser = argparse.ArgumentParser(
+        description="Automatic metadata extraction pipeline"
+    )
 
-    if len(extensions) == 0:
-        raise ValueError(
-            "Please provide at least one file extension, for example: .nwb"
-        )
+    parser.add_argument(
+        "folder",
+        help="Path to the dataset folder"
+    )
 
-    extract_metadata_pipeline(folder, extensions)
+    parser.add_argument(
+        "--extensions",
+        nargs="*",
+        default=[],
+        help="File extensions to search, for example .nwb .abf .smr"
+    )
+
+    parser.add_argument(
+        "--bids",
+        action="store_true",
+        help="Extract BIDS metadata from the folder"
+    )
+
+    parser.add_argument(
+        "--output_folder",
+        default=None,
+        help="Folder where output JSON files will be saved"
+    )
+
+    args = parser.parse_args()
+
+    extract_metadata_pipeline(
+        folder=args.folder,
+        extensions=args.extensions,
+        bids=args.bids,
+        output_folder=args.output_folder
+    )
