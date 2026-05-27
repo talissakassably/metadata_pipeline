@@ -1,7 +1,7 @@
 {
     "dataset_name": "d-885b4936-9345-43bd-880e-eebc19898ded",
     "dataset_folder": "C:\\Users\\tkassably\\Downloads\\d-885b4936-9345-43bd-880e-eebc19898ded",
-    "date_extraction": "2026-05-27 14:51:00",
+    "date_extraction": "2026-05-27 14:53:56",
     "extensions_searched": [
         ".nwb"
     ],
@@ -10,17 +10,215 @@
         "file_extensions": [
             ".nwb"
         ],
-        "n_subjects_detected": 0,
-        "subjects_detected": [],
-        "n_sessions_detected": 0,
-        "sessions_detected": [],
+        "n_subjects_detected": 9,
+        "subjects_detected": [
+            "26863_Ash",
+            "26965_Bubinga",
+            "26966_Cedar",
+            "27284_Douglas",
+            "27285_Elm",
+            "27963_Hemlock",
+            "28003_Ironwood",
+            "29629_Karri",
+            "29630_Juniper"
+        ],
+        "n_sessions_detected": 53,
+        "sessions_detected": [
+            "26863_2020-Nov-04_12-46-06",
+            "26863_2020-Nov-05_10-26-23",
+            "26965_2020-Dec-07_15-52-32",
+            "26965_2020-Dec-07_16-51-52",
+            "26965_2020-Dec-08_10-46-12",
+            "26965_2020-Dec-08_11-29-48",
+            "26965_2020-Dec-08_14-36-11",
+            "26965_2020-Dec-09_11-52-59",
+            "26965_2020-Dec-09_12-10-58",
+            "26965_2020-Dec-11_10-58-11",
+            "26966_2020-Dec-14_15-18-10",
+            "26966_2020-Dec-14_16-26-40",
+            "26966_2020-Dec-15_11-47-50",
+            "26966_2020-Dec-16_11-48-01",
+            "27284_2021-Jun-15_19-16-52",
+            "27284_2021-Jun-16_08-24-12",
+            "27284_2021-Jun-16_14-33-11",
+            "27284_2021-Jun-17_15-01-36",
+            "27284_2021-Jun-18_11-01-41",
+            "27285_2021-Jul-01_08-10-45",
+            "27285_2021-Jul-01_12-33-30",
+            "27285_2021-Jul-01_13-26-22",
+            "27285_2021-Jul-02_13-23-12",
+            "27285_2021-Jun-30_10-03-39",
+            "27285_2021-Jun-30_13-05-14",
+            "27285_2021-Jun-30_13-59-11",
+            "27963_2022-Feb-08_21-14-27",
+            "27963_2022-Feb-09_08-02-57",
+            "27963_2022-Feb-10_11-06-56",
+            "27963_2022-Feb-10_14-07-47",
+            "27963_2022-Feb-11_14-58-41",
+            "28003_2022-Mar-07_20-44-03",
+            "28003_2022-Mar-08_11-22-53",
+            "28003_2022-Mar-08_11-38-59",
+            "28003_2022-Mar-08_15-04-04",
+            "28003_2022-Mar-09_07-54-00",
+            "28003_2022-Mar-10_10-53-58",
+            "29629_2024-Oct-29_15-05-13",
+            "29629_2024-Oct-30_05-40-15",
+            "29629_2024-Oct-30_15-13-05",
+            "29630_2024-Sep-17_07-08-26",
+            "29630_2024-Sep-17_09-22-08",
+            "29630_2024-Sep-17_13-26-08",
+            "29630_2024-Sep-17_23-09-30",
+            "29630_2024-Sep-18_10-18-21",
+            "29630_2024-Sep-18_14-20-12",
+            "29630_2024-Sep-18_15-19-16",
+            "29630_2024-Sep-19_05-09-20",
+            "29630_2024-Sep-19_11-15-17",
+            "29630_2024-Sep-20_09-49-05",
+            "29630_2024-Sep-20_10-32-21",
+            "29630_2024-Sep-20_13-20-20",
+            "29630_2024-Sep-24_14-25-53"
+        ],
+        "session_dates_detected": [
+            "2020-11-04",
+            "2020-11-05",
+            "2020-12-07",
+            "2020-12-08",
+            "2020-12-09",
+            "2020-12-11",
+            "2020-12-14",
+            "2020-12-15",
+            "2020-12-16",
+            "2021-06-15",
+            "2021-06-16",
+            "2021-06-17",
+            "2021-06-18",
+            "2021-06-30",
+            "2021-07-01",
+            "2021-07-02",
+            "2022-02-08",
+            "2022-02-09",
+            "2022-02-10",
+            "2022-02-11",
+            "2022-03-07",
+            "2022-03-08",
+            "2022-03-09",
+            "2022-03-10",
+            "2024-09-17",
+            "2024-09-18",
+            "2024-09-19",
+            "2024-09-20",
+            "2024-09-24",
+            "2024-10-29",
+            "2024-10-30"
+        ],
         "possible_signal_types": [],
         "neo_success_count": 0,
         "neo_failure_count": 53,
         "pickle_success_count": 0,
         "pickle_failure_count": 0,
         "nwb_success_count": 53,
-        "nwb_failure_count": 0
+        "nwb_failure_count": 0,
+        "nwb_species_detected": [
+            "Rattus norvegicus"
+        ],
+        "nwb_sexes_detected": [
+            "M"
+        ],
+        "nwb_experimenters_detected": [
+            "Kanter, Benjamin",
+            "Lykken, Christine"
+        ],
+        "nwb_institutions_detected": [
+            "Moser Group - Kavli Institute for Systems Neuroscience - NTNU"
+        ],
+        "nwb_processing_modules_detected": [
+            "behavior",
+            "ecephys"
+        ],
+        "nwb_devices_detected": [
+            "20403313322",
+            "20403313401",
+            "20403313402",
+            "20403313482",
+            "neuropixel_2_19122505151",
+            "neuropixel_2_19122519093",
+            "neuropixel_2_19122519211",
+            "neuropixels_1_18408403091",
+            "neuropixels_2_19122502062",
+            "neuropixels_2_19122509121",
+            "neuropixels_2_19122510811",
+            "neuropixels_2_19122511841",
+            "neuropixels_2_19122514182",
+            "neuropixels_2_20403311113",
+            "neuropixels_2_20403311151",
+            "neuropixels_2_20403311343",
+            "neuropixels_2_20403311393",
+            "neuropixels_2_20403320473"
+        ],
+        "nwb_electrode_locations_detected": [
+            "HP - CA1",
+            "HP - CA3",
+            "LEC",
+            "MEC - Layer 2"
+        ],
+        "nwb_electrode_group_names_detected": [
+            "probe_0 - 0-383",
+            "probe_0 - 0-95; 1280-1375; 2560-2655; 3840-3935",
+            "probe_0 - 1280-1663",
+            "probe_0 - 170-553",
+            "probe_0 - 196-579",
+            "probe_0 - 2560-2943",
+            "probe_0 - 3840-4223",
+            "probe_0 - 3996-4379",
+            "probe_0 - 94-189; 1374-1469; 2654-2749; 3934-4029",
+            "probe_0 - arbitrary pattern, consult reference.ElectrodeConfig.Electrode",
+            "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
+            "probe_1 - 600-695; 1876-1971; 3160-3255; 4436-4531",
+            "probe_1 - 68-163; 1348-1443; 2628-2723; 3908-4003",
+            "probe_1 - 8-103; 1288-1383; 2568-2663; 3848-3943",
+            "probe_2 - 384-479; 1664-1759; 2944-3039; 4224-4319",
+            "probe_2 - 470-565; 1750-1845; 3030-3125; 4310-4405",
+            "probe_2 - 580-675; 1860-1955; 3140-3235; 4420-4515",
+            "probe_2 - arbitrary pattern, consult reference.ElectrodeConfig.Electrode"
+        ],
+        "nwb_intervals_detected": [
+            "door_open",
+            "epochs",
+            "mill_active"
+        ],
+        "nwb_session_descriptions_detected": [
+            "2 OF sessions with short pot break inbetween, some jumping",
+            "35 mins; OF; decent coverage; still plugged in from previous session in room 2.408",
+            "OF",
+            "OF and obj",
+            "OF tall walls",
+            "OF, LEC was likely deep layers",
+            "OF, OBJ",
+            "OF, obj, obj, obj",
+            "figure-eight",
+            "object events",
+            "open field (motive crashed)",
+            "open field and objA of WWW",
+            "open field, WHAT, and WHERE",
+            "open field, WHEN1",
+            "open field, open field",
+            "open field; novel object",
+            "open field; object",
+            "open field; party lights",
+            "seq1",
+            "seq2",
+            "seq2, comparison probes",
+            "sequence task",
+            "sleep",
+            "sleep, sequence task"
+        ],
+        "nwb_min_electrodes_per_file": 384,
+        "nwb_max_electrodes_per_file": 1152,
+        "nwb_min_units_per_file": 240,
+        "nwb_max_units_per_file": 9578,
+        "nwb_total_units_across_files": 124313,
+        "nwb_min_trials_per_file": 0,
+        "nwb_max_trials_per_file": 0
     },
     "files": [
         {
@@ -1566,12 +1764,12 @@
                     "filtering"
                 ],
                 "electrode_locations": [
-                    "MEC - Layer 2",
-                    "LEC"
+                    "LEC",
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
-                    "probe_0 - 0-383",
-                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935"
+                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
+                    "probe_0 - 0-383"
                 ],
                 "n_units": 2306,
                 "unit_columns": [
@@ -1675,12 +1873,12 @@
                     "filtering"
                 ],
                 "electrode_locations": [
-                    "MEC - Layer 2",
-                    "LEC"
+                    "LEC",
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
-                    "probe_0 - 0-383",
-                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935"
+                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
+                    "probe_0 - 0-383"
                 ],
                 "n_units": 2537,
                 "unit_columns": [
@@ -1784,12 +1982,12 @@
                     "filtering"
                 ],
                 "electrode_locations": [
-                    "MEC - Layer 2",
-                    "LEC"
+                    "LEC",
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
-                    "probe_0 - 0-383",
-                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935"
+                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
+                    "probe_0 - 0-383"
                 ],
                 "n_units": 2772,
                 "unit_columns": [
@@ -1893,12 +2091,12 @@
                     "filtering"
                 ],
                 "electrode_locations": [
-                    "MEC - Layer 2",
-                    "LEC"
+                    "LEC",
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
-                    "probe_0 - 0-383",
-                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935"
+                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
+                    "probe_0 - 0-383"
                 ],
                 "n_units": 1639,
                 "unit_columns": [
@@ -2002,12 +2200,12 @@
                     "filtering"
                 ],
                 "electrode_locations": [
-                    "MEC - Layer 2",
-                    "LEC"
+                    "LEC",
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
-                    "probe_0 - 0-383",
-                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935"
+                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
+                    "probe_0 - 0-383"
                 ],
                 "n_units": 1226,
                 "unit_columns": [
@@ -2113,9 +2311,9 @@
                     "filtering"
                 ],
                 "electrode_locations": [
-                    "MEC - Layer 2",
+                    "HP - CA3",
                     "LEC",
-                    "HP - CA3"
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
                     "probe_0 - 3996-4379",
@@ -2228,9 +2426,9 @@
                     "filtering"
                 ],
                 "electrode_locations": [
-                    "MEC - Layer 2",
+                    "HP - CA3",
                     "LEC",
-                    "HP - CA3"
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
                     "probe_0 - 3996-4379",
@@ -2343,9 +2541,9 @@
                     "filtering"
                 ],
                 "electrode_locations": [
-                    "MEC - Layer 2",
+                    "HP - CA3",
                     "LEC",
-                    "HP - CA3"
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
                     "probe_0 - 3996-4379",
@@ -2456,9 +2654,9 @@
                     "filtering"
                 ],
                 "electrode_locations": [
-                    "MEC - Layer 2",
+                    "HP - CA3",
                     "LEC",
-                    "HP - CA3"
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
                     "probe_0 - 3996-4379",
@@ -2569,14 +2767,14 @@
                     "filtering"
                 ],
                 "electrode_locations": [
-                    "MEC - Layer 2",
+                    "HP - CA3",
                     "LEC",
-                    "HP - CA3"
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
-                    "probe_0 - 3840-4223",
+                    "probe_2 - 470-565; 1750-1845; 3030-3125; 4310-4405",
                     "probe_1 - 8-103; 1288-1383; 2568-2663; 3848-3943",
-                    "probe_2 - 470-565; 1750-1845; 3030-3125; 4310-4405"
+                    "probe_0 - 3840-4223"
                 ],
                 "n_units": 9578,
                 "unit_columns": [
@@ -2684,14 +2882,14 @@
                     "filtering"
                 ],
                 "electrode_locations": [
-                    "MEC - Layer 2",
+                    "HP - CA3",
                     "LEC",
-                    "HP - CA3"
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
-                    "probe_0 - 3840-4223",
+                    "probe_2 - 470-565; 1750-1845; 3030-3125; 4310-4405",
                     "probe_1 - 8-103; 1288-1383; 2568-2663; 3848-3943",
-                    "probe_2 - 470-565; 1750-1845; 3030-3125; 4310-4405"
+                    "probe_0 - 3840-4223"
                 ],
                 "n_units": 9578,
                 "unit_columns": [
@@ -2799,14 +2997,14 @@
                     "filtering"
                 ],
                 "electrode_locations": [
-                    "MEC - Layer 2",
+                    "HP - CA3",
                     "LEC",
-                    "HP - CA3"
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
-                    "probe_0 - 3840-4223",
+                    "probe_2 - 470-565; 1750-1845; 3030-3125; 4310-4405",
                     "probe_1 - 8-103; 1288-1383; 2568-2663; 3848-3943",
-                    "probe_2 - 470-565; 1750-1845; 3030-3125; 4310-4405"
+                    "probe_0 - 3840-4223"
                 ],
                 "n_units": 2253,
                 "unit_columns": [
@@ -2912,14 +3110,14 @@
                     "filtering"
                 ],
                 "electrode_locations": [
+                    "LEC",
                     "HP - CA1",
-                    "MEC - Layer 2",
-                    "LEC"
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
+                    "probe_0 - 196-579",
                     "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
-                    "probe_2 - 580-675; 1860-1955; 3140-3235; 4420-4515",
-                    "probe_0 - 196-579"
+                    "probe_2 - 580-675; 1860-1955; 3140-3235; 4420-4515"
                 ],
                 "n_units": 1890,
                 "unit_columns": [
@@ -3025,14 +3223,14 @@
                     "filtering"
                 ],
                 "electrode_locations": [
+                    "LEC",
                     "HP - CA1",
-                    "MEC - Layer 2",
-                    "LEC"
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
+                    "probe_0 - 196-579",
                     "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
-                    "probe_2 - 580-675; 1860-1955; 3140-3235; 4420-4515",
-                    "probe_0 - 196-579"
+                    "probe_2 - 580-675; 1860-1955; 3140-3235; 4420-4515"
                 ],
                 "n_units": 2312,
                 "unit_columns": [
@@ -3138,14 +3336,14 @@
                     "filtering"
                 ],
                 "electrode_locations": [
+                    "LEC",
                     "HP - CA1",
-                    "MEC - Layer 2",
-                    "LEC"
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
                     "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
-                    "probe_2 - arbitrary pattern, consult reference.ElectrodeConfig.Electrode",
-                    "probe_0 - arbitrary pattern, consult reference.ElectrodeConfig.Electrode"
+                    "probe_0 - arbitrary pattern, consult reference.ElectrodeConfig.Electrode",
+                    "probe_2 - arbitrary pattern, consult reference.ElectrodeConfig.Electrode"
                 ],
                 "n_units": 1357,
                 "unit_columns": [
@@ -3251,14 +3449,14 @@
                     "filtering"
                 ],
                 "electrode_locations": [
+                    "LEC",
                     "HP - CA1",
-                    "MEC - Layer 2",
-                    "LEC"
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
                     "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
-                    "probe_2 - arbitrary pattern, consult reference.ElectrodeConfig.Electrode",
-                    "probe_0 - arbitrary pattern, consult reference.ElectrodeConfig.Electrode"
+                    "probe_0 - arbitrary pattern, consult reference.ElectrodeConfig.Electrode",
+                    "probe_2 - arbitrary pattern, consult reference.ElectrodeConfig.Electrode"
                 ],
                 "n_units": 1288,
                 "unit_columns": [
@@ -3364,13 +3562,13 @@
                     "filtering"
                 ],
                 "electrode_locations": [
+                    "LEC",
                     "HP - CA1",
-                    "MEC - Layer 2",
-                    "LEC"
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
-                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
                     "probe_0 - 170-553",
+                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
                     "probe_2 - arbitrary pattern, consult reference.ElectrodeConfig.Electrode"
                 ],
                 "n_units": 1033,
@@ -3477,14 +3675,14 @@
                     "filtering"
                 ],
                 "electrode_locations": [
+                    "LEC",
                     "HP - CA1",
-                    "MEC - Layer 2",
-                    "LEC"
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
+                    "probe_0 - 1280-1663",
                     "probe_1 - 68-163; 1348-1443; 2628-2723; 3908-4003",
-                    "probe_2 - 384-479; 1664-1759; 2944-3039; 4224-4319",
-                    "probe_0 - 1280-1663"
+                    "probe_2 - 384-479; 1664-1759; 2944-3039; 4224-4319"
                 ],
                 "n_units": 895,
                 "unit_columns": [
@@ -3589,9 +3787,9 @@
                     "filtering"
                 ],
                 "electrode_locations": [
+                    "LEC",
                     "HP - CA1",
-                    "MEC - Layer 2",
-                    "LEC"
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
                     "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
@@ -3701,13 +3899,13 @@
                     "filtering"
                 ],
                 "electrode_locations": [
+                    "LEC",
                     "HP - CA1",
-                    "MEC - Layer 2",
-                    "LEC"
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
-                    "probe_0 - 0-383",
                     "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
+                    "probe_0 - 0-383",
                     "probe_2 - 384-479; 1664-1759; 2944-3039; 4224-4319"
                 ],
                 "n_units": 1056,
@@ -3813,9 +4011,9 @@
                     "filtering"
                 ],
                 "electrode_locations": [
+                    "LEC",
                     "HP - CA1",
-                    "MEC - Layer 2",
-                    "LEC"
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
                     "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
@@ -3925,9 +4123,9 @@
                     "filtering"
                 ],
                 "electrode_locations": [
+                    "LEC",
                     "HP - CA1",
-                    "MEC - Layer 2",
-                    "LEC"
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
                     "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
@@ -4037,9 +4235,9 @@
                     "filtering"
                 ],
                 "electrode_locations": [
+                    "LEC",
                     "HP - CA1",
-                    "MEC - Layer 2",
-                    "LEC"
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
                     "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
@@ -4475,12 +4673,12 @@
                     "filtering"
                 ],
                 "electrode_locations": [
-                    "MEC - Layer 2",
-                    "LEC"
+                    "LEC",
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
-                    "probe_0 - 0-383",
-                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935"
+                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
+                    "probe_0 - 0-383"
                 ],
                 "n_units": 2728,
                 "unit_columns": [
@@ -4584,12 +4782,12 @@
                     "filtering"
                 ],
                 "electrode_locations": [
-                    "MEC - Layer 2",
-                    "LEC"
+                    "LEC",
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
-                    "probe_0 - 0-383",
-                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935"
+                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
+                    "probe_0 - 0-383"
                 ],
                 "n_units": 2119,
                 "unit_columns": [
@@ -4693,12 +4891,12 @@
                     "filtering"
                 ],
                 "electrode_locations": [
-                    "MEC - Layer 2",
-                    "LEC"
+                    "LEC",
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
-                    "probe_0 - 0-383",
-                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935"
+                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
+                    "probe_0 - 0-383"
                 ],
                 "n_units": 6978,
                 "unit_columns": [
@@ -4804,12 +5002,12 @@
                     "filtering"
                 ],
                 "electrode_locations": [
-                    "MEC - Layer 2",
-                    "LEC"
+                    "LEC",
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
-                    "probe_0 - 0-383",
-                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935"
+                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
+                    "probe_0 - 0-383"
                 ],
                 "n_units": 2776,
                 "unit_columns": [
@@ -4913,12 +5111,12 @@
                     "filtering"
                 ],
                 "electrode_locations": [
-                    "MEC - Layer 2",
-                    "LEC"
+                    "LEC",
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
-                    "probe_0 - 0-383",
-                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935"
+                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
+                    "probe_0 - 0-383"
                 ],
                 "n_units": 1918,
                 "unit_columns": [
@@ -5022,12 +5220,12 @@
                     "filtering"
                 ],
                 "electrode_locations": [
-                    "MEC - Layer 2",
-                    "LEC"
+                    "LEC",
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
-                    "probe_0 - 0-383",
-                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935"
+                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
+                    "probe_0 - 0-383"
                 ],
                 "n_units": 4732,
                 "unit_columns": [
@@ -5133,12 +5331,12 @@
                     "filtering"
                 ],
                 "electrode_locations": [
-                    "MEC - Layer 2",
-                    "LEC"
+                    "LEC",
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
-                    "probe_0 - 0-383",
-                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935"
+                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
+                    "probe_0 - 0-383"
                 ],
                 "n_units": 2246,
                 "unit_columns": [
@@ -5242,12 +5440,12 @@
                     "filtering"
                 ],
                 "electrode_locations": [
-                    "MEC - Layer 2",
-                    "LEC"
+                    "LEC",
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
-                    "probe_0 - 0-383",
-                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935"
+                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
+                    "probe_0 - 0-383"
                 ],
                 "n_units": 2195,
                 "unit_columns": [
@@ -5351,12 +5549,12 @@
                     "filtering"
                 ],
                 "electrode_locations": [
-                    "MEC - Layer 2",
-                    "LEC"
+                    "LEC",
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
-                    "probe_0 - 0-383",
-                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935"
+                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
+                    "probe_0 - 0-383"
                 ],
                 "n_units": 5029,
                 "unit_columns": [
@@ -5462,12 +5660,12 @@
                     "filtering"
                 ],
                 "electrode_locations": [
-                    "MEC - Layer 2",
-                    "LEC"
+                    "LEC",
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
-                    "probe_0 - 0-383",
-                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935"
+                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
+                    "probe_0 - 0-383"
                 ],
                 "n_units": 1749,
                 "unit_columns": [
@@ -5571,12 +5769,12 @@
                     "filtering"
                 ],
                 "electrode_locations": [
-                    "MEC - Layer 2",
-                    "LEC"
+                    "LEC",
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
-                    "probe_0 - 0-383",
-                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935"
+                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
+                    "probe_0 - 0-383"
                 ],
                 "n_units": 5744,
                 "unit_columns": [
@@ -5682,12 +5880,12 @@
                     "filtering"
                 ],
                 "electrode_locations": [
-                    "MEC - Layer 2",
-                    "LEC"
+                    "LEC",
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
-                    "probe_0 - 0-383",
-                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935"
+                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
+                    "probe_0 - 0-383"
                 ],
                 "n_units": 4461,
                 "unit_columns": [
@@ -5793,12 +5991,12 @@
                     "filtering"
                 ],
                 "electrode_locations": [
-                    "MEC - Layer 2",
-                    "LEC"
+                    "LEC",
+                    "MEC - Layer 2"
                 ],
                 "electrode_group_names": [
-                    "probe_0 - 0-383",
-                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935"
+                    "probe_1 - 0-95; 1280-1375; 2560-2655; 3840-3935",
+                    "probe_0 - 0-383"
                 ],
                 "n_units": 6523,
                 "unit_columns": [
