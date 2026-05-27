@@ -1,0 +1,1625 @@
+{
+    "dataset_name": "p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681",
+    "dataset_folder": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681",
+    "date_extraction": "2026-05-27 13:50:34",
+    "extensions_searched": [
+        ".pkl",
+        ".json",
+        ".py",
+        ".ipynb"
+    ],
+    "dataset_summary": {
+        "n_files": 49,
+        "file_extensions": [
+            ".ipynb",
+            ".json",
+            ".pkl",
+            ".py"
+        ],
+        "n_subjects_detected": 0,
+        "subjects_detected": [],
+        "n_sessions_detected": 0,
+        "sessions_detected": [],
+        "possible_signal_types": [],
+        "neo_success_count": 0,
+        "neo_failure_count": 46,
+        "pickle_success_count": 0,
+        "pickle_failure_count": 46,
+        "nwb_success_count": 0,
+        "nwb_failure_count": 0
+    },
+    "files": [
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Ramachandran\\samp20\\hbp-01681_TouchAndSee_Ramachandran_samp20__2012-08-09.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Ramachandran\\samp20\\hbp-01681_TouchAndSee_Ramachandran_samp20__2012-08-09.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Ramachandran_samp20__2012-08-09.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 5140418,
+                "file_size_mb": 4.902,
+                "last_modified": "2026-05-27 13:44:02",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Ramachandran\\samp21\\hbp-01681_TouchAndSee_Ramachandran_samp21__2012-08-10.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Ramachandran\\samp21\\hbp-01681_TouchAndSee_Ramachandran_samp21__2012-08-10.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Ramachandran_samp21__2012-08-10.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 9092523,
+                "file_size_mb": 8.671,
+                "last_modified": "2026-05-27 13:44:02",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Ramachandran\\samp22\\hbp-01681_TouchAndSee_Ramachandran_samp22__2012-08-11.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Ramachandran\\samp22\\hbp-01681_TouchAndSee_Ramachandran_samp22__2012-08-11.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Ramachandran_samp22__2012-08-11.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 6923723,
+                "file_size_mb": 6.603,
+                "last_modified": "2026-05-27 13:44:02",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Ramachandran\\samp23\\hbp-01681_TouchAndSee_Ramachandran_samp23__2012-08-12.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Ramachandran\\samp23\\hbp-01681_TouchAndSee_Ramachandran_samp23__2012-08-12.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Ramachandran_samp23__2012-08-12.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 4757482,
+                "file_size_mb": 4.537,
+                "last_modified": "2026-05-27 13:44:02",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Ramachandran\\samp24\\hbp-01681_TouchAndSee_Ramachandran_samp24__2012-08-13.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Ramachandran\\samp24\\hbp-01681_TouchAndSee_Ramachandran_samp24__2012-08-13.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Ramachandran_samp24__2012-08-13.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 7396164,
+                "file_size_mb": 7.054,
+                "last_modified": "2026-05-27 13:44:02",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Ramachandran\\samp25\\hbp-01681_TouchAndSee_Ramachandran_samp25__2012-08-14.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Ramachandran\\samp25\\hbp-01681_TouchAndSee_Ramachandran_samp25__2012-08-14.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Ramachandran_samp25__2012-08-14.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 3699469,
+                "file_size_mb": 3.528,
+                "last_modified": "2026-05-27 13:44:02",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Ramachandran\\samp26\\hbp-01681_TouchAndSee_Ramachandran_samp26__2012-08-15.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Ramachandran\\samp26\\hbp-01681_TouchAndSee_Ramachandran_samp26__2012-08-15.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Ramachandran_samp26__2012-08-15.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 7511228,
+                "file_size_mb": 7.163,
+                "last_modified": "2026-05-27 13:44:02",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Ramachandran\\samp27\\hbp-01681_TouchAndSee_Ramachandran_samp27__2012-08-16.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Ramachandran\\samp27\\hbp-01681_TouchAndSee_Ramachandran_samp27__2012-08-16.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Ramachandran_samp27__2012-08-16.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 16225794,
+                "file_size_mb": 15.474,
+                "last_modified": "2026-05-27 13:44:02",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Ramachandran\\samp28\\hbp-01681_TouchAndSee_Ramachandran_samp28__2012-08-17.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Ramachandran\\samp28\\hbp-01681_TouchAndSee_Ramachandran_samp28__2012-08-17.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Ramachandran_samp28__2012-08-17.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 9921074,
+                "file_size_mb": 9.461,
+                "last_modified": "2026-05-27 13:44:02",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Ramachandran\\samp29\\hbp-01681_TouchAndSee_Ramachandran_samp29__2012-08-18.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Ramachandran\\samp29\\hbp-01681_TouchAndSee_Ramachandran_samp29__2012-08-18.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Ramachandran_samp29__2012-08-18.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 5701653,
+                "file_size_mb": 5.438,
+                "last_modified": "2026-05-27 13:44:02",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Ramachandran\\samp30\\hbp-01681_TouchAndSee_Ramachandran_samp30__2012-08-20.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Ramachandran\\samp30\\hbp-01681_TouchAndSee_Ramachandran_samp30__2012-08-20.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Ramachandran_samp30__2012-08-20.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 7560440,
+                "file_size_mb": 7.21,
+                "last_modified": "2026-05-27 13:44:02",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Ramachandran\\samp31\\hbp-01681_TouchAndSee_Ramachandran_samp31__2012-08-21.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Ramachandran\\samp31\\hbp-01681_TouchAndSee_Ramachandran_samp31__2012-08-21.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Ramachandran_samp31__2012-08-21.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 5959603,
+                "file_size_mb": 5.684,
+                "last_modified": "2026-05-27 13:44:02",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Ramachandran\\samp32\\hbp-01681_TouchAndSee_Ramachandran_samp32__2012-08-22.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Ramachandran\\samp32\\hbp-01681_TouchAndSee_Ramachandran_samp32__2012-08-22.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Ramachandran_samp32__2012-08-22.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 6533408,
+                "file_size_mb": 6.231,
+                "last_modified": "2026-05-27 13:44:02",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Ramachandran\\samp33\\hbp-01681_TouchAndSee_Ramachandran_samp33__2012-08-22.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Ramachandran\\samp33\\hbp-01681_TouchAndSee_Ramachandran_samp33__2012-08-22.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Ramachandran_samp33__2012-08-22.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 3535984,
+                "file_size_mb": 3.372,
+                "last_modified": "2026-05-27 13:44:02",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Taskmaster\\samp10\\hbp-01681_TouchAndSee_Taskmaster_samp10__2012-01-15.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Taskmaster\\samp10\\hbp-01681_TouchAndSee_Taskmaster_samp10__2012-01-15.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Taskmaster_samp10__2012-01-15.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 9925806,
+                "file_size_mb": 9.466,
+                "last_modified": "2026-05-27 13:44:02",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Taskmaster\\samp11\\hbp-01681_TouchAndSee_Taskmaster_samp11__2012-01-16.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Taskmaster\\samp11\\hbp-01681_TouchAndSee_Taskmaster_samp11__2012-01-16.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Taskmaster_samp11__2012-01-16.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 13246108,
+                "file_size_mb": 12.632,
+                "last_modified": "2026-05-27 13:44:03",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Taskmaster\\samp12\\hbp-01681_TouchAndSee_Taskmaster_samp12__2012-01-17.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Taskmaster\\samp12\\hbp-01681_TouchAndSee_Taskmaster_samp12__2012-01-17.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Taskmaster_samp12__2012-01-17.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 13288658,
+                "file_size_mb": 12.673,
+                "last_modified": "2026-05-27 13:44:03",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Taskmaster\\samp13\\hbp-01681_TouchAndSee_Taskmaster_samp13__2012-01-18.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Taskmaster\\samp13\\hbp-01681_TouchAndSee_Taskmaster_samp13__2012-01-18.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Taskmaster_samp13__2012-01-18.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 10914574,
+                "file_size_mb": 10.409,
+                "last_modified": "2026-05-27 13:44:03",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Taskmaster\\samp14\\hbp-01681_TouchAndSee_Taskmaster_samp14__2011-12-22.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Taskmaster\\samp14\\hbp-01681_TouchAndSee_Taskmaster_samp14__2011-12-22.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Taskmaster_samp14__2011-12-22.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 3761169,
+                "file_size_mb": 3.587,
+                "last_modified": "2026-05-27 13:44:03",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Taskmaster\\samp15\\hbp-01681_TouchAndSee_Taskmaster_samp15__2011-12-23.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Taskmaster\\samp15\\hbp-01681_TouchAndSee_Taskmaster_samp15__2011-12-23.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Taskmaster_samp15__2011-12-23.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 11932232,
+                "file_size_mb": 11.379,
+                "last_modified": "2026-05-27 13:44:03",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Taskmaster\\samp16\\hbp-01681_TouchAndSee_Taskmaster_samp16__2011-12-24.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Taskmaster\\samp16\\hbp-01681_TouchAndSee_Taskmaster_samp16__2011-12-24.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Taskmaster_samp16__2011-12-24.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 22472963,
+                "file_size_mb": 21.432,
+                "last_modified": "2026-05-27 13:44:03",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Taskmaster\\samp17\\hbp-01681_TouchAndSee_Taskmaster_samp17__2011-12-25.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Taskmaster\\samp17\\hbp-01681_TouchAndSee_Taskmaster_samp17__2011-12-25.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Taskmaster_samp17__2011-12-25.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 15284369,
+                "file_size_mb": 14.576,
+                "last_modified": "2026-05-27 13:44:03",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Taskmaster\\samp18\\hbp-01681_TouchAndSee_Taskmaster_samp18__2011-12-29.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Taskmaster\\samp18\\hbp-01681_TouchAndSee_Taskmaster_samp18__2011-12-29.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Taskmaster_samp18__2011-12-29.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 25619139,
+                "file_size_mb": 24.432,
+                "last_modified": "2026-05-27 13:44:03",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Taskmaster\\samp19\\hbp-01681_TouchAndSee_Taskmaster_samp19__2011-12-30.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Taskmaster\\samp19\\hbp-01681_TouchAndSee_Taskmaster_samp19__2011-12-30.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Taskmaster_samp19__2011-12-30.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 16883641,
+                "file_size_mb": 16.101,
+                "last_modified": "2026-05-27 13:44:03",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Taskmaster\\samp1\\hbp-01681_TouchAndSee_Taskmaster_samp1__2012-01-03.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Taskmaster\\samp1\\hbp-01681_TouchAndSee_Taskmaster_samp1__2012-01-03.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Taskmaster_samp1__2012-01-03.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 13816679,
+                "file_size_mb": 13.177,
+                "last_modified": "2026-05-27 13:44:02",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Taskmaster\\samp2\\hbp-01681_TouchAndSee_Taskmaster_samp2__2012-01-03.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Taskmaster\\samp2\\hbp-01681_TouchAndSee_Taskmaster_samp2__2012-01-03.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Taskmaster_samp2__2012-01-03.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 13972615,
+                "file_size_mb": 13.325,
+                "last_modified": "2026-05-27 13:44:03",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Taskmaster\\samp3\\hbp-01681_TouchAndSee_Taskmaster_samp3__2012-01-04.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Taskmaster\\samp3\\hbp-01681_TouchAndSee_Taskmaster_samp3__2012-01-04.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Taskmaster_samp3__2012-01-04.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 17237233,
+                "file_size_mb": 16.439,
+                "last_modified": "2026-05-27 13:44:03",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Taskmaster\\samp4\\hbp-01681_TouchAndSee_Taskmaster_samp4__2012-01-05.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Taskmaster\\samp4\\hbp-01681_TouchAndSee_Taskmaster_samp4__2012-01-05.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Taskmaster_samp4__2012-01-05.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 18052685,
+                "file_size_mb": 17.216,
+                "last_modified": "2026-05-27 13:44:03",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Taskmaster\\samp5\\hbp-01681_TouchAndSee_Taskmaster_samp5__2012-01-06.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Taskmaster\\samp5\\hbp-01681_TouchAndSee_Taskmaster_samp5__2012-01-06.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Taskmaster_samp5__2012-01-06.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 17133380,
+                "file_size_mb": 16.34,
+                "last_modified": "2026-05-27 13:44:03",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Taskmaster\\samp6\\hbp-01681_TouchAndSee_Taskmaster_samp6__2012-01-10.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Taskmaster\\samp6\\hbp-01681_TouchAndSee_Taskmaster_samp6__2012-01-10.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Taskmaster_samp6__2012-01-10.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 16258767,
+                "file_size_mb": 15.506,
+                "last_modified": "2026-05-27 13:44:03",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Taskmaster\\samp7\\hbp-01681_TouchAndSee_Taskmaster_samp7__2012-01-11.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Taskmaster\\samp7\\hbp-01681_TouchAndSee_Taskmaster_samp7__2012-01-11.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Taskmaster_samp7__2012-01-11.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 19619244,
+                "file_size_mb": 18.71,
+                "last_modified": "2026-05-27 13:44:04",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Taskmaster\\samp8\\hbp-01681_TouchAndSee_Taskmaster_samp8__2012-01-12.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Taskmaster\\samp8\\hbp-01681_TouchAndSee_Taskmaster_samp8__2012-01-12.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Taskmaster_samp8__2012-01-12.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 9263148,
+                "file_size_mb": 8.834,
+                "last_modified": "2026-05-27 13:44:04",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Taskmaster\\samp9\\hbp-01681_TouchAndSee_Taskmaster_samp9__2012-01-14.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Taskmaster\\samp9\\hbp-01681_TouchAndSee_Taskmaster_samp9__2012-01-14.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Taskmaster_samp9__2012-01-14.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 13613404,
+                "file_size_mb": 12.983,
+                "last_modified": "2026-05-27 13:44:04",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Turing\\samp34\\hbp-01681_TouchAndSee_Turing_samp34__2012-09-14.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Turing\\samp34\\hbp-01681_TouchAndSee_Turing_samp34__2012-09-14.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Turing_samp34__2012-09-14.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 4690377,
+                "file_size_mb": 4.473,
+                "last_modified": "2026-05-27 13:44:04",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Turing\\samp35\\hbp-01681_TouchAndSee_Turing_samp35__2012-09-15.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Turing\\samp35\\hbp-01681_TouchAndSee_Turing_samp35__2012-09-15.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Turing_samp35__2012-09-15.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 223572,
+                "file_size_mb": 0.213,
+                "last_modified": "2026-05-27 13:44:04",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Turing\\samp36\\hbp-01681_TouchAndSee_Turing_samp36__2012-09-15.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Turing\\samp36\\hbp-01681_TouchAndSee_Turing_samp36__2012-09-15.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Turing_samp36__2012-09-15.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 7672473,
+                "file_size_mb": 7.317,
+                "last_modified": "2026-05-27 13:44:04",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Turing\\samp37\\hbp-01681_TouchAndSee_Turing_samp37__2012-09-16.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Turing\\samp37\\hbp-01681_TouchAndSee_Turing_samp37__2012-09-16.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Turing_samp37__2012-09-16.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 7673994,
+                "file_size_mb": 7.318,
+                "last_modified": "2026-05-27 13:44:04",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Turing\\samp38\\hbp-01681_TouchAndSee_Turing_samp38__2012-09-17.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Turing\\samp38\\hbp-01681_TouchAndSee_Turing_samp38__2012-09-17.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Turing_samp38__2012-09-17.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 4396679,
+                "file_size_mb": 4.193,
+                "last_modified": "2026-05-27 13:44:04",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Turing\\samp39\\hbp-01681_TouchAndSee_Turing_samp39__2012-09-18.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Turing\\samp39\\hbp-01681_TouchAndSee_Turing_samp39__2012-09-18.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Turing_samp39__2012-09-18.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 5983513,
+                "file_size_mb": 5.706,
+                "last_modified": "2026-05-27 13:44:04",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Turing\\samp40\\hbp-01681_TouchAndSee_Turing_samp40__2012-09-19.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Turing\\samp40\\hbp-01681_TouchAndSee_Turing_samp40__2012-09-19.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Turing_samp40__2012-09-19.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 3786805,
+                "file_size_mb": 3.611,
+                "last_modified": "2026-05-27 13:44:04",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Turing\\samp41\\hbp-01681_TouchAndSee_Turing_samp41__2012-09-19.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Turing\\samp41\\hbp-01681_TouchAndSee_Turing_samp41__2012-09-19.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Turing_samp41__2012-09-19.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 3462866,
+                "file_size_mb": 3.302,
+                "last_modified": "2026-05-27 13:44:04",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Turing\\samp42\\hbp-01681_TouchAndSee_Turing_samp42__2012-09-20.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Turing\\samp42\\hbp-01681_TouchAndSee_Turing_samp42__2012-09-20.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Turing_samp42__2012-09-20.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 3801138,
+                "file_size_mb": 3.625,
+                "last_modified": "2026-05-27 13:44:04",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Turing\\samp43\\hbp-01681_TouchAndSee_Turing_samp43__2012-09-21.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Turing\\samp43\\hbp-01681_TouchAndSee_Turing_samp43__2012-09-21.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Turing_samp43__2012-09-21.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 5331794,
+                "file_size_mb": 5.085,
+                "last_modified": "2026-05-27 13:44:04",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Turing\\samp44\\hbp-01681_TouchAndSee_Turing_samp44__2012-09-22.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Turing\\samp44\\hbp-01681_TouchAndSee_Turing_samp44__2012-09-22.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Turing_samp44__2012-09-22.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 10045113,
+                "file_size_mb": 9.58,
+                "last_modified": "2026-05-27 13:44:04",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Turing\\samp45\\hbp-01681_TouchAndSee_Turing_samp45__2012-09-25.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Turing\\samp45\\hbp-01681_TouchAndSee_Turing_samp45__2012-09-25.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Turing_samp45__2012-09-25.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 6652021,
+                "file_size_mb": 6.344,
+                "last_modified": "2026-05-27 13:44:04",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\Turing\\samp46\\hbp-01681_TouchAndSee_Turing_samp46__2012-09-26.pkl",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\Turing\\samp46\\hbp-01681_TouchAndSee_Turing_samp46__2012-09-26.pkl",
+                "file_name": "hbp-01681_TouchAndSee_Turing_samp46__2012-09-26.pkl",
+                "file_extension": ".pkl",
+                "file_format_label": "pkl",
+                "file_size_bytes": 3946135,
+                "file_size_mb": 3.763,
+                "last_modified": "2026-05-27 13:44:04",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "neo_io_class": null,
+                "loading_mode": null
+            },
+            "nwb_extraction": null,
+            "pickle_extraction": {
+                "attempted": true,
+                "success": false,
+                "error": "neo.core.analogsignal.AnalogSignal() argument after ** must be a mapping, not NoneType",
+                "object_summary": null
+            },
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\hbp-01681_TouchAndSee__example1.ipynb",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\hbp-01681_TouchAndSee__example1.ipynb",
+                "file_name": "hbp-01681_TouchAndSee__example1.ipynb",
+                "file_extension": ".ipynb",
+                "file_format_label": "ipynb",
+                "file_size_bytes": 1241410,
+                "file_size_mb": 1.184,
+                "last_modified": "2026-05-27 13:44:02",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": null,
+            "nwb_extraction": null,
+            "pickle_extraction": null,
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "TouchAndSee\\hbp-01681_TouchAndSee__neofy_session.py",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\TouchAndSee\\hbp-01681_TouchAndSee__neofy_session.py",
+                "file_name": "hbp-01681_TouchAndSee__neofy_session.py",
+                "file_extension": ".py",
+                "file_format_label": "py",
+                "file_size_bytes": 12856,
+                "file_size_mb": 0.012,
+                "last_modified": "2026-05-27 13:44:02",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": null,
+            "nwb_extraction": null,
+            "pickle_extraction": null,
+            "notes": []
+        },
+        {
+            "file_metadata": {
+                "path": "hbp-01681.json",
+                "absolute_path": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681\\hbp-01681.json",
+                "file_name": "hbp-01681.json",
+                "file_extension": ".json",
+                "file_format_label": "json",
+                "file_size_bytes": 787,
+                "file_size_mb": 0.001,
+                "last_modified": "2026-05-27 13:44:04",
+                "subject_id": null,
+                "rat_id": null,
+                "session_date": null,
+                "session_id": null,
+                "data_label": null,
+                "possible_signal_type": null
+            },
+            "neo_extraction": null,
+            "nwb_extraction": null,
+            "pickle_extraction": null,
+            "notes": []
+        }
+    ],
+    "sessions_metadata": {
+        "sessions_files_found": [],
+        "sessions_tables": [],
+        "subjects_from_sessions": [],
+        "session_ids_from_sessions": [],
+        "n_sessions_from_tables": 0
+    },
+    "bids_metadata": null
+}
