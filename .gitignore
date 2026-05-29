@@ -1,0 +1,12 @@
+# generated extraction outputs
+outputs/extracted_metadata/
+outputs/*.csv
+outputs/*.json
+
+# Python cache / virtual environments
+__pycache__/
+*.pyc
+neo_legacy/
+neo37/
+.env/
+.venv/
