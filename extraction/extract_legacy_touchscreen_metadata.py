@@ -40,7 +40,7 @@ from Io import Io
 
 def make_json_safe(value):
     """
-    Convert common Python / NumPy / pandas values to JSON-safe values.
+    Convert common Python / NumPy / pandas / quantities / Neo values to JSON-safe values.
     """
 
     if value is None:
@@ -52,15 +52,28 @@ def make_json_safe(value):
     if isinstance(value, Path):
         return str(value)
 
-    if isinstance(value, dict):
-        return {str(k): make_json_safe(v) for k, v in value.items()}
+    # quantities.Quantity, e.g. 0.0 s, 1000.0 Hz, arrays with units
+    try:
+        import quantities as pq
 
-    if isinstance(value, list):
-        return [make_json_safe(v) for v in value]
+        if isinstance(value, pq.Quantity):
+            try:
+                if value.size == 1:
+                    return {
+                        "value": float(value.magnitude),
+                        "unit": str(value.units),
+                    }
+                else:
+                    return {
+                        "value": value.magnitude.tolist(),
+                        "unit": str(value.units),
+                    }
+            except Exception:
+                return str(value)
+    except Exception:
+        pass
 
-    if isinstance(value, tuple):
-        return [make_json_safe(v) for v in value]
-
+    # NumPy values
     try:
         import numpy as np
 
@@ -70,19 +83,36 @@ def make_json_safe(value):
         if isinstance(value, np.floating):
             return float(value)
 
+        if isinstance(value, np.bool_):
+            return bool(value)
+
         if isinstance(value, np.ndarray):
             return value.tolist()
 
     except Exception:
         pass
 
+    # pandas missing values
     try:
         if pd.isna(value):
             return None
     except Exception:
         pass
 
-    return str(value)
+    if isinstance(value, dict):
+        return {str(k): make_json_safe(v) for k, v in value.items()}
+
+    if isinstance(value, list):
+        return [make_json_safe(v) for v in value]
+
+    if isinstance(value, tuple):
+        return [make_json_safe(v) for v in value]
+
+    # Neo objects or other complex objects
+    try:
+        return str(value)
+    except Exception:
+        return None
 
 
 def dataframe_summary(df):
