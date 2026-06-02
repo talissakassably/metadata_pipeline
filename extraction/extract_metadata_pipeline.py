@@ -9,8 +9,8 @@ Aim:
 The pipeline:
     - finds data files
     - extracts file-level metadata
-    - attempts Neo extraction for electrophysiology files
     - extracts NWB-specific metadata for .nwb files
+    - attempts Neo extraction for electrophysiology files
     - extracts BIDS metadata when --bids is used
     - attempts pickle extraction for .pkl files
     - extracts sessions_df metadata
@@ -18,10 +18,9 @@ The pipeline:
     - saves full JSON output
 
 Important:
-    For NWB datasets, subject/session metadata may be inside the NWB file,
-    not in the filename. Therefore, dataset_summary uses both:
-        file_metadata
-        nwb_extraction
+    For NWB datasets, PyNWB is the preferred extractor.
+    Neo extraction on NWB is skipped by default because it can fail even when
+    PyNWB succeeds.
 """
 
 import os
@@ -49,13 +48,14 @@ from extract_pickle_metadata import extract_pickle_metadata
 from extract_sessions_metadata import extract_sessions_metadata
 
 
-def extract_metadata_from_file(file_path, root_dir):
+def extract_metadata_from_file(file_path, root_dir, try_neo_on_nwb=False):
     """
     Extract metadata from one file.
 
     input:
         file_path: str
         root_dir: str
+        try_neo_on_nwb: bool
 
     output:
         metadata: dict
@@ -72,8 +72,22 @@ def extract_metadata_from_file(file_path, root_dir):
         "notes": [],
     }
 
+    # ---------------------------------------------------------
+    # NWB extraction first, because PyNWB is the preferred NWB reader.
+    # ---------------------------------------------------------
+    if extension == ".nwb":
+        metadata["nwb_extraction"] = extract_nwb_metadata(file_path)
+
+        if not try_neo_on_nwb:
+            metadata["notes"].append(
+                "Neo extraction skipped for NWB file. PyNWB is the preferred NWB extractor. "
+                "Use --try_neo_on_nwb to attempt Neo extraction as well."
+            )
+
+    # ---------------------------------------------------------
+    # Neo extraction for non-NWB electrophysiology formats.
+    # ---------------------------------------------------------
     neo_attempt_extensions = [
-        ".nwb",
         ".abf",
         ".smr",
         ".plx",
@@ -85,21 +99,34 @@ def extract_metadata_from_file(file_path, root_dir):
         ".mat",
         ".pkl",
         ".nio",
+        ".dat",
     ]
 
     if extension in neo_attempt_extensions:
         metadata["neo_extraction"] = extract_neo_metadata(file_path)
 
-    if extension == ".nwb":
-        metadata["nwb_extraction"] = extract_nwb_metadata(file_path)
+    if extension == ".nwb" and try_neo_on_nwb:
+        metadata["neo_extraction"] = extract_neo_metadata(file_path)
 
+    # ---------------------------------------------------------
+    # Pickle fallback
+    # ---------------------------------------------------------
     if extension == ".pkl":
         metadata["pickle_extraction"] = extract_pickle_metadata(file_path)
 
+    # ---------------------------------------------------------
+    # Format-specific notes
+    # ---------------------------------------------------------
     if extension == ".nio":
         metadata["notes"].append(
-            ".nio is not recognized as a standard Neo IO format by the current environment. "
-            "File-level metadata and Neo extraction attempt are recorded."
+            ".nio is not recognized as a standard Neo IO format by many modern Neo environments. "
+            "If this is a legacy Neo/NIX dataset, use the dataset-specific legacy extractor."
+        )
+
+    if extension == ".dat":
+        metadata["notes"].append(
+            ".dat is an ambiguous raw/binary extension. Internal metadata usually requires sidecar files "
+            "describing sampling rate, dtype, channel count, and channel map."
         )
 
     return make_json_safe(metadata)
@@ -152,7 +179,7 @@ def get_session_date_from_file_or_nwb(file_entry):
         session_start_time = nwb_extraction.get("session_start_time")
 
         if session_start_time is not None:
-            session_date = session_start_time.split(" ")[0]
+            session_date = str(session_start_time).split(" ")[0]
 
     return session_date
 
@@ -160,14 +187,6 @@ def get_session_date_from_file_or_nwb(file_entry):
 def create_dataset_summary(dataset_metadata):
     """
     Create dataset-level summary from extracted metadata.
-
-    This function uses:
-        - file_metadata
-        - neo_extraction
-        - nwb_extraction
-
-    For NWB files, the important subject/session metadata usually comes
-    from nwb_extraction rather than the filename.
     """
 
     subjects = []
@@ -191,6 +210,7 @@ def create_dataset_summary(dataset_metadata):
     n_electrodes_values = []
     n_units_values = []
     n_trials_values = []
+    n_spikes_values = []
 
     neo_success = 0
     neo_failure = 0
@@ -262,6 +282,7 @@ def create_dataset_summary(dataset_metadata):
                 n_electrodes_values.append(nwb_extraction.get("n_electrodes"))
                 n_units_values.append(nwb_extraction.get("n_units"))
                 n_trials_values.append(nwb_extraction.get("n_trials"))
+                n_spikes_values.append(nwb_extraction.get("n_spikes_total"))
 
             else:
                 nwb_failure += 1
@@ -278,6 +299,11 @@ def create_dataset_summary(dataset_metadata):
 
     clean_n_trials_values = [
         value for value in n_trials_values
+        if isinstance(value, (int, float))
+    ]
+
+    clean_n_spikes_values = [
+        value for value in n_spikes_values
         if isinstance(value, (int, float))
     ]
 
@@ -325,12 +351,20 @@ def create_dataset_summary(dataset_metadata):
 
         "nwb_min_trials_per_file": min(clean_n_trials_values) if clean_n_trials_values else None,
         "nwb_max_trials_per_file": max(clean_n_trials_values) if clean_n_trials_values else None,
+
+        "nwb_total_spikes_across_files": sum(clean_n_spikes_values) if clean_n_spikes_values else None,
     }
 
     return make_json_safe(summary)
 
 
-def extract_metadata_pipeline(folder, extensions=None, bids=False, output_folder=None):
+def extract_metadata_pipeline(
+    folder,
+    extensions=None,
+    bids=False,
+    output_folder=None,
+    try_neo_on_nwb=False,
+):
     """
     Run full automatic metadata extraction.
 
@@ -339,6 +373,7 @@ def extract_metadata_pipeline(folder, extensions=None, bids=False, output_folder
         extensions: list of file extensions
         bids: bool
         output_folder: output folder
+        try_neo_on_nwb: bool
 
     output:
         dataset_metadata: dict
@@ -358,6 +393,10 @@ def extract_metadata_pipeline(folder, extensions=None, bids=False, output_folder
             ".mat",
             ".pkl",
             ".nio",
+            ".dat",
+            ".json",
+            ".tsv",
+            ".csv",
         ]
 
     extensions = [ext.lower() for ext in extensions]
@@ -378,6 +417,7 @@ def extract_metadata_pipeline(folder, extensions=None, bids=False, output_folder
         "dataset_folder": os.path.abspath(folder),
         "date_extraction": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "extensions_searched": extensions,
+        "try_neo_on_nwb": try_neo_on_nwb,
         "dataset_summary": None,
         "files": [],
         "sessions_metadata": None,
@@ -390,7 +430,11 @@ def extract_metadata_pipeline(folder, extensions=None, bids=False, output_folder
 
     for file_path in file_list:
         print("Extracting metadata from:", os.path.basename(file_path))
-        file_metadata = extract_metadata_from_file(file_path, folder)
+        file_metadata = extract_metadata_from_file(
+            file_path=file_path,
+            root_dir=folder,
+            try_neo_on_nwb=try_neo_on_nwb,
+        )
         dataset_metadata["files"].append(file_metadata)
 
     print("Extracting sessions metadata")
@@ -431,7 +475,7 @@ if __name__ == "__main__":
         "--extensions",
         nargs="*",
         default=[],
-        help="File extensions to search, for example .pkl .nio .nwb"
+        help="File extensions to search, for example .pkl .nio .nwb .dat"
     )
 
     parser.add_argument(
@@ -446,6 +490,12 @@ if __name__ == "__main__":
         help="Folder where output JSON file will be saved"
     )
 
+    parser.add_argument(
+        "--try_neo_on_nwb",
+        action="store_true",
+        help="Also try Neo extraction on NWB files. By default, NWB uses PyNWB only."
+    )
+
     args = parser.parse_args()
 
     extract_metadata_pipeline(
@@ -453,4 +503,5 @@ if __name__ == "__main__":
         extensions=args.extensions,
         bids=args.bids,
         output_folder=args.output_folder,
+        try_neo_on_nwb=args.try_neo_on_nwb,
     )

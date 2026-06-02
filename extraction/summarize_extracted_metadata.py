@@ -1,29 +1,55 @@
 # -*- coding: utf-8 -*-
 
 """
-Summarize extracted metadata JSON into a CSV table.
+Summarize extracted metadata JSON into one CSV table.
 
-Aim:
-    Convert the full extracted_metadata.json output into a readable table.
+This is for the regular extraction pipeline.
 
-This version includes:
+The output contains:
     - file metadata
-    - Neo metadata
-    - NWB metadata
-    - pickle metadata
-    - subject/session metadata from NWB when available
-
-Usage:
-    py extraction\\summarize_extracted_metadata.py path\\to\\extracted_metadata.json
-
-Output:
-    metadata_summary.csv
+    - subject/session metadata
+    - Neo internal electrophysiology metadata
+    - NWB internal electrophysiology metadata
+    - readability/error status
 """
 
 import os
 import json
 import argparse
 import pandas as pd
+
+
+def list_to_string(value):
+    """
+    Convert list values to readable CSV strings.
+    """
+
+    if value is None:
+        return None
+
+    if isinstance(value, list):
+        return " | ".join([str(item) for item in value])
+
+    return value
+
+
+def dict_to_string(value):
+    """
+    Convert dict values to readable compact strings.
+    """
+
+    if value is None:
+        return None
+
+    if not isinstance(value, dict):
+        return str(value)
+
+    parts = []
+
+    for key, item in value.items():
+        parts.append(f"{key}: {item}")
+
+    return " | ".join(parts)
 
 
 def get_subject_from_file_or_nwb(file_metadata, nwb_extraction):
@@ -64,23 +90,20 @@ def get_session_date_from_file_or_nwb(file_metadata, nwb_extraction):
         session_start_time = nwb_extraction.get("session_start_time")
 
         if session_start_time is not None:
-            session_date = session_start_time.split(" ")[0]
+            session_date = str(session_start_time).split(" ")[0]
 
     return session_date
 
 
-def list_to_string(value):
+def choose_internal_value(neo_value, nwb_value):
     """
-    Convert list values to readable CSV strings.
+    Prefer NWB value when available, otherwise Neo value.
     """
 
-    if value is None:
-        return None
+    if nwb_value is not None:
+        return nwb_value
 
-    if isinstance(value, list):
-        return " | ".join([str(item) for item in value])
-
-    return value
+    return neo_value
 
 
 def summarize_metadata(json_path, output_csv=None):
@@ -128,7 +151,7 @@ def summarize_metadata(json_path, output_csv=None):
             "last_modified": file_metadata.get("last_modified"),
 
             # ---------------------------------------------------------
-            # Subject/session metadata, combining filename + NWB
+            # Subject/session metadata
             # ---------------------------------------------------------
             "subject_id": get_subject_from_file_or_nwb(file_metadata, nwb_extraction),
             "session_id": get_session_from_file_or_nwb(file_metadata, nwb_extraction),
@@ -145,29 +168,70 @@ def summarize_metadata(json_path, output_csv=None):
             "possible_signal_type": file_metadata.get("possible_signal_type"),
 
             # ---------------------------------------------------------
-            # Neo extraction
+            # Extraction status
             # ---------------------------------------------------------
             "neo_attempted": neo_extraction.get("attempted"),
             "neo_success": neo_extraction.get("success"),
             "neo_error": neo_extraction.get("error"),
             "neo_io_class": neo_extraction.get("neo_io_class"),
             "neo_loading_mode": neo_extraction.get("loading_mode"),
-            "neo_n_segments": neo_extraction.get("n_segments"),
-            "neo_n_analogsignals": neo_extraction.get("n_analogsignals"),
-            "neo_n_spiketrains": neo_extraction.get("n_spiketrains"),
-            "neo_n_events": neo_extraction.get("n_events"),
-            "neo_n_epochs": neo_extraction.get("n_epochs"),
-            "neo_sampling_rates_hz": list_to_string(neo_extraction.get("sampling_rates_hz")),
-            "neo_units": list_to_string(neo_extraction.get("units")),
-            "neo_durations_s": list_to_string(neo_extraction.get("durations_s")),
 
-            # ---------------------------------------------------------
-            # NWB extraction
-            # ---------------------------------------------------------
             "nwb_attempted": nwb_extraction.get("attempted"),
             "nwb_success": nwb_extraction.get("success"),
             "nwb_error": nwb_extraction.get("error"),
 
+            "pickle_attempted": pickle_extraction.get("attempted"),
+            "pickle_success": pickle_extraction.get("success"),
+            "pickle_error": pickle_extraction.get("error"),
+
+            # ---------------------------------------------------------
+            # Unified internal electrophysiology metadata
+            # ---------------------------------------------------------
+            "n_segments": neo_extraction.get("n_segments"),
+
+            "n_analogsignals": neo_extraction.get("n_analogsignals"),
+            "n_spiketrains": neo_extraction.get("n_spiketrains"),
+            "n_events": neo_extraction.get("n_events"),
+            "n_epochs": neo_extraction.get("n_epochs"),
+
+            "n_units": choose_internal_value(
+                neo_extraction.get("n_spiketrains"),
+                nwb_extraction.get("n_units"),
+            ),
+
+            "n_spikes_total": choose_internal_value(
+                neo_extraction.get("n_spikes_total"),
+                nwb_extraction.get("n_spikes_total"),
+            ),
+
+            "min_spikes_per_unit": choose_internal_value(
+                neo_extraction.get("min_spikes_per_spiketrain"),
+                nwb_extraction.get("min_spikes_per_unit"),
+            ),
+
+            "max_spikes_per_unit": choose_internal_value(
+                neo_extraction.get("max_spikes_per_spiketrain"),
+                nwb_extraction.get("max_spikes_per_unit"),
+            ),
+
+            "mean_spikes_per_unit": choose_internal_value(
+                neo_extraction.get("mean_spikes_per_spiketrain"),
+                nwb_extraction.get("mean_spikes_per_unit"),
+            ),
+
+            "event_names": list_to_string(neo_extraction.get("event_names")),
+            "epoch_names": list_to_string(neo_extraction.get("epoch_names")),
+
+            "sampling_rates_hz": list_to_string(neo_extraction.get("sampling_rates_hz")),
+            "signal_units": list_to_string(neo_extraction.get("units")),
+            "signal_durations_s": list_to_string(neo_extraction.get("durations_s")),
+            "signal_names": list_to_string(neo_extraction.get("signal_names")),
+            "signal_shapes": list_to_string(neo_extraction.get("signal_shapes")),
+            "n_channels_per_segment": list_to_string(neo_extraction.get("n_channels_per_segment")),
+
+            # ---------------------------------------------------------
+            # NWB metadata
+            # ---------------------------------------------------------
             "nwb_identifier": nwb_extraction.get("identifier"),
             "nwb_session_description": nwb_extraction.get("session_description"),
             "nwb_session_start_time": nwb_extraction.get("session_start_time"),
@@ -200,21 +264,36 @@ def summarize_metadata(json_path, output_csv=None):
             "nwb_n_electrodes": nwb_extraction.get("n_electrodes"),
             "nwb_electrode_columns": list_to_string(nwb_extraction.get("electrode_columns")),
             "nwb_electrode_locations": list_to_string(nwb_extraction.get("electrode_locations")),
+            "nwb_electrode_location_counts": dict_to_string(nwb_extraction.get("electrode_location_counts")),
             "nwb_electrode_group_names": list_to_string(nwb_extraction.get("electrode_group_names")),
+            "nwb_electrode_group_counts": dict_to_string(nwb_extraction.get("electrode_group_counts")),
 
-            "nwb_n_units": nwb_extraction.get("n_units"),
             "nwb_unit_columns": list_to_string(nwb_extraction.get("unit_columns")),
+            "nwb_unit_quality_columns": list_to_string(nwb_extraction.get("unit_quality_columns")),
+            "nwb_unit_sampling_rates": list_to_string(nwb_extraction.get("unit_sampling_rates")),
+            "nwb_cluster_quality_values": list_to_string(nwb_extraction.get("cluster_quality_values")),
+            "nwb_cluster_quality_counts": dict_to_string(nwb_extraction.get("cluster_quality_counts")),
+            "nwb_numeric_unit_summaries": dict_to_string(nwb_extraction.get("numeric_unit_summaries")),
 
             "nwb_n_trials": nwb_extraction.get("n_trials"),
             "nwb_trial_columns": list_to_string(nwb_extraction.get("trial_columns")),
+            "nwb_trial_value_summaries": dict_to_string(nwb_extraction.get("trial_value_summaries")),
+
             "nwb_intervals": list_to_string(nwb_extraction.get("intervals")),
+            "nwb_interval_summaries": list_to_string(nwb_extraction.get("interval_summaries")),
 
             # ---------------------------------------------------------
-            # Pickle extraction
+            # Completeness flags
             # ---------------------------------------------------------
-            "pickle_attempted": pickle_extraction.get("attempted"),
-            "pickle_success": pickle_extraction.get("success"),
-            "pickle_error": pickle_extraction.get("error"),
+            "has_subject_metadata": nwb_extraction.get("has_subject_metadata"),
+            "has_electrode_metadata": nwb_extraction.get("has_electrode_metadata"),
+            "has_unit_metadata": nwb_extraction.get("has_unit_metadata"),
+            "has_spike_metadata": choose_internal_value(
+                neo_extraction.get("has_spike_metadata"),
+                nwb_extraction.get("has_spike_metadata"),
+            ),
+            "has_trial_metadata": nwb_extraction.get("has_trial_metadata"),
+            "has_interval_metadata": nwb_extraction.get("has_interval_metadata"),
 
             # ---------------------------------------------------------
             # Notes

@@ -5,12 +5,6 @@ Extract file-level metadata.
 
 This extractor always works, even when Neo/NWB/pickle extraction fails.
 
-Supported filename/path patterns:
-    neo_rat-14_190130.pkl
-    neo_rat-14_190202_lfps.nio
-
-    hbp-01681_TouchAndSee_Ramachandran_samp20__2012-08-09.pkl
-    TouchAndSee/Ramachandran/samp20/hbp-01681_TouchAndSee_Ramachandran_samp20__2012-08-09.pkl
 """
 
 import os
