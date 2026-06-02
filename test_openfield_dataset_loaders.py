@@ -4,12 +4,18 @@ import sys
 import traceback
 from pathlib import Path
 
+import numpy as np
+
+# Compatibility patch for old dataset scripts with NumPy 2.x
+if not hasattr(np, "string_"):
+    np.string_ = np.bytes_
+
 DATASET_ROOT = Path(
     r"C:\Users\tkassably\Downloads\d-40faae41-7e72-4c3c-9abf-91dea149158d"
 )
 
-# Add dataset root to Python path so imports like "from scripts import axona" work.
 sys.path.insert(0, str(DATASET_ROOT))
+
 
 from scripts import axona
 from scripts import neuralynx
