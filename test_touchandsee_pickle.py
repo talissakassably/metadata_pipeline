@@ -1,12 +1,67 @@
 # -*- coding: utf-8 -*-
 
 import pickle
-from pathlib import Path
 import traceback
+import inspect
+from pathlib import Path
+
 
 DATASET = Path(
     r"C:\Users\tkassably\Downloads\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681"
 )
+
+
+def patch_old_neo_pickle_compatibility():
+    """
+    Compatibility patch for old Neo pickles.
+
+    Some old Neo pickles store annotations=None.
+    Newer Neo reconstruction functions expect annotations to be a dict.
+    """
+
+    try:
+        import neo.core.analogsignal as analogsignal
+
+        for function_name in [
+            "_new_AnalogSignalArray",
+            "_new_AnalogSignal",
+        ]:
+            if not hasattr(analogsignal, function_name):
+                continue
+
+            original_function = getattr(analogsignal, function_name)
+            signature = inspect.signature(original_function)
+
+            def make_patched_function(original_function, signature):
+                def patched_function(*args, **kwargs):
+                    bound = signature.bind_partial(*args, **kwargs)
+
+                    if "annotations" in signature.parameters:
+                        if bound.arguments.get("annotations") is None:
+                            bound.arguments["annotations"] = {}
+
+                    if "array_annotations" in signature.parameters:
+                        if bound.arguments.get("array_annotations") is None:
+                            bound.arguments["array_annotations"] = {}
+
+                    return original_function(*bound.args, **bound.kwargs)
+
+                return patched_function
+
+            setattr(
+                analogsignal,
+                function_name,
+                make_patched_function(original_function, signature),
+            )
+
+        print("Applied old Neo pickle compatibility patch")
+
+    except Exception as error:
+        print("Could not apply Neo compatibility patch:")
+        print(repr(error))
+
+
+patch_old_neo_pickle_compatibility()
 
 files = sorted(DATASET.rglob("*.pkl"))
 
@@ -58,7 +113,10 @@ try:
             ev = seg.events[0]
             print("First event name:", getattr(ev, "name", None))
             print("First event length:", len(ev))
-            print("First event labels preview:", list(ev.labels[:10]) if hasattr(ev, "labels") else None)
+            print(
+                "First event labels preview:",
+                list(ev.labels[:10]) if hasattr(ev, "labels") else None,
+            )
 
     if hasattr(obj, "list_units"):
         print("Block list_units:", len(obj.list_units))
