@@ -14,6 +14,16 @@ This dataset contains:
 
 This extractor works at SESSION-FOLDER level:
     data/<subject_id>/<session_date>/
+
+Important terminology:
+    raw_spike_events_total:
+        Raw spike events from Neuralynx .ntt files or Axona spike files.
+
+    sorted_units_mclust:
+        Sorted units found in MClust .t/.t32/.t64 files.
+
+    sorted_unit_spikes_total_mclust:
+        Total spikes assigned to sorted MClust units.
 """
 
 import os
@@ -56,7 +66,7 @@ def make_json_safe(value):
     if isinstance(value, Path):
         return str(value)
 
-    if isinstance(value, (datetime,)):
+    if isinstance(value, datetime):
         return str(value)
 
     try:
@@ -86,37 +96,6 @@ def make_json_safe(value):
         return None
 
 
-def summarize_numeric_list(values):
-    """
-    Summarize a numeric list.
-    """
-
-    clean = []
-
-    for value in values:
-        try:
-            clean.append(float(value))
-        except Exception:
-            pass
-
-    if len(clean) == 0:
-        return {
-            "min": None,
-            "max": None,
-            "mean": None,
-            "sum": None,
-            "n": 0,
-        }
-
-    return {
-        "min": float(min(clean)),
-        "max": float(max(clean)),
-        "mean": float(sum(clean) / len(clean)),
-        "sum": float(sum(clean)),
-        "n": int(len(clean)),
-    }
-
-
 def count_files(session_folder):
     """
     Count known file types in one session folder.
@@ -139,6 +118,7 @@ def count_files(session_folder):
         "n_fd_files": 0,
         "n_clusters_files": 0,
         "n_csv_files": 0,
+        "n_jpg_files": 0,
     }
 
     extensions = {}
@@ -180,6 +160,8 @@ def count_files(session_folder):
             file_counts["n_clusters_files"] += 1
         elif suffix == ".csv":
             file_counts["n_csv_files"] += 1
+        elif suffix in [".jpg", ".jpeg"]:
+            file_counts["n_jpg_files"] += 1
         elif suffix.startswith(".") and suffix[1:].isdigit():
             file_counts["n_axona_spike_files"] += 1
 
@@ -280,8 +262,8 @@ def extract_neuralynx_metadata(session_folder, neuralynx):
         "tetrode_list": [],
 
         "n_spike_tetrodes": None,
-        "n_spike_events_total": None,
-        "spike_events_per_tetrode": {},
+        "raw_spike_events_total": None,
+        "raw_spike_events_per_tetrode": {},
 
         "n_lfp_channels": None,
         "lfp_records_per_channel": {},
@@ -306,7 +288,6 @@ def extract_neuralynx_metadata(session_folder, neuralynx):
         output["recording_duration_s"] = make_json_safe(recording.recording_duration)
         output["tetrode_list"] = make_json_safe(recording.tetrode_list)
 
-        # Spikes
         try:
             spikes = recording.spikes
 
@@ -318,13 +299,12 @@ def extract_neuralynx_metadata(session_folder, neuralynx):
                 for tetrode_id, tetrode_data in spikes.items():
                     spike_counts[str(tetrode_id)] = len(tetrode_data.get("data", []))
 
-                output["spike_events_per_tetrode"] = spike_counts
-                output["n_spike_events_total"] = int(sum(spike_counts.values()))
+                output["raw_spike_events_per_tetrode"] = spike_counts
+                output["raw_spike_events_total"] = int(sum(spike_counts.values()))
 
         except Exception as error:
             output["spikes_error"] = repr(error)
 
-        # LFP / EEG from .ncs
         try:
             eeg = recording.eeg
 
@@ -340,7 +320,6 @@ def extract_neuralynx_metadata(session_folder, neuralynx):
 
                     lfp_counts[str(channel_id)] = len(records)
 
-                    # Sample frequency may be available in data records or header.
                     try:
                         if len(records) > 0:
                             first_record = records[0]
@@ -361,7 +340,6 @@ def extract_neuralynx_metadata(session_folder, neuralynx):
         except Exception as error:
             output["lfp_error"] = repr(error)
 
-        # Position can fail because of old dtype/overflow issues. Keep error, do not crash.
         output["position_attempted"] = True
         try:
             position = recording.position
@@ -371,7 +349,6 @@ def extract_neuralynx_metadata(session_folder, neuralynx):
             output["position_success"] = False
             output["position_error"] = repr(error)
 
-        # Events may not exist in every folder.
         output["events_attempted"] = True
         try:
             events = recording.events
@@ -407,8 +384,8 @@ def extract_axona_metadata(session_folder, axona):
         "tetrode_list": [],
 
         "n_spike_channels": None,
-        "n_spikes_total": None,
-        "spikes_per_channel": {},
+        "raw_spike_events_total": None,
+        "raw_spike_events_per_channel": {},
         "n_channels_per_spike_file": {},
 
         "position_success": False,
@@ -437,7 +414,6 @@ def extract_axona_metadata(session_folder, axona):
         output["recording_duration_s"] = make_json_safe(recording.recording_duration)
         output["tetrode_list"] = make_json_safe(recording.tetrode_list)
 
-        # Spikes
         try:
             spikes = recording.spikes
 
@@ -450,14 +426,13 @@ def extract_axona_metadata(session_folder, axona):
                 spikes_per_channel[str(channel_id)] = int(spike_data.n_spikes)
                 n_channels_per_spike_file[str(channel_id)] = int(spike_data.n_channels)
 
-            output["spikes_per_channel"] = spikes_per_channel
+            output["raw_spike_events_per_channel"] = spikes_per_channel
             output["n_channels_per_spike_file"] = n_channels_per_spike_file
-            output["n_spikes_total"] = int(sum(spikes_per_channel.values()))
+            output["raw_spike_events_total"] = int(sum(spikes_per_channel.values()))
 
         except Exception as error:
             output["spikes_error"] = repr(error)
 
-        # Position
         try:
             position = recording.position
 
@@ -471,7 +446,6 @@ def extract_axona_metadata(session_folder, axona):
             output["position_success"] = False
             output["position_error"] = repr(error)
 
-        # EEG
         try:
             eeg = recording.eeg
 
@@ -511,8 +485,8 @@ def extract_mclust_metadata(session_folder, mclust):
         "error": None,
 
         "n_tetrodes_with_units": None,
-        "n_units": None,
-        "n_spikes_total": None,
+        "sorted_units_mclust": None,
+        "sorted_unit_spikes_total_mclust": None,
         "units_per_tetrode": {},
         "spikes_per_unit": {},
         "unit_header_keys": [],
@@ -524,8 +498,8 @@ def extract_mclust_metadata(session_folder, mclust):
         if not cuts:
             output["success"] = True
             output["n_tetrodes_with_units"] = 0
-            output["n_units"] = 0
-            output["n_spikes_total"] = 0
+            output["sorted_units_mclust"] = 0
+            output["sorted_unit_spikes_total_mclust"] = 0
             return output
 
         output["n_tetrodes_with_units"] = len(cuts)
@@ -555,8 +529,8 @@ def extract_mclust_metadata(session_folder, mclust):
 
         output["units_per_tetrode"] = units_per_tetrode
         output["spikes_per_unit"] = spikes_per_unit
-        output["n_units"] = int(total_units)
-        output["n_spikes_total"] = int(total_spikes)
+        output["sorted_units_mclust"] = int(total_units)
+        output["sorted_unit_spikes_total_mclust"] = int(total_spikes)
         output["unit_header_keys"] = sorted(list(header_keys))
 
         output["success"] = True
@@ -664,7 +638,6 @@ def extract_one_session(session_folder, dataset_path, scripts):
             axona,
         )
 
-    # MClust can exist for Neuralynx sessions.
     if (
         file_counts["n_t_files"] > 0
         or file_counts["n_t32_files"] > 0
@@ -675,7 +648,6 @@ def extract_one_session(session_folder, dataset_path, scripts):
             mclust,
         )
 
-    # OptiTrack CSV can exist independently.
     if file_counts["n_csv_files"] > 0:
         session_metadata["optitrack_metadata"] = extract_optitrack_metadata(
             session_folder,
@@ -687,23 +659,26 @@ def extract_one_session(session_folder, dataset_path, scripts):
     mclust_metadata = session_metadata.get("mclust_metadata") or {}
     optitrack_metadata = session_metadata.get("optitrack_metadata") or {}
 
-    n_spikes_total_candidates = [
-        neuralynx_metadata.get("n_spike_events_total"),
-        axona_metadata.get("n_spikes_total"),
-        mclust_metadata.get("n_spikes_total"),
-    ]
+    raw_spike_events_total = (
+        neuralynx_metadata.get("raw_spike_events_total")
+        or axona_metadata.get("raw_spike_events_total")
+    )
 
-    n_spikes_total = None
+    sorted_units_mclust = mclust_metadata.get("sorted_units_mclust")
+    sorted_unit_spikes_total_mclust = mclust_metadata.get("sorted_unit_spikes_total_mclust")
 
-    for value in n_spikes_total_candidates:
-        if isinstance(value, int):
-            n_spikes_total = value
-            break
-
-    n_units = mclust_metadata.get("n_units")
-
-    if n_units is None:
-        n_units = axona_metadata.get("n_spike_channels")
+    if sorted_units_mclust is not None:
+        n_units_best_available = sorted_units_mclust
+        n_units_source = "MClust sorted units"
+    elif axona_metadata.get("n_spike_channels") is not None:
+        n_units_best_available = axona_metadata.get("n_spike_channels")
+        n_units_source = "Axona spike channels, not sorted units"
+    elif neuralynx_metadata.get("n_spike_tetrodes") is not None:
+        n_units_best_available = neuralynx_metadata.get("n_spike_tetrodes")
+        n_units_source = "Neuralynx spike tetrodes, not sorted units"
+    else:
+        n_units_best_available = None
+        n_units_source = None
 
     n_lfp_channels = neuralynx_metadata.get("n_lfp_channels")
 
@@ -721,24 +696,40 @@ def extract_one_session(session_folder, dataset_path, scripts):
         or axona_metadata.get("recording_duration_s")
     )
 
+    position_success = (
+        neuralynx_metadata.get("position_success") is True
+        or axona_metadata.get("position_success") is True
+    )
+
+    optitrack_success = (
+        optitrack_metadata.get("success") is True
+        and optitrack_metadata.get("n_csv_files", 0) > 0
+    )
+
     session_metadata["summary"] = {
         "recording_time": recording_time,
         "recording_duration_s": recording_duration_s,
 
-        "n_units": n_units,
-        "n_spikes_total": n_spikes_total,
+        "raw_spike_events_total": raw_spike_events_total,
+        "sorted_units_mclust": sorted_units_mclust,
+        "sorted_unit_spikes_total_mclust": sorted_unit_spikes_total_mclust,
+
+        "n_units_best_available": n_units_best_available,
+        "n_units_source": n_units_source,
+
         "n_lfp_channels": n_lfp_channels,
 
-        "has_spike_metadata": n_spikes_total is not None,
-        "has_unit_metadata": n_units is not None,
+        "has_raw_spike_metadata": raw_spike_events_total is not None,
+        "has_sorted_unit_metadata": sorted_units_mclust is not None,
         "has_lfp_metadata": n_lfp_channels is not None,
-        "has_position_metadata": (
-            neuralynx_metadata.get("position_success") is True
-            or axona_metadata.get("position_success") is True
-            or optitrack_metadata.get("success") is True and optitrack_metadata.get("n_timestamps") is not None
+        "has_position_metadata": position_success or optitrack_success,
+        "has_axona_position_metadata": axona_metadata.get("position_success") is True,
+        "has_neuralynx_position_metadata": neuralynx_metadata.get("position_success") is True,
+        "has_optitrack_metadata": optitrack_success,
+        "has_mclust_metadata": (
+            mclust_metadata.get("success") is True
+            and mclust_metadata.get("sorted_units_mclust", 0) > 0
         ),
-        "has_optitrack_metadata": optitrack_metadata.get("success") is True and optitrack_metadata.get("n_csv_files", 0) > 0,
-        "has_mclust_metadata": mclust_metadata.get("success") is True and mclust_metadata.get("n_units", 0) > 0,
     }
 
     return make_json_safe(session_metadata)
@@ -754,21 +745,25 @@ def build_dataset_summary(dataset_metadata):
     subject_ids = sorted(list(set([session["subject_id"] for session in sessions])))
     recording_systems = sorted(list(set([session["recording_system"] for session in sessions])))
 
-    n_spikes_values = []
-    n_units_values = []
-    n_lfp_values = []
+    raw_spike_values = []
+    sorted_unit_values = []
+    sorted_spike_values = []
+    lfp_values = []
 
     for session in sessions:
         summary = session.get("summary") or {}
 
-        if isinstance(summary.get("n_spikes_total"), int):
-            n_spikes_values.append(summary.get("n_spikes_total"))
+        if isinstance(summary.get("raw_spike_events_total"), int):
+            raw_spike_values.append(summary.get("raw_spike_events_total"))
 
-        if isinstance(summary.get("n_units"), int):
-            n_units_values.append(summary.get("n_units"))
+        if isinstance(summary.get("sorted_units_mclust"), int):
+            sorted_unit_values.append(summary.get("sorted_units_mclust"))
+
+        if isinstance(summary.get("sorted_unit_spikes_total_mclust"), int):
+            sorted_spike_values.append(summary.get("sorted_unit_spikes_total_mclust"))
 
         if isinstance(summary.get("n_lfp_channels"), int):
-            n_lfp_values.append(summary.get("n_lfp_channels"))
+            lfp_values.append(summary.get("n_lfp_channels"))
 
     return make_json_safe({
         "n_sessions": len(sessions),
@@ -780,16 +775,33 @@ def build_dataset_summary(dataset_metadata):
         "n_axona_sessions": sum(1 for s in sessions if s["recording_system"] == "Axona"),
         "n_unknown_sessions": sum(1 for s in sessions if s["recording_system"] == "unknown"),
 
-        "total_spikes_across_sessions": int(sum(n_spikes_values)) if n_spikes_values else None,
-        "min_spikes_per_session": int(min(n_spikes_values)) if n_spikes_values else None,
-        "max_spikes_per_session": int(max(n_spikes_values)) if n_spikes_values else None,
+        "total_raw_spike_events_across_sessions": int(sum(raw_spike_values)) if raw_spike_values else None,
+        "min_raw_spike_events_per_session": int(min(raw_spike_values)) if raw_spike_values else None,
+        "max_raw_spike_events_per_session": int(max(raw_spike_values)) if raw_spike_values else None,
 
-        "total_units_across_sessions": int(sum(n_units_values)) if n_units_values else None,
-        "min_units_per_session": int(min(n_units_values)) if n_units_values else None,
-        "max_units_per_session": int(max(n_units_values)) if n_units_values else None,
+        "total_sorted_units_mclust_across_sessions": int(sum(sorted_unit_values)) if sorted_unit_values else None,
+        "min_sorted_units_mclust_per_session": int(min(sorted_unit_values)) if sorted_unit_values else None,
+        "max_sorted_units_mclust_per_session": int(max(sorted_unit_values)) if sorted_unit_values else None,
 
-        "min_lfp_channels_per_session": int(min(n_lfp_values)) if n_lfp_values else None,
-        "max_lfp_channels_per_session": int(max(n_lfp_values)) if n_lfp_values else None,
+        "total_sorted_unit_spikes_mclust_across_sessions": int(sum(sorted_spike_values)) if sorted_spike_values else None,
+
+        "min_lfp_channels_per_session": int(min(lfp_values)) if lfp_values else None,
+        "max_lfp_channels_per_session": int(max(lfp_values)) if lfp_values else None,
+
+        "n_sessions_with_position_metadata": sum(
+            1 for s in sessions
+            if (s.get("summary") or {}).get("has_position_metadata") is True
+        ),
+
+        "n_sessions_with_optitrack_metadata": sum(
+            1 for s in sessions
+            if (s.get("summary") or {}).get("has_optitrack_metadata") is True
+        ),
+
+        "n_sessions_with_mclust_metadata": sum(
+            1 for s in sessions
+            if (s.get("summary") or {}).get("has_mclust_metadata") is True
+        ),
     })
 
 
