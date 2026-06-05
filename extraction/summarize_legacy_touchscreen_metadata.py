@@ -1,362 +1,717 @@
 # -*- coding: utf-8 -*-
 
 """
-Summarize legacy touchscreen metadata JSON into one useful CSV.
+Compact metadata extractor for the legacy Neo/NIX touchscreen dataset.
 
-Output:
-    One CSV file with one row per session.
+This version avoids huge JSON files.
 
-This CSV includes:
-    - session/animal metadata
-    - spike/unit counts
-    - spike count summaries
-    - event/epoch counts and names
-    - trial counts
-    - LFP/channel counts
-    - analog signal/LFP loaded information
-    - compact summaries of unit, trial, and LFP metadata fields
+It extracts:
+- session identity
+- spike/unit counts
+- trial counts
+- event/epoch names and counts
+- LFP channel counts
+- unit quality summaries
+- compact categorical summaries
+
+It does NOT extract:
+- full dataframe records
+- waveform arrays
+- templates
+- raw signal arrays
+- full block annotations
+- lfpframe from block annotations
 """
 
+import os
+import sys
 import json
 import argparse
+import traceback
+from pathlib import Path
+from datetime import datetime
+
 import pandas as pd
 
 
-def safe_join(value):
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+PIPELINE_DIR = os.path.dirname(CURRENT_DIR)
+
+if CURRENT_DIR not in sys.path:
+    sys.path.append(CURRENT_DIR)
+
+if PIPELINE_DIR not in sys.path:
+    sys.path.append(PIPELINE_DIR)
+
+from Io import Io
+
+
+def make_json_safe(value):
     """
-    Join list-like values into a readable string.
+    Convert simple values to JSON-safe objects.
+    Arrays are summarized, never expanded.
     """
 
     if value is None:
-        return ""
+        return None
 
-    if isinstance(value, list):
-        return " | ".join([str(item) for item in value])
+    if isinstance(value, (str, int, float, bool)):
+        return value
 
-    return str(value)
+    if isinstance(value, Path):
+        return str(value)
+
+    if isinstance(value, datetime):
+        return str(value)
+
+    try:
+        import numpy as np
+
+        if isinstance(value, np.integer):
+            return int(value)
+
+        if isinstance(value, np.floating):
+            return float(value)
+
+        if isinstance(value, np.bool_):
+            return bool(value)
+
+        if isinstance(value, np.ndarray):
+            return {
+                "array_summary": True,
+                "shape": list(value.shape),
+                "dtype": str(value.dtype),
+            }
+    except Exception:
+        pass
+
+    try:
+        import quantities as pq
+
+        if isinstance(value, pq.Quantity):
+            magnitude = value.magnitude
+
+            try:
+                import numpy as np
+
+                if isinstance(magnitude, np.ndarray):
+                    if magnitude.size == 1:
+                        return {
+                            "value": float(magnitude),
+                            "unit": str(value.units),
+                        }
+
+                    return {
+                        "quantity_summary": True,
+                        "shape": list(magnitude.shape),
+                        "dtype": str(magnitude.dtype),
+                        "unit": str(value.units),
+                    }
+            except Exception:
+                pass
+
+            try:
+                return {
+                    "value": float(magnitude),
+                    "unit": str(value.units),
+                }
+            except Exception:
+                return str(value)
+
+    except Exception:
+        pass
+
+    try:
+        if pd.isna(value):
+            return None
+    except Exception:
+        pass
+
+    if isinstance(value, dict):
+        output = {}
+
+        for key, item in value.items():
+            key_string = str(key)
+
+            # Prevent huge hidden metadata dumps.
+            if key_string in [
+                "lfpframe",
+                "unitframe",
+                "trialframe",
+                "spikeframe",
+                "waveform_mean",
+                "waveform_std",
+                "template",
+                "waveforms",
+            ]:
+                output[key_string] = "SKIPPED_LARGE_FIELD"
+            else:
+                output[key_string] = make_json_safe(item)
+
+        return output
+
+    if isinstance(value, (list, tuple, set)):
+        value_list = list(value)
+
+        if len(value_list) > 50:
+            return {
+                "list_summary": True,
+                "length": len(value_list),
+                "preview": [make_json_safe(item) for item in value_list[:5]],
+            }
+
+        return [make_json_safe(item) for item in value_list]
+
+    try:
+        return str(value)
+    except Exception:
+        return None
 
 
-def get_first_segment(session):
+def dataframe_summary(df):
     """
-    Return first segment metadata from block_metadata if available.
+    Return dataframe row count, column count, and column names only.
     """
 
-    block_metadata = session.get("block_metadata") or {}
-    segments = block_metadata.get("segments") or []
-
-    if len(segments) == 0:
-        return {}
-
-    return segments[0]
-
-
-def derive_spike_summary(session):
-    """
-    Get spike summary from session summary or derive it from block metadata.
-    """
-
-    summary = session.get("summary") or {}
-
-    if summary.get("n_spikes_total") is not None:
+    if df is None:
         return {
-            "n_spikes_total": summary.get("n_spikes_total"),
-            "min_spikes_per_unit": summary.get("min_spikes_per_unit"),
-            "max_spikes_per_unit": summary.get("max_spikes_per_unit"),
-            "mean_spikes_per_unit": summary.get("mean_spikes_per_unit"),
+            "n_rows": 0,
+            "n_columns": 0,
+            "columns": [],
         }
 
-    segment = get_first_segment(session)
-    spiketrains = segment.get("spiketrains") or []
+    return {
+        "n_rows": int(df.shape[0]),
+        "n_columns": int(df.shape[1]),
+        "columns": [str(column) for column in df.columns],
+    }
+
+
+def summarize_numeric_column(df, column_name):
+    """
+    Summarize one numeric dataframe column.
+    """
+
+    if df is None:
+        return None
+
+    if column_name not in df.columns:
+        return None
+
+    try:
+        values = pd.to_numeric(df[column_name], errors="coerce").dropna()
+    except Exception:
+        return None
+
+    if len(values) == 0:
+        return None
+
+    return {
+        "n": int(len(values)),
+        "min": float(values.min()),
+        "max": float(values.max()),
+        "mean": float(values.mean()),
+        "median": float(values.median()),
+    }
+
+
+def summarize_categorical_columns(df, columns, max_values=20):
+    """
+    Store only limited unique values for selected categorical columns.
+    """
+
+    output = {}
+
+    if df is None:
+        return output
+
+    for column in columns:
+        if column not in df.columns:
+            continue
+
+        try:
+            values = df[column].dropna().astype(str).unique().tolist()
+            values = sorted(values)
+
+            output[column] = {
+                "n_unique": int(len(values)),
+                "values": values[:max_values],
+                "truncated": len(values) > max_values,
+            }
+
+        except Exception as error:
+            output[column] = {
+                "error": repr(error),
+            }
+
+    return output
+
+
+def summarize_spikes(segment):
+    """
+    Summarize spike trains without saving spike times.
+    """
 
     spike_counts = []
+    annotation_fields = set()
 
-    for spiketrain in spiketrains:
-        n_spikes = spiketrain.get("n_spikes")
-        if isinstance(n_spikes, int):
-            spike_counts.append(n_spikes)
+    for spiketrain in getattr(segment, "spiketrains", []):
+        try:
+            spike_counts.append(int(len(spiketrain)))
+        except Exception:
+            pass
+
+        try:
+            for key in spiketrain.annotations.keys():
+                if str(key) not in ["waveform_mean", "waveform_std", "template"]:
+                    annotation_fields.add(str(key))
+        except Exception:
+            pass
 
     if len(spike_counts) == 0:
         return {
-            "n_spikes_total": None,
-            "min_spikes_per_unit": None,
-            "max_spikes_per_unit": None,
-            "mean_spikes_per_unit": None,
+            "n_spiketrains": 0,
+            "n_spikes_total": 0,
+            "min_spikes_per_spiketrain": None,
+            "max_spikes_per_spiketrain": None,
+            "mean_spikes_per_spiketrain": None,
+            "spiketrain_annotation_fields": [],
         }
 
     return {
+        "n_spiketrains": int(len(spike_counts)),
         "n_spikes_total": int(sum(spike_counts)),
-        "min_spikes_per_unit": int(min(spike_counts)),
-        "max_spikes_per_unit": int(max(spike_counts)),
-        "mean_spikes_per_unit": float(sum(spike_counts) / len(spike_counts)),
+        "min_spikes_per_spiketrain": int(min(spike_counts)),
+        "max_spikes_per_spiketrain": int(max(spike_counts)),
+        "mean_spikes_per_spiketrain": float(sum(spike_counts) / len(spike_counts)),
+        "spiketrain_annotation_fields": sorted(list(annotation_fields)),
     }
 
 
-def derive_event_names(session):
+def summarize_events(segment):
     """
-    Get event names from summary, eventnames, or block metadata.
-    """
-
-    summary = session.get("summary") or {}
-
-    if summary.get("event_names"):
-        return summary.get("event_names")
-
-    if session.get("eventnames"):
-        return session.get("eventnames")
-
-    segment = get_first_segment(session)
-    events = segment.get("events") or []
-
-    names = []
-
-    for event in events:
-        name = event.get("name")
-        if name is not None and name not in names:
-            names.append(name)
-
-    return names
-
-
-def derive_epoch_names(session):
-    """
-    Get epoch names from summary or block metadata.
+    Summarize event objects by name and count only.
     """
 
-    summary = session.get("summary") or {}
+    event_counts = {}
 
-    if summary.get("epoch_names"):
-        return summary.get("epoch_names")
+    for event in getattr(segment, "events", []):
+        name = getattr(event, "name", None)
 
-    segment = get_first_segment(session)
-    epochs = segment.get("epochs") or []
+        if name is None:
+            name = "unnamed_event"
 
-    names = []
+        name = str(name)
 
-    for epoch in epochs:
-        name = epoch.get("name")
-        if name is not None and name not in names:
-            names.append(name)
-
-    return names
-
-
-def derive_analogsignal_summary(session):
-    """
-    Get compact analog signal/LFP information.
-    """
-
-    summary = session.get("summary") or {}
-
-    analogsignals = summary.get("analogsignals")
-
-    if analogsignals is None:
-        segment = get_first_segment(session)
-        analogsignals = segment.get("analogsignals") or []
-
-    if len(analogsignals) == 0:
-        return {
-            "n_analogsignals_loaded": 0,
-            "analogsignal_names": "",
-            "analogsignal_shapes": "",
-            "analogsignal_units": "",
-            "analogsignal_sampling_rates": "",
-        }
-
-    names = []
-    shapes = []
-    units = []
-    sampling_rates = []
-
-    for signal in analogsignals:
-        names.append(str(signal.get("name")))
-        shapes.append(str(signal.get("shape")))
-        units.append(str(signal.get("units")))
-        sampling_rates.append(str(signal.get("sampling_rate")))
+        try:
+            event_counts[name] = int(len(event))
+        except Exception:
+            event_counts[name] = None
 
     return {
-        "n_analogsignals_loaded": len(analogsignals),
-        "analogsignal_names": " | ".join(names),
-        "analogsignal_shapes": " | ".join(shapes),
-        "analogsignal_units": " | ".join(units),
-        "analogsignal_sampling_rates": " | ".join(sampling_rates),
+        "n_event_objects": int(len(getattr(segment, "events", []))),
+        "event_names": sorted(list(event_counts.keys())),
+        "event_counts": event_counts,
     }
 
 
-def compact_dict(value):
+def summarize_epochs(segment):
     """
-    Convert nested dict summaries into a compact readable string.
-    """
-
-    if value is None:
-        return ""
-
-    if not isinstance(value, dict):
-        return str(value)
-
-    parts = []
-
-    for key, item in value.items():
-        if item is None:
-            continue
-        parts.append(f"{key}: {item}")
-
-    return " | ".join(parts)
-
-
-def make_one_session_summary(metadata):
-    """
-    Create one row per session.
+    Summarize epoch objects by name and count only.
     """
 
-    rows = []
+    epoch_counts = {}
 
-    for session in metadata.get("sessions", []):
+    for epoch in getattr(segment, "epochs", []):
+        name = getattr(epoch, "name", None)
 
-        summary = session.get("summary") or {}
-        spike_summary = derive_spike_summary(session)
-        analog_summary = derive_analogsignal_summary(session)
+        if name is None:
+            name = "unnamed_epoch"
 
-        event_names = derive_event_names(session)
-        epoch_names = derive_epoch_names(session)
+        name = str(name)
 
-        unit_dataframe = session.get("unit_dataframe") or {}
-        trial_dataframe = session.get("trial_dataframe") or {}
-        lfp_dataframe = session.get("lfp_dataframe") or {}
+        try:
+            epoch_counts[name] = int(len(epoch))
+        except Exception:
+            epoch_counts[name] = None
 
-        row = {
-            # Dataset/session identity
-            "dataset_name": metadata.get("dataset_name"),
-            "extractor": metadata.get("extractor"),
-            "read_lfp": metadata.get("read_lfp"),
+    return {
+        "n_epoch_objects": int(len(getattr(segment, "epochs", []))),
+        "epoch_names": sorted(list(epoch_counts.keys())),
+        "epoch_counts": epoch_counts,
+    }
 
-            "session_id": session.get("session_id"),
-            "animal_id": session.get("animal_id"),
-            "session_date": session.get("session_date"),
-            "success": session.get("success"),
-            "error": session.get("error"),
 
-            # Core electrophysiology structure
-            "n_segments": summary.get("n_segments"),
-            "n_spiketrains": summary.get("n_spiketrains"),
-            "n_units": summary.get("n_units_from_dataframe") or unit_dataframe.get("n_rows"),
+def summarize_analogsignals(segment):
+    """
+    Summarize analog signal objects by shape only.
+    Do not store values.
+    """
 
-            # Spike summary
-            "n_spikes_total": spike_summary.get("n_spikes_total"),
-            "min_spikes_per_unit": spike_summary.get("min_spikes_per_unit"),
-            "max_spikes_per_unit": spike_summary.get("max_spikes_per_unit"),
-            "mean_spikes_per_unit": spike_summary.get("mean_spikes_per_unit"),
+    signals = []
 
-            # Events / epochs
-            "n_events": summary.get("n_events"),
-            "event_names": safe_join(event_names),
-            "n_epochs": summary.get("n_epochs"),
-            "epoch_names": safe_join(epoch_names),
-
-            # Trials
-            "n_trials": summary.get("n_trials_from_dataframe") or trial_dataframe.get("n_rows"),
-            "n_trial_metadata_fields": summary.get("n_trial_metadata_fields") or trial_dataframe.get("n_columns"),
-            "trial_metadata_fields": safe_join(session.get("trial_metanames")),
-
-            # LFP / analog signals
-            "n_lfp_channels": summary.get("n_lfp_channels_from_dataframe") or lfp_dataframe.get("n_rows"),
-            "n_lfp_metadata_fields": summary.get("n_lfp_metadata_fields") or lfp_dataframe.get("n_columns"),
-            "lfp_metadata_fields": safe_join(session.get("lfp_metanames")),
-
-            "n_analogsignals": summary.get("n_analogsignals"),
-            "n_analogsignals_loaded": analog_summary.get("n_analogsignals_loaded"),
-            "analogsignal_names": analog_summary.get("analogsignal_names"),
-            "analogsignal_shapes": analog_summary.get("analogsignal_shapes"),
-            "analogsignal_units": analog_summary.get("analogsignal_units"),
-            "analogsignal_sampling_rates": analog_summary.get("analogsignal_sampling_rates"),
-
-            # Unit metadata
-            "n_unit_metadata_fields": summary.get("n_unit_metadata_fields") or unit_dataframe.get("n_columns"),
-            "unit_metadata_fields": safe_join(session.get("unit_metanames")),
-
-            # Compact category/quality summaries, if available
-            "unit_quality_summary": compact_dict(summary.get("unit_quality_summary")),
-            "unit_categories": compact_dict(summary.get("unit_categories")),
-            "trial_categories": compact_dict(summary.get("trial_categories")),
-            "lfp_categories": compact_dict(summary.get("lfp_categories")),
-
-            # Completeness flags
-            "has_spike_metadata": summary.get("has_spike_metadata"),
-            "has_event_metadata": summary.get("has_event_metadata"),
-            "has_epoch_metadata": summary.get("has_epoch_metadata"),
-            "has_trial_metadata": summary.get("has_trial_metadata"),
-            "has_lfp_metadata": summary.get("has_lfp_metadata"),
-            "has_analogsignals_loaded": summary.get("has_analogsignals_loaded"),
+    for signal in getattr(segment, "analogsignals", []):
+        info = {
+            "name": make_json_safe(getattr(signal, "name", None)),
+            "shape": None,
+            "n_samples": None,
+            "n_channels": None,
+            "units": None,
+            "sampling_rate": None,
+            "t_start": None,
+            "duration": None,
         }
 
-        rows.append(row)
+        try:
+            info["shape"] = list(signal.shape)
+            info["n_samples"] = int(signal.shape[0])
+            info["n_channels"] = int(signal.shape[1]) if len(signal.shape) > 1 else 1
+        except Exception:
+            pass
 
-    return pd.DataFrame(rows)
+        try:
+            info["units"] = str(signal.units)
+        except Exception:
+            pass
+
+        try:
+            info["sampling_rate"] = make_json_safe(signal.sampling_rate)
+        except Exception:
+            pass
+
+        try:
+            info["t_start"] = make_json_safe(signal.t_start)
+        except Exception:
+            pass
+
+        try:
+            info["duration"] = make_json_safe(signal.duration)
+        except Exception:
+            pass
+
+        signals.append(info)
+
+    return signals
 
 
-def summarize_legacy_metadata(json_path, output_csv=None):
+def extract_one_session(
+    io,
+    session_id,
+    read_lfp=False,
+    max_category_values=20,
+):
     """
-    Generate one summary CSV.
+    Extract one compact session summary.
     """
 
-    with open(json_path, "r", encoding="utf-8") as f:
-        metadata = json.load(f)
+    result = {
+        "session_id": session_id,
+        "animal_id": None,
+        "session_date": None,
+        "success": False,
+        "error": None,
+        "traceback": None,
+        "summary": None,
+    }
 
-    df = make_one_session_summary(metadata)
+    try:
+        io.load_session(session_id, read_lfp=read_lfp)
 
-    if output_csv is None:
-        output_csv = json_path.replace(".json", "_summary.csv")
+        result["animal_id"] = make_json_safe(io.animal_id)
+        result["session_date"] = make_json_safe(io.session_date)
 
-    df.to_csv(output_csv, index=False, encoding="utf-8")
+        if len(io.block.segments) == 0:
+            raise ValueError("Loaded block contains no segments.")
 
-    print("Legacy touchscreen summary generated")
-    print("Rows:", len(df))
-    print("Columns:", len(df.columns))
-    print("Output:", output_csv)
+        segment = io.block.segments[0]
 
-    preview_columns = [
-        "session_id",
-        "animal_id",
-        "success",
-        "n_units",
-        "n_spikes_total",
-        "n_events",
-        "n_epochs",
-        "n_trials",
-        "n_lfp_channels",
-        "n_analogsignals_loaded",
+        spike_summary = summarize_spikes(segment)
+        event_summary = summarize_events(segment)
+        epoch_summary = summarize_epochs(segment)
+        analogsignal_summary = summarize_analogsignals(segment)
+
+        unit_dataframe = dataframe_summary(io.unit_df)
+        trial_dataframe = dataframe_summary(io.trial_df)
+        lfp_dataframe = dataframe_summary(io.lfp_df)
+        lfp_clean_dataframe = dataframe_summary(io.lfp_clean_df)
+
+        unit_quality_summary = {
+            "num_spikes": summarize_numeric_column(io.unit_df, "num_spikes"),
+            "firing_rate": summarize_numeric_column(io.unit_df, "firing_rate"),
+            "snr": summarize_numeric_column(io.unit_df, "snr"),
+            "isi_violation": summarize_numeric_column(io.unit_df, "isi_violation"),
+            "presence_ratio": summarize_numeric_column(io.unit_df, "presence_ratio"),
+            "amplitude_cutoff": summarize_numeric_column(io.unit_df, "amplitude_cutoff"),
+            "isolation_distance": summarize_numeric_column(io.unit_df, "isolation_distance"),
+            "l_ratio": summarize_numeric_column(io.unit_df, "l_ratio"),
+            "d_prime": summarize_numeric_column(io.unit_df, "d_prime"),
+            "waveform_amplitude": summarize_numeric_column(io.unit_df, "waveform_amplitude"),
+        }
+
+        unit_categories = summarize_categorical_columns(
+            io.unit_df,
+            [
+                "cluster_group",
+                "tetrode",
+                "area",
+                "recording_group",
+                "celltype",
+                "tetrode_area",
+                "good_unit",
+                "is_artefact",
+            ],
+            max_values=max_category_values,
+        )
+
+        trial_categories = summarize_categorical_columns(
+            io.trial_df,
+            [
+                "modality",
+                "correct",
+                "object",
+                "choice",
+                "block_nr",
+                "has_nosetracking",
+                "has_whiskertracking",
+            ],
+            max_values=max_category_values,
+        )
+
+        lfp_categories = summarize_categorical_columns(
+            io.lfp_df,
+            [
+                "area",
+                "rec_group",
+                "recording_group",
+                "tetrode",
+                "channel",
+                "is_bp_filtered",
+                "best_on_tetrode",
+                "Has invalid timestamps",
+            ],
+            max_values=max_category_values,
+        )
+
+        result["summary"] = {
+            "n_segments": int(len(io.block.segments)),
+
+            "n_spiketrains": spike_summary["n_spiketrains"],
+            "n_spikes_total": spike_summary["n_spikes_total"],
+            "min_spikes_per_spiketrain": spike_summary["min_spikes_per_spiketrain"],
+            "max_spikes_per_spiketrain": spike_summary["max_spikes_per_spiketrain"],
+            "mean_spikes_per_spiketrain": spike_summary["mean_spikes_per_spiketrain"],
+            "spiketrain_annotation_fields": spike_summary["spiketrain_annotation_fields"],
+
+            "n_event_objects": event_summary["n_event_objects"],
+            "event_names": event_summary["event_names"],
+            "event_counts": event_summary["event_counts"],
+
+            "n_epoch_objects": epoch_summary["n_epoch_objects"],
+            "epoch_names": epoch_summary["epoch_names"],
+            "epoch_counts": epoch_summary["epoch_counts"],
+
+            "n_analogsignals": int(len(getattr(segment, "analogsignals", []))),
+            "analogsignals": analogsignal_summary,
+
+            "unit_dataframe": unit_dataframe,
+            "trial_dataframe": trial_dataframe,
+            "lfp_dataframe": lfp_dataframe,
+            "lfp_clean_dataframe": lfp_clean_dataframe,
+
+            "n_units": unit_dataframe["n_rows"],
+            "n_unit_metadata_fields": unit_dataframe["n_columns"],
+
+            "n_trials": trial_dataframe["n_rows"],
+            "n_trial_metadata_fields": trial_dataframe["n_columns"],
+
+            "n_lfp_channels": lfp_dataframe["n_rows"],
+            "n_lfp_metadata_fields": lfp_dataframe["n_columns"],
+
+            "n_lfp_clean_channels": lfp_clean_dataframe["n_rows"],
+            "n_lfp_clean_metadata_fields": lfp_clean_dataframe["n_columns"],
+
+            "unit_quality_summary": unit_quality_summary,
+            "unit_categories": unit_categories,
+            "trial_categories": trial_categories,
+            "lfp_categories": lfp_categories,
+
+            "has_spike_metadata": spike_summary["n_spiketrains"] > 0,
+            "has_unit_metadata": unit_dataframe["n_rows"] > 0,
+            "has_event_metadata": event_summary["n_event_objects"] > 0,
+            "has_epoch_metadata": epoch_summary["n_epoch_objects"] > 0,
+            "has_trial_metadata": trial_dataframe["n_rows"] > 0,
+            "has_lfp_metadata": lfp_dataframe["n_rows"] > 0,
+            "has_lfp_clean_metadata": lfp_clean_dataframe["n_rows"] > 0,
+            "has_analogsignals_loaded": len(getattr(segment, "analogsignals", [])) > 0,
+        }
+
+        result["success"] = True
+
+    except Exception as error:
+        result["success"] = False
+        result["error"] = repr(error)
+        result["traceback"] = traceback.format_exc()
+
+    return make_json_safe(result)
+
+
+def build_dataset_summary(sessions):
+    """
+    Build compact dataset-level summary.
+    """
+
+    successful_sessions = [
+        session for session in sessions
+        if session.get("success") is True
     ]
 
-    available_preview_columns = [
-        column for column in preview_columns
-        if column in df.columns
+    failed_sessions = [
+        session for session in sessions
+        if session.get("success") is False
     ]
 
-    print("\nPreview:")
-    print(df[available_preview_columns].head())
+    animal_ids = sorted(
+        list(
+            set(
+                str(session.get("animal_id"))
+                for session in successful_sessions
+                if session.get("animal_id") is not None
+            )
+        )
+    )
 
-    return df
+    total_spiketrains = 0
+    total_spikes = 0
+    total_trials = 0
+    total_units = 0
+    total_lfp_channels = 0
+    total_lfp_clean_channels = 0
+
+    for session in successful_sessions:
+        summary = session.get("summary") or {}
+
+        total_spiketrains += summary.get("n_spiketrains") or 0
+        total_spikes += summary.get("n_spikes_total") or 0
+        total_trials += summary.get("n_trials") or 0
+        total_units += summary.get("n_units") or 0
+        total_lfp_channels += summary.get("n_lfp_channels") or 0
+        total_lfp_clean_channels += summary.get("n_lfp_clean_channels") or 0
+
+    return {
+        "n_sessions": int(len(sessions)),
+        "n_successful_sessions": int(len(successful_sessions)),
+        "n_failed_sessions": int(len(failed_sessions)),
+        "animal_ids": animal_ids,
+        "n_animals": int(len(animal_ids)),
+        "total_spiketrains": int(total_spiketrains),
+        "total_spikes": int(total_spikes),
+        "total_trials": int(total_trials),
+        "total_units": int(total_units),
+        "total_lfp_channels": int(total_lfp_channels),
+        "total_lfp_clean_channels": int(total_lfp_clean_channels),
+    }
+
+
+def extract_legacy_touchscreen_dataset(
+    dataset_path,
+    output_folder=None,
+    read_lfp=False,
+    max_category_values=20,
+):
+    """
+    Extract compact metadata from all sessions.
+    """
+
+    dataset_path = Path(dataset_path)
+
+    if output_folder is None:
+        output_folder = Path(os.getcwd()) / "outputs" / "extracted_metadata"
+    else:
+        output_folder = Path(output_folder)
+
+    output_folder.mkdir(parents=True, exist_ok=True)
+
+    io = Io(path=dataset_path, read_lfp=read_lfp)
+
+    sessions = []
+
+    print("Sessions found:", len(io.session_ids))
+
+    for session_id in io.session_ids:
+        print("Extracting legacy session:", session_id)
+
+        session_metadata = extract_one_session(
+            io=io,
+            session_id=session_id,
+            read_lfp=read_lfp,
+            max_category_values=max_category_values,
+        )
+
+        sessions.append(session_metadata)
+
+    dataset_metadata = {
+        "dataset_name": dataset_path.name,
+        "dataset_folder": str(dataset_path),
+        "date_extraction": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "extractor": "legacy_touchscreen_compact_no_block_annotations",
+        "read_lfp": bool(read_lfp),
+        "max_category_values": int(max_category_values),
+        "environment_note": "Requires Python 3.7, neo==0.8.0, nixio==1.5.1",
+        "session_ids": [str(session_id) for session_id in io.session_ids],
+        "dataset_summary": build_dataset_summary(sessions),
+        "sessions": sessions,
+    }
+
+    output_json = output_folder / (
+        dataset_path.name + "_legacy_touchscreen_metadata.json"
+    )
+
+    with open(output_json, "w", encoding="utf-8") as f:
+        json.dump(dataset_metadata, f, indent=2)
+
+    print("Legacy compact extraction finished")
+    print("Output file:", output_json)
+    print("Dataset summary:")
+    print(dataset_metadata["dataset_summary"])
+
+    return dataset_metadata
 
 
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
-        description="Summarize legacy touchscreen metadata JSON into one CSV"
+        description="Compact metadata extraction from legacy touchscreen dataset"
     )
 
     parser.add_argument(
-        "json_path",
-        help="Path to legacy touchscreen metadata JSON"
+        "dataset_path",
+        help="Path to dataset folder containing neo_rat*.pkl and .nio files",
     )
 
     parser.add_argument(
-        "--output_csv",
+        "--read_lfp",
+        action="store_true",
+        help="Load LFP .nio files if available. Metadata only, no signal values stored.",
+    )
+
+    parser.add_argument(
+        "--max_category_values",
+        type=int,
+        default=20,
+        help="Maximum number of category values to store per categorical field. Default: 20",
+    )
+
+    parser.add_argument(
+        "--output_folder",
         default=None,
-        help="Optional output CSV path"
+        help="Output folder",
     )
 
     args = parser.parse_args()
 
-    summarize_legacy_metadata(
-        json_path=args.json_path,
-        output_csv=args.output_csv,
+    extract_legacy_touchscreen_dataset(
+        dataset_path=args.dataset_path,
+        output_folder=args.output_folder,
+        read_lfp=args.read_lfp,
+        max_category_values=args.max_category_values,
     )
