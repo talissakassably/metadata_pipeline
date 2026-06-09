@@ -441,6 +441,28 @@ def patch_old_neo_pickle_compatibility(verbose=True):
     try:
         import neo.core.spiketrain as spiketrain_module
 
+        def _sanitize_spiketrain_time_value(value, default):
+            # Old pickles can put dictionaries/Neo objects in t_start or t_stop.
+            # Modern Neo expects a number or a quantity. For metadata extraction we
+            # only need the SpikeTrain length, so safe numeric fallbacks are enough.
+            if value is None:
+                return default
+            if isinstance(value, (int, float)):
+                return value
+            if hasattr(value, "units"):
+                return value
+            try:
+                import numpy as _np
+                if isinstance(value, _np.ndarray):
+                    if value.size == 1:
+                        return float(value.reshape(-1)[0])
+                    return default
+                if isinstance(value, _np.generic):
+                    return float(value)
+            except Exception:
+                pass
+            return default
+
         if hasattr(spiketrain_module, "_new_spiketrain"):
             original_function = spiketrain_module._new_spiketrain
             signature = inspect.signature(original_function)
@@ -466,6 +488,12 @@ def patch_old_neo_pickle_compatibility(verbose=True):
                     if waveforms is not None and not hasattr(waveforms, "shape"):
                         bound.arguments["waveforms"] = None
 
+                if "t_start" in signature.parameters:
+                    bound.arguments["t_start"] = _sanitize_spiketrain_time_value(bound.arguments.get("t_start"), 0.0)
+
+                if "t_stop" in signature.parameters:
+                    bound.arguments["t_stop"] = _sanitize_spiketrain_time_value(bound.arguments.get("t_stop"), 0.0)
+
                 if "copy" in signature.parameters:
                     bound.arguments["copy"] = None
 
@@ -480,6 +508,7 @@ def patch_old_neo_pickle_compatibility(verbose=True):
                         or "Unable to convert between units" in message
                         or "copy" in message
                         or "object has no attribute 'shape'" in message
+                        or "float() argument must be a string or a number" in message
                     ):
                         retry_arguments = dict(bound.arguments)
                         if "annotations" in retry_arguments:
@@ -490,6 +519,10 @@ def patch_old_neo_pickle_compatibility(verbose=True):
                             waveforms = retry_arguments.get("waveforms")
                             if waveforms is not None and not hasattr(waveforms, "shape"):
                                 retry_arguments["waveforms"] = None
+                        if "t_start" in retry_arguments:
+                            retry_arguments["t_start"] = _sanitize_spiketrain_time_value(retry_arguments.get("t_start"), 0.0)
+                        if "t_stop" in retry_arguments:
+                            retry_arguments["t_stop"] = _sanitize_spiketrain_time_value(retry_arguments.get("t_stop"), 0.0)
                         if "copy" in retry_arguments:
                             retry_arguments["copy"] = None
                         # SpikeTrain times are time-like; seconds is the safest fallback.
@@ -517,6 +550,10 @@ def patch_old_neo_pickle_compatibility(verbose=True):
                         waveforms = kwargs.get("waveforms")
                         if waveforms is not None and not hasattr(waveforms, "shape"):
                             kwargs["waveforms"] = None
+                    if "t_start" in kwargs:
+                        kwargs["t_start"] = _sanitize_spiketrain_time_value(kwargs.get("t_start"), 0.0)
+                    if "t_stop" in kwargs:
+                        kwargs["t_stop"] = _sanitize_spiketrain_time_value(kwargs.get("t_stop"), 0.0)
                     if kwargs.get("units") is None:
                         kwargs["units"] = "s"
 
@@ -531,6 +568,7 @@ def patch_old_neo_pickle_compatibility(verbose=True):
                             or "Unable to convert between units" in message
                             or "copy" in message
                             or "object has no attribute 'shape'" in message
+                            or "float() argument must be a string or a number" in message
                         ):
                             kwargs["annotations"] = {}
                             kwargs["array_annotations"] = {}
@@ -538,6 +576,10 @@ def patch_old_neo_pickle_compatibility(verbose=True):
                                 waveforms = kwargs.get("waveforms")
                                 if waveforms is not None and not hasattr(waveforms, "shape"):
                                     kwargs["waveforms"] = None
+                            if "t_start" in kwargs:
+                                kwargs["t_start"] = _sanitize_spiketrain_time_value(kwargs.get("t_start"), 0.0)
+                            if "t_stop" in kwargs:
+                                kwargs["t_stop"] = _sanitize_spiketrain_time_value(kwargs.get("t_stop"), 0.0)
                             kwargs["units"] = kwargs.get("units") or "s"
                             kwargs.pop("copy", None)
                             return original_new(cls_, *args, **kwargs)
@@ -1279,7 +1321,7 @@ def extract_touchandsee_dataset(dataset_path, output_folder=None, include_object
         "dataset_name": dataset_path.name,
         "dataset_folder": str(dataset_path),
         "date_extraction": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "extractor": "touchandsee_internal_neo_pickle_extractor_v9",
+        "extractor": "touchandsee_internal_neo_pickle_extractor_v10",
         "include_object_details": bool(include_object_details),
         "dataset_summary": build_dataset_summary(results),
         "files": results,
