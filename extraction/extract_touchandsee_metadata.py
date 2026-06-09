@@ -69,6 +69,32 @@ def patch_old_neo_pickle_compatibility(verbose=True):
 
     applied = []
 
+    def _safe_length(value):
+        try:
+            return len(value)
+        except Exception:
+            return None
+
+    def _fix_labels_for_times(arguments):
+        """Old Neo pickles sometimes store epoch/event labels with a wrong length.
+        For metadata extraction, labels are not critical, so force a safe label list.
+        """
+        if "labels" not in arguments or "times" not in arguments:
+            return arguments
+
+        times = arguments.get("times")
+        labels = arguments.get("labels")
+        n_times = _safe_length(times)
+        n_labels = _safe_length(labels)
+
+        if n_times is None:
+            return arguments
+
+        if labels is None or n_labels != n_times:
+            arguments["labels"] = [""] * int(n_times)
+
+        return arguments
+
     try:
         import neo.core.analogsignal as analogsignal
 
@@ -182,6 +208,8 @@ def patch_old_neo_pickle_compatibility(verbose=True):
                     if array_annotations is None or not isinstance(array_annotations, dict):
                         bound.arguments["array_annotations"] = {}
 
+                _fix_labels_for_times(bound.arguments)
+
                 try:
                     return original_function(*bound.args, **bound.kwargs)
                 except TypeError as error:
@@ -197,10 +225,14 @@ def patch_old_neo_pickle_compatibility(verbose=True):
                     raise
                 except ValueError as error:
                     message = str(error)
-                    if "Incorrect length of array annotation" in message:
+                    if (
+                        "Incorrect length of array annotation" in message
+                        or "Labels array has different length to times" in message
+                    ):
                         retry_arguments = dict(bound.arguments)
                         if "array_annotations" in retry_arguments:
                             retry_arguments["array_annotations"] = {}
+                        _fix_labels_for_times(retry_arguments)
                         return original_function(**retry_arguments)
                     raise
 
@@ -217,6 +249,7 @@ def patch_old_neo_pickle_compatibility(verbose=True):
                         kwargs["annotations"] = {}
                     if kwargs.get("array_annotations") is None or not isinstance(kwargs.get("array_annotations", {}), dict):
                         kwargs["array_annotations"] = {}
+                    _fix_labels_for_times(kwargs)
 
                     try:
                         return original_new(cls_, *args, **kwargs)
@@ -262,6 +295,8 @@ def patch_old_neo_pickle_compatibility(verbose=True):
                         if array_annotations is None or not isinstance(array_annotations, dict):
                             bound.arguments["array_annotations"] = {}
 
+                    _fix_labels_for_times(bound.arguments)
+
                     try:
                         return original_function(*bound.args, **bound.kwargs)
                     except (TypeError, ValueError) as error:
@@ -269,12 +304,14 @@ def patch_old_neo_pickle_compatibility(verbose=True):
                         if (
                             "argument after ** must be a mapping" in message
                             or "Incorrect length of array annotation" in message
+                            or "Labels array has different length to times" in message
                         ):
                             retry_arguments = dict(bound.arguments)
                             if "annotations" in retry_arguments:
                                 retry_arguments["annotations"] = {}
                             if "array_annotations" in retry_arguments:
                                 retry_arguments["array_annotations"] = {}
+                            _fix_labels_for_times(retry_arguments)
                             return original_function(**retry_arguments)
                         raise
 
@@ -282,6 +319,32 @@ def patch_old_neo_pickle_compatibility(verbose=True):
 
             setattr(epoch_module, function_name, make_patched_epoch_function(original_function, signature))
             applied.append("neo.core.epoch." + function_name)
+
+        if hasattr(epoch_module, "Epoch"):
+            cls = epoch_module.Epoch
+            original_new = cls.__new__
+
+            def make_patched_epoch_new(original_new):
+                def patched_epoch_new(cls_, *args, **kwargs):
+                    if kwargs.get("annotations") is None or not isinstance(kwargs.get("annotations", {}), dict):
+                        kwargs["annotations"] = {}
+                    if kwargs.get("array_annotations") is None or not isinstance(kwargs.get("array_annotations", {}), dict):
+                        kwargs["array_annotations"] = {}
+                    _fix_labels_for_times(kwargs)
+
+                    try:
+                        return original_new(cls_, *args, **kwargs)
+                    except ValueError as error:
+                        message = str(error)
+                        if "Labels array has different length to times" in message:
+                            _fix_labels_for_times(kwargs)
+                            return original_new(cls_, *args, **kwargs)
+                        raise
+
+                return patched_epoch_new
+
+            cls.__new__ = staticmethod(make_patched_epoch_new(original_new))
+            applied.append("neo.core.epoch.Epoch.__new__")
 
     except Exception as error:
         if verbose:
@@ -1014,7 +1077,7 @@ def extract_touchandsee_dataset(dataset_path, output_folder=None, include_object
         "dataset_name": dataset_path.name,
         "dataset_folder": str(dataset_path),
         "date_extraction": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "extractor": "touchandsee_internal_neo_pickle_extractor_v4",
+        "extractor": "touchandsee_internal_neo_pickle_extractor_v5",
         "include_object_details": bool(include_object_details),
         "dataset_summary": build_dataset_summary(results),
         "files": results,
