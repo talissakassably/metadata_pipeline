@@ -433,6 +433,103 @@ def patch_old_neo_pickle_compatibility(verbose=True):
         if verbose:
             print("Could not patch epoch compatibility:", repr(error))
 
+
+    # Patch SpikeTrain reconstruction. Old pickles may pass a Segment object where
+    # modern Neo expects an annotations mapping, just like Event/Epoch. We keep
+    # spike times internal only for counting later, but we do not need invalid
+    # annotations or array annotations.
+    try:
+        import neo.core.spiketrain as spiketrain_module
+
+        if hasattr(spiketrain_module, "_new_spiketrain"):
+            original_function = spiketrain_module._new_spiketrain
+            signature = inspect.signature(original_function)
+
+            def patched_new_spiketrain(*args, **kwargs):
+                bound = signature.bind_partial(*args, **kwargs)
+
+                if "annotations" in signature.parameters:
+                    annotations = bound.arguments.get("annotations")
+                    if annotations is None or not isinstance(annotations, dict):
+                        bound.arguments["annotations"] = {}
+
+                if "array_annotations" in signature.parameters:
+                    array_annotations = bound.arguments.get("array_annotations")
+                    if array_annotations is None or not isinstance(array_annotations, dict):
+                        bound.arguments["array_annotations"] = {}
+
+                if "copy" in signature.parameters:
+                    bound.arguments["copy"] = None
+
+                try:
+                    return original_function(*bound.args, **bound.kwargs)
+                except (TypeError, ValueError) as error:
+                    message = str(error)
+                    if (
+                        "argument after ** must be a mapping" in message
+                        or "Incorrect length of array annotation" in message
+                        or "you must specify units" in message
+                        or "Unable to convert between units" in message
+                        or "copy" in message
+                    ):
+                        retry_arguments = dict(bound.arguments)
+                        if "annotations" in retry_arguments:
+                            retry_arguments["annotations"] = {}
+                        if "array_annotations" in retry_arguments:
+                            retry_arguments["array_annotations"] = {}
+                        if "copy" in retry_arguments:
+                            retry_arguments["copy"] = None
+                        # SpikeTrain times are time-like; seconds is the safest fallback.
+                        if "units" in signature.parameters and retry_arguments.get("units") is None:
+                            retry_arguments["units"] = "s"
+                        return original_function(**retry_arguments)
+                    raise
+
+            spiketrain_module._new_spiketrain = patched_new_spiketrain
+            applied.append("neo.core.spiketrain._new_spiketrain")
+
+        if hasattr(spiketrain_module, "SpikeTrain"):
+            cls = spiketrain_module.SpikeTrain
+            original_new = cls.__new__
+
+            def make_patched_spiketrain_new(original_new):
+                def patched_spiketrain_new(cls_, *args, **kwargs):
+                    if kwargs.get("annotations") is None or not isinstance(kwargs.get("annotations", {}), dict):
+                        kwargs["annotations"] = {}
+                    if kwargs.get("array_annotations") is None or not isinstance(kwargs.get("array_annotations", {}), dict):
+                        kwargs["array_annotations"] = {}
+                    if "copy" in kwargs:
+                        kwargs["copy"] = None
+                    if kwargs.get("units") is None:
+                        kwargs["units"] = "s"
+
+                    try:
+                        return original_new(cls_, *args, **kwargs)
+                    except (TypeError, ValueError) as error:
+                        message = str(error)
+                        if (
+                            "argument after ** must be a mapping" in message
+                            or "Incorrect length of array annotation" in message
+                            or "you must specify units" in message
+                            or "Unable to convert between units" in message
+                            or "copy" in message
+                        ):
+                            kwargs["annotations"] = {}
+                            kwargs["array_annotations"] = {}
+                            kwargs["units"] = kwargs.get("units") or "s"
+                            kwargs.pop("copy", None)
+                            return original_new(cls_, *args, **kwargs)
+                        raise
+
+                return patched_spiketrain_new
+
+            cls.__new__ = staticmethod(make_patched_spiketrain_new(original_new))
+            applied.append("neo.core.spiketrain.SpikeTrain.__new__")
+
+    except Exception as error:
+        if verbose:
+            print("Could not patch spiketrain compatibility:", repr(error))
+
     if verbose:
         if applied:
             print("Applied compatibility patches:")
@@ -1160,7 +1257,7 @@ def extract_touchandsee_dataset(dataset_path, output_folder=None, include_object
         "dataset_name": dataset_path.name,
         "dataset_folder": str(dataset_path),
         "date_extraction": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "extractor": "touchandsee_internal_neo_pickle_extractor_v7",
+        "extractor": "touchandsee_internal_neo_pickle_extractor_v8",
         "include_object_details": bool(include_object_details),
         "dataset_summary": build_dataset_summary(results),
         "files": results,
