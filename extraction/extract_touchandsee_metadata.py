@@ -75,6 +75,26 @@ def patch_old_neo_pickle_compatibility(verbose=True):
         except Exception:
             return None
 
+    def _ensure_time_units(arguments):
+        """Old Neo pickles may store event/epoch times as plain numpy arrays.
+        New Neo requires explicit units. For metadata extraction, seconds is the
+        safest fallback for time-like objects.
+        """
+        if "times" in arguments:
+            times = arguments.get("times")
+            if times is not None and not hasattr(times, "units"):
+                if "units" not in arguments or arguments.get("units") is None:
+                    arguments["units"] = "s"
+
+        if "durations" in arguments:
+            durations = arguments.get("durations")
+            if durations is not None and not hasattr(durations, "units"):
+                # Keep durations numeric and let Neo use the same units as times.
+                if "units" not in arguments or arguments.get("units") is None:
+                    arguments["units"] = "s"
+
+        return arguments
+
     def _fix_labels_for_times(arguments):
         """Old Neo pickles sometimes store epoch/event labels with a wrong length.
         For metadata extraction, labels are not critical, so force a safe label list.
@@ -209,6 +229,7 @@ def patch_old_neo_pickle_compatibility(verbose=True):
                         bound.arguments["array_annotations"] = {}
 
                 _fix_labels_for_times(bound.arguments)
+                _ensure_time_units(bound.arguments)
 
                 try:
                     return original_function(*bound.args, **bound.kwargs)
@@ -233,6 +254,7 @@ def patch_old_neo_pickle_compatibility(verbose=True):
                         if "array_annotations" in retry_arguments:
                             retry_arguments["array_annotations"] = {}
                         _fix_labels_for_times(retry_arguments)
+                        _ensure_time_units(retry_arguments)
                         return original_function(**retry_arguments)
                     raise
 
@@ -250,6 +272,7 @@ def patch_old_neo_pickle_compatibility(verbose=True):
                     if kwargs.get("array_annotations") is None or not isinstance(kwargs.get("array_annotations", {}), dict):
                         kwargs["array_annotations"] = {}
                     _fix_labels_for_times(kwargs)
+                    _ensure_time_units(kwargs)
 
                     try:
                         return original_new(cls_, *args, **kwargs)
@@ -257,7 +280,7 @@ def patch_old_neo_pickle_compatibility(verbose=True):
                         message = str(error)
                         # Some old pickles have incompatible units attached to events.
                         # For metadata extraction, keep the times and force standard seconds.
-                        if "Unable to convert between units" in message:
+                        if "Unable to convert between units" in message or "you must specify units" in message:
                             kwargs["units"] = "s"
                             return original_new(cls_, *args, **kwargs)
                         raise
@@ -296,6 +319,7 @@ def patch_old_neo_pickle_compatibility(verbose=True):
                             bound.arguments["array_annotations"] = {}
 
                     _fix_labels_for_times(bound.arguments)
+                    _ensure_time_units(bound.arguments)
 
                     try:
                         return original_function(*bound.args, **bound.kwargs)
@@ -305,6 +329,7 @@ def patch_old_neo_pickle_compatibility(verbose=True):
                             "argument after ** must be a mapping" in message
                             or "Incorrect length of array annotation" in message
                             or "Labels array has different length to times" in message
+                            or "you must specify units" in message
                         ):
                             retry_arguments = dict(bound.arguments)
                             if "annotations" in retry_arguments:
@@ -312,6 +337,7 @@ def patch_old_neo_pickle_compatibility(verbose=True):
                             if "array_annotations" in retry_arguments:
                                 retry_arguments["array_annotations"] = {}
                             _fix_labels_for_times(retry_arguments)
+                            _ensure_time_units(retry_arguments)
                             return original_function(**retry_arguments)
                         raise
 
@@ -331,13 +357,16 @@ def patch_old_neo_pickle_compatibility(verbose=True):
                     if kwargs.get("array_annotations") is None or not isinstance(kwargs.get("array_annotations", {}), dict):
                         kwargs["array_annotations"] = {}
                     _fix_labels_for_times(kwargs)
+                    _ensure_time_units(kwargs)
 
                     try:
                         return original_new(cls_, *args, **kwargs)
                     except ValueError as error:
                         message = str(error)
-                        if "Labels array has different length to times" in message:
+                        if "Labels array has different length to times" in message or "you must specify units" in message:
                             _fix_labels_for_times(kwargs)
+                            _ensure_time_units(kwargs)
+                            kwargs["units"] = kwargs.get("units") or "s"
                             return original_new(cls_, *args, **kwargs)
                         raise
 
@@ -1077,7 +1106,7 @@ def extract_touchandsee_dataset(dataset_path, output_folder=None, include_object
         "dataset_name": dataset_path.name,
         "dataset_folder": str(dataset_path),
         "date_extraction": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "extractor": "touchandsee_internal_neo_pickle_extractor_v5",
+        "extractor": "touchandsee_internal_neo_pickle_extractor_v6",
         "include_object_details": bool(include_object_details),
         "dataset_summary": build_dataset_summary(results),
         "files": results,
