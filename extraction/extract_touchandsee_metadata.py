@@ -38,7 +38,7 @@ from pathlib import Path
 from datetime import datetime
 
 
-EXTRACTOR_NAME = "touchandsee_internal_neo_pickle_extractor_v13"
+EXTRACTOR_NAME = "touchandsee_internal_neo_pickle_extractor_v14"
 
 LARGE_FIELD_KEYWORDS = [
     "waveform",
@@ -449,19 +449,21 @@ def install_old_neo_pickle_patches(verbose=True):
             original = event_module._new_event
             signature = inspect.signature(original)
 
-            def patched_new_event(*args, **kwargs):
-                bound = signature.bind_partial(*args, **kwargs)
+            def patched_new_event(*args, _original=original, _signature=signature, **kwargs):
+                # Important: bind original/signature as defaults so later patches
+                # do not overwrite this closure.
+                bound = _signature.bind_partial(*args, **kwargs)
                 _sanitize_mapping_arguments(bound.arguments)
                 _fix_labels(bound.arguments)
                 _ensure_units(bound.arguments)
                 try:
-                    return original(*bound.args, **bound.kwargs)
+                    return _original(*bound.args, **bound.kwargs)
                 except Exception:
                     retry = dict(bound.arguments)
                     _sanitize_mapping_arguments(retry)
                     _fix_labels(retry)
                     _ensure_units(retry)
-                    return original(**retry)
+                    return _original(**retry)
 
             event_module._new_event = patched_new_event
             applied.append("neo.core.event._new_event")
@@ -476,13 +478,15 @@ def install_old_neo_pickle_patches(verbose=True):
             original = epoch_module._new_epoch
             signature = inspect.signature(original)
 
-            def patched_new_epoch(*args, **kwargs):
-                bound = signature.bind_partial(*args, **kwargs)
+            def patched_new_epoch(*args, _original=original, _signature=signature, **kwargs):
+                # Important: bind original/signature as defaults so later patches
+                # do not overwrite this closure.
+                bound = _signature.bind_partial(*args, **kwargs)
                 _sanitize_mapping_arguments(bound.arguments)
                 _fix_labels(bound.arguments)
                 _ensure_units(bound.arguments)
                 try:
-                    return original(*bound.args, **bound.kwargs)
+                    return _original(*bound.args, **bound.kwargs)
                 except Exception:
                     retry = dict(bound.arguments)
                     _sanitize_mapping_arguments(retry)
@@ -490,7 +494,7 @@ def install_old_neo_pickle_patches(verbose=True):
                     _ensure_units(retry)
                     if retry.get("units") is None:
                         retry["units"] = "s"
-                    return original(**retry)
+                    return _original(**retry)
 
             epoch_module._new_epoch = patched_new_epoch
             applied.append("neo.core.epoch._new_epoch")
@@ -574,9 +578,6 @@ def install_old_neo_pickle_patches(verbose=True):
             applied.append("neo.core.spiketrain._new_spiketrain with fallback")
     except Exception as error:
         if verbose:
-            print("Could not patch SpikeTrain:", repr(error))
-
-    if verbose:
             print("Could not patch SpikeTrain:", repr(error))
 
     if verbose:
