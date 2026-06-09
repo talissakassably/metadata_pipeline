@@ -69,6 +69,60 @@ def patch_old_neo_pickle_compatibility(verbose=True):
 
     applied = []
 
+    # Old Neo versions had classes in modules that no longer exist in newer Neo.
+    # The TouchAndSee pickles can reference neo.core.unit.Unit and related legacy
+    # containers. For metadata extraction we only need the object to unpickle; we
+    # do not need full old Neo behaviour, so lightweight shim classes are enough.
+    try:
+        import types
+
+        class LegacyNeoContainer(object):
+            def __init__(self, *args, **kwargs):
+                self._legacy_args = args
+                self.__dict__.update(kwargs)
+                if not hasattr(self, "name"):
+                    self.name = None
+                if not hasattr(self, "annotations"):
+                    self.annotations = {}
+                if not hasattr(self, "spiketrains"):
+                    self.spiketrains = []
+                if not hasattr(self, "analogsignals"):
+                    self.analogsignals = []
+
+            def __setstate__(self, state):
+                if isinstance(state, dict):
+                    self.__dict__.update(state)
+                elif isinstance(state, tuple):
+                    for item in state:
+                        if isinstance(item, dict):
+                            self.__dict__.update(item)
+                if not hasattr(self, "annotations") or self.annotations is None:
+                    self.annotations = {}
+                if not hasattr(self, "spiketrains"):
+                    self.spiketrains = []
+                if not hasattr(self, "analogsignals"):
+                    self.analogsignals = []
+
+        legacy_modules = {
+            "neo.core.unit": "Unit",
+            "neo.core.channelindex": "ChannelIndex",
+            "neo.core.recordingchannelgroup": "RecordingChannelGroup",
+            "neo.core.recordingchannel": "RecordingChannel",
+        }
+
+        for module_name, class_name in legacy_modules.items():
+            if module_name not in sys.modules:
+                module = types.ModuleType(module_name)
+                LegacyClass = type(class_name, (LegacyNeoContainer,), {"__module__": module_name})
+                setattr(module, class_name, LegacyClass)
+                sys.modules[module_name] = module
+                applied.append(module_name + "." + class_name + " shim")
+
+    except Exception as error:
+        if verbose:
+            print("Could not install old Neo module shims:", repr(error))
+
+
     def _safe_length(value):
         try:
             return len(value)
@@ -1106,7 +1160,7 @@ def extract_touchandsee_dataset(dataset_path, output_folder=None, include_object
         "dataset_name": dataset_path.name,
         "dataset_folder": str(dataset_path),
         "date_extraction": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "extractor": "touchandsee_internal_neo_pickle_extractor_v6",
+        "extractor": "touchandsee_internal_neo_pickle_extractor_v7",
         "include_object_details": bool(include_object_details),
         "dataset_summary": build_dataset_summary(results),
         "files": results,
