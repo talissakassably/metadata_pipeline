@@ -92,8 +92,10 @@ def patch_old_neo_pickle_compatibility(verbose=True):
                             bound.arguments["annotations"] = {}
 
                     if "array_annotations" in signature.parameters:
-                        if bound.arguments.get("array_annotations") is None:
-                            bound.arguments["array_annotations"] = {}
+                        # Old Neo pickles can contain scalar / wrong-length array annotations.
+                        # For metadata extraction we do not need these per-sample/channel annotations,
+                        # so drop them to avoid: Incorrect length of array annotation.
+                        bound.arguments["array_annotations"] = {}
 
                     if "copy" in signature.parameters:
                         # Prevent Neo/Numpy2 copy deprecation errors.
@@ -102,10 +104,13 @@ def patch_old_neo_pickle_compatibility(verbose=True):
                     try:
                         return original_function(*bound.args, **bound.kwargs)
                     except ValueError as error:
-                        if "copy" in str(error):
-                            # Retry without copy if this Neo version rejects it.
+                        message = str(error)
+                        if "copy" in message or "Incorrect length of array annotation" in message:
+                            # Retry without copy and without array annotations.
                             kwargs_retry = dict(bound.kwargs)
                             kwargs_retry.pop("copy", None)
+                            if "array_annotations" in signature.parameters:
+                                kwargs_retry["array_annotations"] = {}
                             return original_function(*bound.args, **kwargs_retry)
                         raise
 
@@ -126,16 +131,19 @@ def patch_old_neo_pickle_compatibility(verbose=True):
             def patched_new(cls_, *args, **kwargs):
                 if kwargs.get("annotations") is None:
                     kwargs["annotations"] = {}
-                if kwargs.get("array_annotations") is None:
-                    kwargs["array_annotations"] = {}
+                # Drop old / invalid array annotations; they can have the wrong length
+                # for modern Neo and are not needed for metadata summaries.
+                kwargs["array_annotations"] = {}
                 if "copy" in kwargs:
                     kwargs["copy"] = None
 
                 try:
                     return original_new(cls_, *args, **kwargs)
                 except ValueError as error:
-                    if "copy" in str(error):
+                    message = str(error)
+                    if "copy" in message or "Incorrect length of array annotation" in message:
                         kwargs.pop("copy", None)
+                        kwargs["array_annotations"] = {}
                         return original_new(cls_, *args, **kwargs)
                     raise
 
