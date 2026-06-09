@@ -1,31 +1,28 @@
 # -*- coding: utf-8 -*-
-
 """
-TouchAndSee internal metadata extractor.
+TouchAndSee internal metadata extractor for old Neo pickle files.
 
-Dataset:
+Dataset example:
     p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681
 
-Purpose:
-    Load old Neo pickle files and extract internal session-level metadata:
-    - subject / session identity
-    - Neo Block / Segment counts
-    - spiketrains and total spikes
-    - analog signals / LFP-like signals
-    - events and epochs
-    - annotations keys, but not raw arrays
-    - compact quality / completeness flags
+Why this script exists:
+    These .pkl files were saved with an old Neo version. Modern Neo may fail
+    while unpickling old objects. This script patches the common old-Neo
+    incompatibilities, then extracts only compact metadata.
 
-This script intentionally does NOT store:
+It DOES extract:
+    - subject / session identity from path and filename
+    - Block / Segment counts
+    - SpikeTrain counts and total spikes
+    - AnalogSignal counts, shapes, units, sampling rates
+    - Event and Epoch counts / names
+    - annotation keys and compact annotation previews
+
+It does NOT save:
     - raw signal values
-    - spike times
+    - full spike times
     - waveform arrays
-    - full annotations if they are large arrays/lists
-
-Recommended environment:
-    conda create -n touchandsee_old python=3.9 -y
-    conda activate touchandsee_old
-    python -m pip install "numpy==1.26.4" "neo==0.13.4" quantities pandas scipy
+    - large numpy arrays
 """
 
 import os
@@ -33,6 +30,7 @@ import re
 import sys
 import json
 import pickle
+import types
 import argparse
 import traceback
 import inspect
@@ -40,12 +38,15 @@ from pathlib import Path
 from datetime import datetime
 
 
+EXTRACTOR_NAME = "touchandsee_internal_neo_pickle_extractor_v11"
+
 LARGE_FIELD_KEYWORDS = [
     "waveform",
     "waveforms",
     "signal",
     "signals",
     "spike_times",
+    "spiketimes",
     "times",
     "data",
     "array",
@@ -54,35 +55,293 @@ LARGE_FIELD_KEYWORDS = [
 ]
 
 
-def patch_old_neo_pickle_compatibility(verbose=True):
+def is_large_key(key):
+    key = str(key).lower()
+    return any(word in key for word in LARGE_FIELD_KEYWORDS)
+
+
+def make_json_safe(value, max_list=20, max_dict=40):
+    """Convert values to compact JSON-safe summaries."""
+
+    if value is None:
+        return None
+
+    if isinstance(value, (str, int, float, bool)):
+        return value
+
+    if isinstance(value, Path):
+        return str(value)
+
+    try:
+        import numpy as np
+        if isinstance(value, np.integer):
+            return int(value)
+        if isinstance(value, np.floating):
+            return float(value)
+        if isinstance(value, np.bool_):
+            return bool(value)
+        if isinstance(value, np.ndarray):
+            return {
+                "array_summary": True,
+                "shape": list(value.shape),
+                "dtype": str(value.dtype),
+            }
+    except Exception:
+        pass
+
+    try:
+        import quantities as pq
+        if isinstance(value, pq.Quantity):
+            magnitude = value.magnitude
+            try:
+                import numpy as np
+                if isinstance(magnitude, np.ndarray):
+                    if magnitude.size == 1:
+                        return {
+                            "value": float(magnitude.reshape(-1)[0]),
+                            "unit": str(value.units),
+                        }
+                    return {
+                        "quantity_summary": True,
+                        "shape": list(magnitude.shape),
+                        "dtype": str(magnitude.dtype),
+                        "unit": str(value.units),
+                    }
+            except Exception:
+                pass
+            try:
+                return {"value": float(magnitude), "unit": str(value.units)}
+            except Exception:
+                return str(value)
+    except Exception:
+        pass
+
+    if isinstance(value, dict):
+        out = {}
+        for i, (k, v) in enumerate(value.items()):
+            if i >= max_dict:
+                out["__truncated__"] = True
+                out["__original_length__"] = len(value)
+                break
+            if is_large_key(k):
+                out[str(k)] = "SKIPPED_LARGE_FIELD"
+            else:
+                out[str(k)] = make_json_safe(v, max_list=max_list, max_dict=max_dict)
+        return out
+
+    if isinstance(value, (list, tuple, set)):
+        values = list(value)
+        if len(values) > max_list:
+            return {
+                "list_summary": True,
+                "length": len(values),
+                "preview": [make_json_safe(x) for x in values[:5]],
+            }
+        return [make_json_safe(x) for x in values]
+
+    try:
+        return str(value)
+    except Exception:
+        return None
+
+
+def annotation_summary(obj):
+    annotations = getattr(obj, "annotations", None)
+    if not isinstance(annotations, dict):
+        return {"annotation_keys": []}
+
+    keys = sorted([str(k) for k in annotations.keys()])
+    preview = {}
+
+    for key in keys[:30]:
+        value = annotations.get(key)
+        if is_large_key(key):
+            preview[key] = "SKIPPED_LARGE_FIELD"
+        else:
+            preview[key] = make_json_safe(value)
+
+    return {
+        "annotation_keys": keys,
+        "annotation_preview": preview,
+    }
+
+
+def _safe_len(value):
+    try:
+        return len(value)
+    except Exception:
+        return None
+
+
+def _as_numeric_array(value):
+    try:
+        import numpy as np
+        if hasattr(value, "magnitude"):
+            value = value.magnitude
+        arr = np.asarray(value, dtype=float).reshape(-1)
+        if arr.size == 0:
+            return None
+        return arr
+    except Exception:
+        return None
+
+
+def _max_time_value(times):
+    arr = _as_numeric_array(times)
+    if arr is None:
+        return None
+    try:
+        return float(arr.max())
+    except Exception:
+        return None
+
+
+def _min_time_value(times):
+    arr = _as_numeric_array(times)
+    if arr is None:
+        return None
+    try:
+        return float(arr.min())
+    except Exception:
+        return None
+
+
+def _time_with_units(value, reference_times=None):
+    if hasattr(value, "units"):
+        return value
+
+    if reference_times is not None and hasattr(reference_times, "units"):
+        try:
+            return float(value) * reference_times.units
+        except Exception:
+            pass
+
+    return float(value)
+
+
+def _sanitize_time_value(value, default, reference_times=None):
+    if value is None:
+        return _time_with_units(default, reference_times)
+
+    if isinstance(value, (int, float)):
+        return _time_with_units(value, reference_times)
+
+    if hasattr(value, "units"):
+        return value
+
+    try:
+        import numpy as np
+        if isinstance(value, np.generic):
+            return _time_with_units(float(value), reference_times)
+        if isinstance(value, np.ndarray):
+            if value.size == 1:
+                return _time_with_units(float(value.reshape(-1)[0]), reference_times)
+            return _time_with_units(default, reference_times)
+    except Exception:
+        pass
+
+    return _time_with_units(default, reference_times)
+
+
+def _ensure_units(arguments):
+    if "times" in arguments:
+        times = arguments.get("times")
+        if times is not None and not hasattr(times, "units"):
+            if arguments.get("units") is None:
+                arguments["units"] = "s"
+    return arguments
+
+
+def _fix_labels(arguments):
+    if "labels" not in arguments or "times" not in arguments:
+        return arguments
+
+    n_times = _safe_len(arguments.get("times"))
+    n_labels = _safe_len(arguments.get("labels"))
+
+    if n_times is not None and n_labels != n_times:
+        arguments["labels"] = [""] * int(n_times)
+
+    return arguments
+
+
+def _sanitize_mapping_arguments(arguments):
+    for key in ["annotations", "array_annotations"]:
+        if key in arguments and not isinstance(arguments.get(key), dict):
+            arguments[key] = {}
+        if key in arguments and arguments.get(key) is None:
+            arguments[key] = {}
+    return arguments
+
+
+def _sanitize_waveforms(arguments):
+    if "waveforms" in arguments:
+        wf = arguments.get("waveforms")
+        if wf is not None and not hasattr(wf, "shape"):
+            arguments["waveforms"] = None
+    return arguments
+
+
+def _sanitize_spiketrain_times(arguments):
+    times = arguments.get("times")
+    max_t = _max_time_value(times)
+    min_t = _min_time_value(times)
+
+    if "t_start" in arguments:
+        default_start = 0.0 if min_t is None else min(0.0, min_t)
+        arguments["t_start"] = _sanitize_time_value(
+            arguments.get("t_start"),
+            default_start,
+            times,
+        )
+
+    if "t_stop" in arguments:
+        current_stop = arguments.get("t_stop")
+        stop_bad = False
+
+        if current_stop is None:
+            stop_bad = True
+        elif isinstance(current_stop, (dict, list, tuple)):
+            stop_bad = True
+        else:
+            current_stop_numeric = _max_time_value(current_stop)
+            if current_stop_numeric is None:
+                try:
+                    current_stop_numeric = float(current_stop)
+                except Exception:
+                    current_stop_numeric = None
+
+            if max_t is not None and current_stop_numeric is not None and current_stop_numeric < max_t:
+                stop_bad = True
+
+        if stop_bad:
+            fallback_stop = 1.0 if max_t is None else max_t + 1e-6
+            arguments["t_stop"] = _time_with_units(fallback_stop, times)
+        else:
+            arguments["t_stop"] = _sanitize_time_value(
+                current_stop,
+                1.0 if max_t is None else max_t + 1e-6,
+                times,
+            )
+
+    return arguments
+
+
+def install_old_neo_pickle_patches(verbose=True):
     """
-    Compatibility patch for old Neo pickles.
-
-    Old TouchAndSee pickles can contain:
-      - annotations=None
-      - array_annotations=None
-      - copy argument from older Neo reconstruction
-
-    Newer Neo versions can fail on these. This patch normalizes them before
-    reconstruction.
+    Install monkey patches so old Neo pickles can be loaded enough for metadata extraction.
     """
 
     applied = []
 
-    # Old Neo versions had classes in modules that no longer exist in newer Neo.
-    # The TouchAndSee pickles can reference neo.core.unit.Unit and related legacy
-    # containers. For metadata extraction we only need the object to unpickle; we
-    # do not need full old Neo behaviour, so lightweight shim classes are enough.
     try:
-        import types
-
         class LegacyNeoContainer(object):
             def __init__(self, *args, **kwargs):
                 self._legacy_args = args
                 self.__dict__.update(kwargs)
                 if not hasattr(self, "name"):
                     self.name = None
-                if not hasattr(self, "annotations"):
+                if not hasattr(self, "annotations") or self.annotations is None:
                     self.annotations = {}
                 if not hasattr(self, "spiketrains"):
                     self.spiketrains = []
@@ -96,6 +355,7 @@ def patch_old_neo_pickle_compatibility(verbose=True):
                     for item in state:
                         if isinstance(item, dict):
                             self.__dict__.update(item)
+
                 if not hasattr(self, "annotations") or self.annotations is None:
                     self.annotations = {}
                 if not hasattr(self, "spiketrains"):
@@ -113,761 +373,277 @@ def patch_old_neo_pickle_compatibility(verbose=True):
         for module_name, class_name in legacy_modules.items():
             if module_name not in sys.modules:
                 module = types.ModuleType(module_name)
-                LegacyClass = type(class_name, (LegacyNeoContainer,), {"__module__": module_name})
+                LegacyClass = type(
+                    class_name,
+                    (LegacyNeoContainer,),
+                    {"__module__": module_name},
+                )
                 setattr(module, class_name, LegacyClass)
                 sys.modules[module_name] = module
                 applied.append(module_name + "." + class_name + " shim")
 
     except Exception as error:
         if verbose:
-            print("Could not install old Neo module shims:", repr(error))
-
-
-    def _safe_length(value):
-        try:
-            return len(value)
-        except Exception:
-            return None
-
-    def _ensure_time_units(arguments):
-        """Old Neo pickles may store event/epoch times as plain numpy arrays.
-        New Neo requires explicit units. For metadata extraction, seconds is the
-        safest fallback for time-like objects.
-        """
-        if "times" in arguments:
-            times = arguments.get("times")
-            if times is not None and not hasattr(times, "units"):
-                if "units" not in arguments or arguments.get("units") is None:
-                    arguments["units"] = "s"
-
-        if "durations" in arguments:
-            durations = arguments.get("durations")
-            if durations is not None and not hasattr(durations, "units"):
-                # Keep durations numeric and let Neo use the same units as times.
-                if "units" not in arguments or arguments.get("units") is None:
-                    arguments["units"] = "s"
-
-        return arguments
-
-    def _fix_labels_for_times(arguments):
-        """Old Neo pickles sometimes store epoch/event labels with a wrong length.
-        For metadata extraction, labels are not critical, so force a safe label list.
-        """
-        if "labels" not in arguments or "times" not in arguments:
-            return arguments
-
-        times = arguments.get("times")
-        labels = arguments.get("labels")
-        n_times = _safe_length(times)
-        n_labels = _safe_length(labels)
-
-        if n_times is None:
-            return arguments
-
-        if labels is None or n_labels != n_times:
-            arguments["labels"] = [""] * int(n_times)
-
-        return arguments
+            print("Could not install old Neo shims:", repr(error))
 
     try:
-        import neo.core.analogsignal as analogsignal
+        import neo.core.analogsignal as analogsignal_module
 
-        # Patch reconstruction functions used by pickle.
-        for function_name in [
-            "_new_AnalogSignalArray",
-            "_new_AnalogSignal",
-        ]:
-            if not hasattr(analogsignal, function_name):
+        for function_name in ["_new_AnalogSignalArray", "_new_AnalogSignal"]:
+            if not hasattr(analogsignal_module, function_name):
                 continue
 
-            original_function = getattr(analogsignal, function_name)
-            signature = inspect.signature(original_function)
+            original = getattr(analogsignal_module, function_name)
+            signature = inspect.signature(original)
 
-            def make_patched_function(original_function, signature):
-                def patched_function(*args, **kwargs):
-                    bound = signature.bind_partial(*args, **kwargs)
+            def make_patch(original_function, original_signature):
+                def patched(*args, **kwargs):
+                    bound = original_signature.bind_partial(*args, **kwargs)
+                    _sanitize_mapping_arguments(bound.arguments)
 
-                    if "annotations" in signature.parameters:
-                        if bound.arguments.get("annotations") is None:
-                            bound.arguments["annotations"] = {}
-
-                    if "array_annotations" in signature.parameters:
-                        # Old Neo pickles can contain scalar / wrong-length array annotations.
-                        # For metadata extraction we do not need these per-sample/channel annotations,
-                        # so drop them to avoid: Incorrect length of array annotation.
+                    if "array_annotations" in bound.arguments:
                         bound.arguments["array_annotations"] = {}
 
-                    if "copy" in signature.parameters:
-                        # Prevent Neo/Numpy2 copy deprecation errors.
+                    if "copy" in bound.arguments:
                         bound.arguments["copy"] = None
 
                     try:
                         return original_function(*bound.args, **bound.kwargs)
-                    except ValueError as error:
-                        message = str(error)
-                        if "copy" in message or "Incorrect length of array annotation" in message:
-                            # Retry without copy and without array annotations.
-                            kwargs_retry = dict(bound.kwargs)
-                            kwargs_retry.pop("copy", None)
-                            if "array_annotations" in signature.parameters:
-                                kwargs_retry["array_annotations"] = {}
-                            return original_function(*bound.args, **kwargs_retry)
-                        raise
+                    except Exception:
+                        retry = dict(bound.arguments)
+                        _sanitize_mapping_arguments(retry)
 
-                return patched_function
+                        if "array_annotations" in retry:
+                            retry["array_annotations"] = {}
+
+                        retry.pop("copy", None)
+
+                        return original_function(**retry)
+
+                return patched
 
             setattr(
-                analogsignal,
+                analogsignal_module,
                 function_name,
-                make_patched_function(original_function, signature),
+                make_patch(original, signature),
             )
             applied.append("neo.core.analogsignal." + function_name)
 
-        # Patch AnalogSignal.__new__ as a backup.
-        if hasattr(analogsignal, "AnalogSignal"):
-            cls = analogsignal.AnalogSignal
-            original_new = cls.__new__
-
-            def make_patched_analogsignal_new(original_new):
-                def patched_new(cls_, *args, **kwargs):
-                    if kwargs.get("annotations") is None:
-                        kwargs["annotations"] = {}
-                    # Drop old / invalid array annotations; they can have the wrong length
-                    # for modern Neo and are not needed for metadata summaries.
-                    kwargs["array_annotations"] = {}
-                    if "copy" in kwargs:
-                        kwargs["copy"] = None
-
-                    try:
-                        return original_new(cls_, *args, **kwargs)
-                    except ValueError as error:
-                        message = str(error)
-                        if "copy" in message or "Incorrect length of array annotation" in message:
-                            kwargs.pop("copy", None)
-                            kwargs["array_annotations"] = {}
-                            return original_new(cls_, *args, **kwargs)
-                        raise
-                return patched_new
-
-            cls.__new__ = staticmethod(make_patched_analogsignal_new(original_new))
-            applied.append("neo.core.analogsignal.AnalogSignal.__new__")
-
     except Exception as error:
         if verbose:
-            print("Could not patch analogsignal compatibility:", repr(error))
+            print("Could not patch AnalogSignal:", repr(error))
 
-
-
-    # Patch Event reconstruction. Old pickles may pass a Segment object where
-    # modern Neo expects an annotations mapping. For metadata extraction, links
-    # to parent Segment are not needed during unpickling, so we drop invalid
-    # annotations/array_annotations.
     try:
         import neo.core.event as event_module
 
         if hasattr(event_module, "_new_event"):
-            original_function = event_module._new_event
-            signature = inspect.signature(original_function)
+            original = event_module._new_event
+            signature = inspect.signature(original)
 
             def patched_new_event(*args, **kwargs):
                 bound = signature.bind_partial(*args, **kwargs)
-
-                if "annotations" in signature.parameters:
-                    annotations = bound.arguments.get("annotations")
-                    if annotations is None or not isinstance(annotations, dict):
-                        bound.arguments["annotations"] = {}
-
-                if "array_annotations" in signature.parameters:
-                    array_annotations = bound.arguments.get("array_annotations")
-                    if array_annotations is None or not isinstance(array_annotations, dict):
-                        bound.arguments["array_annotations"] = {}
-
-                _fix_labels_for_times(bound.arguments)
-                _ensure_time_units(bound.arguments)
+                _sanitize_mapping_arguments(bound.arguments)
+                _fix_labels(bound.arguments)
+                _ensure_units(bound.arguments)
 
                 try:
-                    return original_function(*bound.args, **bound.kwargs)
-                except TypeError as error:
-                    message = str(error)
-                    if "argument after ** must be a mapping" in message:
-                        # Retry with invalid mapping-like arguments removed.
-                        retry_arguments = dict(bound.arguments)
-                        if "annotations" in retry_arguments:
-                            retry_arguments["annotations"] = {}
-                        if "array_annotations" in retry_arguments:
-                            retry_arguments["array_annotations"] = {}
-                        return original_function(**retry_arguments)
-                    raise
-                except ValueError as error:
-                    message = str(error)
-                    if (
-                        "Incorrect length of array annotation" in message
-                        or "Labels array has different length to times" in message
-                    ):
-                        retry_arguments = dict(bound.arguments)
-                        if "array_annotations" in retry_arguments:
-                            retry_arguments["array_annotations"] = {}
-                        _fix_labels_for_times(retry_arguments)
-                        _ensure_time_units(retry_arguments)
-                        return original_function(**retry_arguments)
-                    raise
+                    return original(*bound.args, **bound.kwargs)
+                except Exception:
+                    retry = dict(bound.arguments)
+                    _sanitize_mapping_arguments(retry)
+                    _fix_labels(retry)
+                    _ensure_units(retry)
+                    return original(**retry)
 
             event_module._new_event = patched_new_event
             applied.append("neo.core.event._new_event")
 
-        if hasattr(event_module, "Event"):
-            cls = event_module.Event
-            original_new = cls.__new__
-
-            def make_patched_event_new(original_new):
-                def patched_event_new(cls_, *args, **kwargs):
-                    if kwargs.get("annotations") is None or not isinstance(kwargs.get("annotations", {}), dict):
-                        kwargs["annotations"] = {}
-                    if kwargs.get("array_annotations") is None or not isinstance(kwargs.get("array_annotations", {}), dict):
-                        kwargs["array_annotations"] = {}
-                    _fix_labels_for_times(kwargs)
-                    _ensure_time_units(kwargs)
-
-                    try:
-                        return original_new(cls_, *args, **kwargs)
-                    except ValueError as error:
-                        message = str(error)
-                        # Some old pickles have incompatible units attached to events.
-                        # For metadata extraction, keep the times and force standard seconds.
-                        if "Unable to convert between units" in message or "you must specify units" in message:
-                            kwargs["units"] = "s"
-                            return original_new(cls_, *args, **kwargs)
-                        raise
-                return patched_event_new
-
-            cls.__new__ = staticmethod(make_patched_event_new(original_new))
-            applied.append("neo.core.event.Event.__new__")
-
     except Exception as error:
         if verbose:
-            print("Could not patch event compatibility:", repr(error))
+            print("Could not patch Event:", repr(error))
 
-    # Patch Epoch reconstruction for the same old-pickle issue.
     try:
         import neo.core.epoch as epoch_module
 
-        for function_name in ["_new_epoch", "_new_Epoch"]:
-            if not hasattr(epoch_module, function_name):
-                continue
+        if hasattr(epoch_module, "_new_epoch"):
+            original = epoch_module._new_epoch
+            signature = inspect.signature(original)
 
-            original_function = getattr(epoch_module, function_name)
-            signature = inspect.signature(original_function)
+            def patched_new_epoch(*args, **kwargs):
+                bound = signature.bind_partial(*args, **kwargs)
+                _sanitize_mapping_arguments(bound.arguments)
+                _fix_labels(bound.arguments)
+                _ensure_units(bound.arguments)
 
-            def make_patched_epoch_function(original_function, signature):
-                def patched_epoch_function(*args, **kwargs):
-                    bound = signature.bind_partial(*args, **kwargs)
+                try:
+                    return original(*bound.args, **bound.kwargs)
+                except Exception:
+                    retry = dict(bound.arguments)
+                    _sanitize_mapping_arguments(retry)
+                    _fix_labels(retry)
+                    _ensure_units(retry)
 
-                    if "annotations" in signature.parameters:
-                        annotations = bound.arguments.get("annotations")
-                        if annotations is None or not isinstance(annotations, dict):
-                            bound.arguments["annotations"] = {}
+                    if retry.get("units") is None:
+                        retry["units"] = "s"
 
-                    if "array_annotations" in signature.parameters:
-                        array_annotations = bound.arguments.get("array_annotations")
-                        if array_annotations is None or not isinstance(array_annotations, dict):
-                            bound.arguments["array_annotations"] = {}
+                    return original(**retry)
 
-                    _fix_labels_for_times(bound.arguments)
-                    _ensure_time_units(bound.arguments)
-
-                    try:
-                        return original_function(*bound.args, **bound.kwargs)
-                    except (TypeError, ValueError, AttributeError) as error:
-                        message = str(error)
-                        if (
-                            "argument after ** must be a mapping" in message
-                            or "Incorrect length of array annotation" in message
-                            or "Labels array has different length to times" in message
-                            or "you must specify units" in message
-                        ):
-                            retry_arguments = dict(bound.arguments)
-                            if "annotations" in retry_arguments:
-                                retry_arguments["annotations"] = {}
-                            if "array_annotations" in retry_arguments:
-                                retry_arguments["array_annotations"] = {}
-                            _fix_labels_for_times(retry_arguments)
-                            _ensure_time_units(retry_arguments)
-                            return original_function(**retry_arguments)
-                        raise
-
-                return patched_epoch_function
-
-            setattr(epoch_module, function_name, make_patched_epoch_function(original_function, signature))
-            applied.append("neo.core.epoch." + function_name)
-
-        if hasattr(epoch_module, "Epoch"):
-            cls = epoch_module.Epoch
-            original_new = cls.__new__
-
-            def make_patched_epoch_new(original_new):
-                def patched_epoch_new(cls_, *args, **kwargs):
-                    if kwargs.get("annotations") is None or not isinstance(kwargs.get("annotations", {}), dict):
-                        kwargs["annotations"] = {}
-                    if kwargs.get("array_annotations") is None or not isinstance(kwargs.get("array_annotations", {}), dict):
-                        kwargs["array_annotations"] = {}
-                    _fix_labels_for_times(kwargs)
-                    _ensure_time_units(kwargs)
-
-                    try:
-                        return original_new(cls_, *args, **kwargs)
-                    except ValueError as error:
-                        message = str(error)
-                        if "Labels array has different length to times" in message or "you must specify units" in message:
-                            _fix_labels_for_times(kwargs)
-                            _ensure_time_units(kwargs)
-                            kwargs["units"] = kwargs.get("units") or "s"
-                            return original_new(cls_, *args, **kwargs)
-                        raise
-
-                return patched_epoch_new
-
-            cls.__new__ = staticmethod(make_patched_epoch_new(original_new))
-            applied.append("neo.core.epoch.Epoch.__new__")
+            epoch_module._new_epoch = patched_new_epoch
+            applied.append("neo.core.epoch._new_epoch")
 
     except Exception as error:
         if verbose:
-            print("Could not patch epoch compatibility:", repr(error))
+            print("Could not patch Epoch:", repr(error))
 
-
-    # Patch SpikeTrain reconstruction. Old pickles may pass a Segment object where
-    # modern Neo expects an annotations mapping, just like Event/Epoch. We keep
-    # spike times internal only for counting later, but we do not need invalid
-    # annotations or array annotations.
     try:
-        import neo.core.spiketrain as spiketrain_module
+        import neo.core.spiketrain as st_module
 
-        def _sanitize_spiketrain_time_value(value, default):
-            # Old pickles can put dictionaries/Neo objects in t_start or t_stop.
-            # Modern Neo expects a number or a quantity. For metadata extraction we
-            # only need the SpikeTrain length, so safe numeric fallbacks are enough.
-            if value is None:
-                return default
-            if isinstance(value, (int, float)):
-                return value
-            if hasattr(value, "units"):
-                return value
-            try:
-                import numpy as _np
-                if isinstance(value, _np.ndarray):
-                    if value.size == 1:
-                        return float(value.reshape(-1)[0])
-                    return default
-                if isinstance(value, _np.generic):
-                    return float(value)
-            except Exception:
-                pass
-            return default
-
-        if hasattr(spiketrain_module, "_new_spiketrain"):
-            original_function = spiketrain_module._new_spiketrain
-            signature = inspect.signature(original_function)
+        if hasattr(st_module, "_new_spiketrain"):
+            original = st_module._new_spiketrain
+            signature = inspect.signature(original)
 
             def patched_new_spiketrain(*args, **kwargs):
                 bound = signature.bind_partial(*args, **kwargs)
 
-                if "annotations" in signature.parameters:
-                    annotations = bound.arguments.get("annotations")
-                    if annotations is None or not isinstance(annotations, dict):
-                        bound.arguments["annotations"] = {}
+                _sanitize_mapping_arguments(bound.arguments)
+                _sanitize_waveforms(bound.arguments)
+                _ensure_units(bound.arguments)
+                _sanitize_spiketrain_times(bound.arguments)
 
-                if "array_annotations" in signature.parameters:
-                    array_annotations = bound.arguments.get("array_annotations")
-                    if array_annotations is None or not isinstance(array_annotations, dict):
-                        bound.arguments["array_annotations"] = {}
-
-                # Old pickles can put a Segment-like object in the waveforms slot.
-                # Modern Neo expects an array with .shape. For metadata extraction we
-                # do not need waveforms, so drop anything that is not array-like.
-                if "waveforms" in signature.parameters:
-                    waveforms = bound.arguments.get("waveforms")
-                    if waveforms is not None and not hasattr(waveforms, "shape"):
-                        bound.arguments["waveforms"] = None
-
-                if "t_start" in signature.parameters:
-                    bound.arguments["t_start"] = _sanitize_spiketrain_time_value(bound.arguments.get("t_start"), 0.0)
-
-                if "t_stop" in signature.parameters:
-                    bound.arguments["t_stop"] = _sanitize_spiketrain_time_value(bound.arguments.get("t_stop"), 0.0)
-
-                if "copy" in signature.parameters:
+                if "copy" in bound.arguments:
                     bound.arguments["copy"] = None
 
                 try:
-                    return original_function(*bound.args, **bound.kwargs)
-                except (TypeError, ValueError, AttributeError) as error:
-                    message = str(error)
-                    if (
-                        "argument after ** must be a mapping" in message
-                        or "Incorrect length of array annotation" in message
-                        or "you must specify units" in message
-                        or "Unable to convert between units" in message
-                        or "copy" in message
-                        or "object has no attribute 'shape'" in message
-                        or "float() argument must be a string or a number" in message
-                    ):
-                        retry_arguments = dict(bound.arguments)
-                        if "annotations" in retry_arguments:
-                            retry_arguments["annotations"] = {}
-                        if "array_annotations" in retry_arguments:
-                            retry_arguments["array_annotations"] = {}
-                        if "waveforms" in retry_arguments:
-                            waveforms = retry_arguments.get("waveforms")
-                            if waveforms is not None and not hasattr(waveforms, "shape"):
-                                retry_arguments["waveforms"] = None
-                        if "t_start" in retry_arguments:
-                            retry_arguments["t_start"] = _sanitize_spiketrain_time_value(retry_arguments.get("t_start"), 0.0)
-                        if "t_stop" in retry_arguments:
-                            retry_arguments["t_stop"] = _sanitize_spiketrain_time_value(retry_arguments.get("t_stop"), 0.0)
-                        if "copy" in retry_arguments:
-                            retry_arguments["copy"] = None
-                        # SpikeTrain times are time-like; seconds is the safest fallback.
-                        if "units" in signature.parameters and retry_arguments.get("units") is None:
-                            retry_arguments["units"] = "s"
-                        return original_function(**retry_arguments)
-                    raise
+                    return original(*bound.args, **bound.kwargs)
+                except Exception:
+                    retry = dict(bound.arguments)
 
-            spiketrain_module._new_spiketrain = patched_new_spiketrain
+                    _sanitize_mapping_arguments(retry)
+                    _sanitize_waveforms(retry)
+                    _ensure_units(retry)
+                    _sanitize_spiketrain_times(retry)
+
+                    retry.pop("copy", None)
+
+                    if retry.get("units") is None:
+                        retry["units"] = "s"
+
+                    return original(**retry)
+
+            st_module._new_spiketrain = patched_new_spiketrain
             applied.append("neo.core.spiketrain._new_spiketrain")
-
-        if hasattr(spiketrain_module, "SpikeTrain"):
-            cls = spiketrain_module.SpikeTrain
-            original_new = cls.__new__
-
-            def make_patched_spiketrain_new(original_new):
-                def patched_spiketrain_new(cls_, *args, **kwargs):
-                    if kwargs.get("annotations") is None or not isinstance(kwargs.get("annotations", {}), dict):
-                        kwargs["annotations"] = {}
-                    if kwargs.get("array_annotations") is None or not isinstance(kwargs.get("array_annotations", {}), dict):
-                        kwargs["array_annotations"] = {}
-                    if "copy" in kwargs:
-                        kwargs["copy"] = None
-                    if "waveforms" in kwargs:
-                        waveforms = kwargs.get("waveforms")
-                        if waveforms is not None and not hasattr(waveforms, "shape"):
-                            kwargs["waveforms"] = None
-                    if "t_start" in kwargs:
-                        kwargs["t_start"] = _sanitize_spiketrain_time_value(kwargs.get("t_start"), 0.0)
-                    if "t_stop" in kwargs:
-                        kwargs["t_stop"] = _sanitize_spiketrain_time_value(kwargs.get("t_stop"), 0.0)
-                    if kwargs.get("units") is None:
-                        kwargs["units"] = "s"
-
-                    try:
-                        return original_new(cls_, *args, **kwargs)
-                    except (TypeError, ValueError, AttributeError) as error:
-                        message = str(error)
-                        if (
-                            "argument after ** must be a mapping" in message
-                            or "Incorrect length of array annotation" in message
-                            or "you must specify units" in message
-                            or "Unable to convert between units" in message
-                            or "copy" in message
-                            or "object has no attribute 'shape'" in message
-                            or "float() argument must be a string or a number" in message
-                        ):
-                            kwargs["annotations"] = {}
-                            kwargs["array_annotations"] = {}
-                            if "waveforms" in kwargs:
-                                waveforms = kwargs.get("waveforms")
-                                if waveforms is not None and not hasattr(waveforms, "shape"):
-                                    kwargs["waveforms"] = None
-                            if "t_start" in kwargs:
-                                kwargs["t_start"] = _sanitize_spiketrain_time_value(kwargs.get("t_start"), 0.0)
-                            if "t_stop" in kwargs:
-                                kwargs["t_stop"] = _sanitize_spiketrain_time_value(kwargs.get("t_stop"), 0.0)
-                            kwargs["units"] = kwargs.get("units") or "s"
-                            kwargs.pop("copy", None)
-                            return original_new(cls_, *args, **kwargs)
-                        raise
-
-                return patched_spiketrain_new
-
-            cls.__new__ = staticmethod(make_patched_spiketrain_new(original_new))
-            applied.append("neo.core.spiketrain.SpikeTrain.__new__")
 
     except Exception as error:
         if verbose:
-            print("Could not patch spiketrain compatibility:", repr(error))
+            print("Could not patch SpikeTrain:", repr(error))
 
     if verbose:
-        if applied:
-            print("Applied compatibility patches:")
-            for item in applied:
-                print("  -", item)
-        else:
-            print("No Neo compatibility patches applied.")
-
-    return applied
+        print("Neo compatibility patches applied:")
+        for item in applied:
+            print("  -", item)
 
 
-def json_safe(value, max_list_items=20, depth=0, max_depth=4):
-    """
-    Convert arbitrary values to JSON-safe compact values.
-    Arrays and long lists are summarized, not expanded.
-    """
-
-    if depth > max_depth:
-        return str(type(value).__name__)
-
-    if value is None:
-        return None
-
-    if isinstance(value, (str, int, float, bool)):
-        return value
-
-    if isinstance(value, Path):
-        return str(value)
-
-    if isinstance(value, datetime):
-        return str(value)
+def parse_touchandsee_file_metadata(file_path, dataset_path):
+    file_path = Path(file_path)
+    dataset_path = Path(dataset_path)
 
     try:
-        import numpy as np
-
-        if isinstance(value, np.integer):
-            return int(value)
-
-        if isinstance(value, np.floating):
-            return float(value)
-
-        if isinstance(value, np.bool_):
-            return bool(value)
-
-        if isinstance(value, np.ndarray):
-            return {
-                "array_summary": True,
-                "shape": list(value.shape),
-                "dtype": str(value.dtype),
-            }
+        relative_path = str(file_path.relative_to(dataset_path))
     except Exception:
-        pass
+        relative_path = str(file_path)
 
-    try:
-        import quantities as pq
+    file_name = file_path.name
+    parts = file_path.parts
 
-        if isinstance(value, pq.Quantity):
-            mag = value.magnitude
-            try:
-                import numpy as np
-                if isinstance(mag, np.ndarray):
-                    if mag.size == 1:
-                        return {
-                            "value": float(mag),
-                            "unit": str(value.units),
-                        }
-                    return {
-                        "quantity_summary": True,
-                        "shape": list(mag.shape),
-                        "dtype": str(mag.dtype),
-                        "unit": str(value.units),
-                    }
-            except Exception:
-                pass
+    subject_id = None
+    sample_id = None
+    session_date = None
+    dataset_code = None
+    project_label = None
 
-            try:
-                return {
-                    "value": float(mag),
-                    "unit": str(value.units),
-                }
-            except Exception:
-                return str(value)
-
-    except Exception:
-        pass
-
-    if isinstance(value, dict):
-        out = {}
-        for k, v in value.items():
-            key = str(k)
-            lower = key.lower()
-            if any(word in lower for word in LARGE_FIELD_KEYWORDS):
-                out[key] = summarize_large_value(v)
-            else:
-                out[key] = json_safe(
-                    v,
-                    max_list_items=max_list_items,
-                    depth=depth + 1,
-                    max_depth=max_depth,
-                )
-        return out
-
-    if isinstance(value, (list, tuple, set)):
-        values = list(value)
-        if len(values) > max_list_items:
-            return {
-                "list_summary": True,
-                "length": len(values),
-                "preview": [
-                    json_safe(v, max_list_items=max_list_items, depth=depth + 1, max_depth=max_depth)
-                    for v in values[:5]
-                ],
-            }
-        return [
-            json_safe(v, max_list_items=max_list_items, depth=depth + 1, max_depth=max_depth)
-            for v in values
-        ]
-
-    try:
-        return str(value)
-    except Exception:
-        return None
-
-
-def summarize_large_value(value):
-    """
-    Compact summary for fields likely to be arrays/signals/waveforms.
-    """
-
-    try:
-        import numpy as np
-        if isinstance(value, np.ndarray):
-            return {
-                "skipped_large_field": True,
-                "shape": list(value.shape),
-                "dtype": str(value.dtype),
-            }
-    except Exception:
-        pass
-
-    try:
-        length = len(value)
-        return {
-            "skipped_large_field": True,
-            "type": type(value).__name__,
-            "length": int(length),
-        }
-    except Exception:
-        return {
-            "skipped_large_field": True,
-            "type": type(value).__name__,
-        }
-
-
-def parse_touchandsee_filename(path):
-    """
-    Extract subject, sample id, date from filenames like:
-    hbp-01681_TouchAndSee_Ramachandran_samp20__2012-08-09.pkl
-    """
-
-    name = Path(path).name
-
-    pattern = (
-        r"hbp-01681_TouchAndSee_"
-        r"(?P<subject>[^_]+)_"
-        r"(?P<sample>samp\d+)__"
-        r"(?P<date>\d{4}-\d{2}-\d{2})\.pkl$"
+    match = re.search(
+        r"(?P<dataset_code>hbp-[0-9]+)_(?P<project>[^_]+)_(?P<subject>[^_]+)_(?P<sample>samp[0-9]+)__?(?P<date>[0-9]{4}-[0-9]{2}-[0-9]{2})",
+        file_name,
     )
 
-    match = re.match(pattern, name)
-
     if match:
-        subject = match.group("subject")
-        sample = match.group("sample")
-        date = match.group("date")
-        session_id = f"{subject}_{sample}_{date}"
-        return {
-            "subject_id": subject,
-            "animal_id": subject,
-            "sample_id": sample,
-            "session_date": date,
-            "session_id": session_id,
-            "dataset_code": "hbp-01681",
-            "project_label": "TouchAndSee",
-        }
+        dataset_code = match.group("dataset_code")
+        project_label = match.group("project")
+        subject_id = match.group("subject")
+        sample_id = match.group("sample")
+        session_date = match.group("date")
+    else:
+        for part in parts:
+            if re.match(r"samp[0-9]+", part):
+                sample_id = part
+
+        if sample_id in parts:
+            idx = list(parts).index(sample_id)
+            if idx > 0:
+                subject_id = parts[idx - 1]
+
+    session_id = None
+    if subject_id and sample_id and session_date:
+        session_id = f"{subject_id}_{sample_id}_{session_date}"
 
     return {
-        "subject_id": None,
-        "animal_id": None,
-        "sample_id": None,
-        "session_date": None,
-        "session_id": Path(path).stem,
-        "dataset_code": "hbp-01681",
-        "project_label": "TouchAndSee",
+        "path": relative_path,
+        "absolute_path": str(file_path),
+        "file_name": file_name,
+        "file_extension": file_path.suffix.lower(),
+        "file_size_bytes": int(file_path.stat().st_size),
+        "file_size_mb": round(file_path.stat().st_size / 1024 / 1024, 3),
+        "subject_id": subject_id,
+        "animal_id": subject_id,
+        "sample_id": sample_id,
+        "session_date": session_date,
+        "session_id": session_id,
+        "dataset_code": dataset_code,
+        "project_label": project_label,
     }
 
 
-def summarize_annotations(obj, max_keys=50):
-    """
-    Return annotation keys and compact values for non-large annotations.
-    """
+def find_pickle_files(dataset_path):
+    dataset_path = Path(dataset_path)
+    return sorted(dataset_path.rglob("*.pkl"))
 
-    annotations = getattr(obj, "annotations", None)
 
-    if not annotations:
-        return {
-            "annotation_keys": [],
-            "annotations_compact": {},
-        }
-
-    keys = [str(k) for k in annotations.keys()]
-    compact = {}
-
-    for key in keys[:max_keys]:
-        lower = key.lower()
-        if any(word in lower for word in LARGE_FIELD_KEYWORDS):
-            compact[key] = summarize_large_value(annotations.get(key))
-        else:
-            compact[key] = json_safe(annotations.get(key))
-
-    return {
-        "annotation_keys": keys,
-        "annotations_compact": compact,
-        "annotations_truncated": len(keys) > max_keys,
-    }
+def count_items(obj, attr_name):
+    try:
+        return len(getattr(obj, attr_name, []))
+    except Exception:
+        return 0
 
 
 def summarize_spiketrain(st):
-    """
-    Compact summary of one Neo SpikeTrain.
-    No spike times are stored.
-    """
-
-    out = {
-        "name": json_safe(getattr(st, "name", None)),
-        "description": json_safe(getattr(st, "description", None)),
-        "n_spikes": None,
+    info = {
+        "name": make_json_safe(getattr(st, "name", None)),
+        "n_spikes": 0,
         "t_start": None,
         "t_stop": None,
-        "duration": None,
         "units": None,
         "sampling_rate": None,
     }
 
     try:
-        out["n_spikes"] = int(len(st))
+        info["n_spikes"] = int(len(st))
     except Exception:
         pass
 
-    for attr in ["t_start", "t_stop", "duration", "sampling_rate"]:
+    for attr in ["t_start", "t_stop", "units", "sampling_rate"]:
         try:
-            out[attr] = json_safe(getattr(st, attr))
+            info[attr] = make_json_safe(getattr(st, attr, None))
         except Exception:
             pass
 
-    try:
-        out["units"] = str(getattr(st, "units", None))
-    except Exception:
-        pass
+    info.update(annotation_summary(st))
 
-    out.update(summarize_annotations(st))
-
-    return out
+    return info
 
 
-def summarize_analogsignal(sig):
-    """
-    Compact summary of one Neo AnalogSignal.
-    No signal values are stored.
-    """
-
-    out = {
-        "name": json_safe(getattr(sig, "name", None)),
-        "description": json_safe(getattr(sig, "description", None)),
+def summarize_analogsignal(signal):
+    info = {
+        "name": make_json_safe(getattr(signal, "name", None)),
         "shape": None,
         "n_samples": None,
         "n_channels": None,
@@ -878,276 +654,212 @@ def summarize_analogsignal(sig):
     }
 
     try:
-        shape = list(sig.shape)
-        out["shape"] = shape
-        out["n_samples"] = int(shape[0]) if len(shape) > 0 else None
-        out["n_channels"] = int(shape[1]) if len(shape) > 1 else 1
+        shape = list(signal.shape)
+        info["shape"] = shape
+
+        if len(shape) >= 1:
+            info["n_samples"] = int(shape[0])
+
+        if len(shape) >= 2:
+            info["n_channels"] = int(shape[1])
+        else:
+            info["n_channels"] = 1
+
     except Exception:
         pass
 
-    try:
-        out["units"] = str(getattr(sig, "units", None))
-    except Exception:
-        pass
-
-    for attr in ["sampling_rate", "t_start", "duration"]:
+    for attr in ["units", "sampling_rate", "t_start", "duration"]:
         try:
-            out[attr] = json_safe(getattr(sig, attr))
+            info[attr] = make_json_safe(getattr(signal, attr, None))
         except Exception:
             pass
 
-    out.update(summarize_annotations(sig))
+    info.update(annotation_summary(signal))
 
-    return out
+    return info
 
 
-def summarize_event(ev, max_labels=20):
-    """
-    Compact summary of Neo Event.
-    Does not store event times.
-    """
-
-    out = {
-        "name": json_safe(getattr(ev, "name", None)),
-        "description": json_safe(getattr(ev, "description", None)),
-        "n_events": None,
+def summarize_event(event):
+    info = {
+        "name": make_json_safe(getattr(event, "name", None)),
+        "n_times": 0,
+        "units": None,
         "labels_preview": [],
     }
 
     try:
-        out["n_events"] = int(len(ev))
+        info["n_times"] = int(len(event))
     except Exception:
         pass
 
     try:
-        labels = getattr(ev, "labels", [])
-        out["labels_preview"] = [str(x) for x in list(labels[:max_labels])]
-    except Exception:
-        pass
-
-    out.update(summarize_annotations(ev))
-
-    return out
-
-
-def summarize_epoch(ep, max_labels=20):
-    """
-    Compact summary of Neo Epoch.
-    Does not store epoch times.
-    """
-
-    out = {
-        "name": json_safe(getattr(ep, "name", None)),
-        "description": json_safe(getattr(ep, "description", None)),
-        "n_epochs": None,
-        "labels_preview": [],
-    }
-
-    try:
-        out["n_epochs"] = int(len(ep))
+        info["units"] = make_json_safe(getattr(event, "units", None))
     except Exception:
         pass
 
     try:
-        labels = getattr(ep, "labels", [])
-        out["labels_preview"] = [str(x) for x in list(labels[:max_labels])]
+        labels = getattr(event, "labels", None)
+        if labels is not None:
+            labels = list(labels)
+            info["labels_preview"] = [make_json_safe(x) for x in labels[:10]]
     except Exception:
         pass
 
-    out.update(summarize_annotations(ep))
+    info.update(annotation_summary(event))
 
-    return out
-
-
-def summarize_unit(unit):
-    """
-    Compact summary of one Neo Unit, if Block has unit/channel hierarchy.
-    """
-
-    out = {
-        "name": json_safe(getattr(unit, "name", None)),
-        "description": json_safe(getattr(unit, "description", None)),
-        "n_spiketrains": None,
-        "n_spikes_total": None,
-    }
-
-    try:
-        sts = getattr(unit, "spiketrains", [])
-        out["n_spiketrains"] = int(len(sts))
-        out["n_spikes_total"] = int(sum(len(st) for st in sts))
-    except Exception:
-        pass
-
-    out.update(summarize_annotations(unit))
-
-    return out
+    return info
 
 
-def summarize_neo_block(block, include_object_details=True):
-    """
-    Compact summary of a Neo Block.
-    """
-
-    out = {
-        "object_type": type(block).__name__,
-        "name": json_safe(getattr(block, "name", None)),
-        "description": json_safe(getattr(block, "description", None)),
-        "n_segments": 0,
-        "n_channel_indexes": 0,
-        "n_units": 0,
-        "n_spiketrains": 0,
-        "n_spikes_total": 0,
-        "n_analogsignals": 0,
-        "n_events": 0,
-        "n_event_times_total": 0,
+def summarize_epoch(epoch):
+    info = {
+        "name": make_json_safe(getattr(epoch, "name", None)),
         "n_epochs": 0,
-        "n_epoch_times_total": 0,
-        "segment_summaries": [],
-        "unit_summaries": [],
+        "units": None,
+        "labels_preview": [],
     }
 
-    out.update(summarize_annotations(block))
-
-    segments = getattr(block, "segments", []) or []
-    out["n_segments"] = int(len(segments))
-
     try:
-        channel_indexes = getattr(block, "channel_indexes", []) or []
-        out["n_channel_indexes"] = int(len(channel_indexes))
+        info["n_epochs"] = int(len(epoch))
     except Exception:
         pass
 
-    # Units can be stored in different locations depending on Neo version.
-    units = []
     try:
-        units = list(getattr(block, "list_units", []) or [])
+        info["units"] = make_json_safe(getattr(epoch, "units", None))
     except Exception:
-        units = []
+        pass
 
-    if not units:
+    try:
+        labels = getattr(epoch, "labels", None)
+        if labels is not None:
+            labels = list(labels)
+            info["labels_preview"] = [make_json_safe(x) for x in labels[:10]]
+    except Exception:
+        pass
+
+    info.update(annotation_summary(epoch))
+
+    return info
+
+
+def summarize_segment(segment, include_object_details=True):
+    spiketrains = list(getattr(segment, "spiketrains", []) or [])
+    analogsignals = list(getattr(segment, "analogsignals", []) or [])
+    events = list(getattr(segment, "events", []) or [])
+    epochs = list(getattr(segment, "epochs", []) or [])
+
+    spike_counts = []
+
+    for st in spiketrains:
         try:
-            for chx in getattr(block, "channel_indexes", []) or []:
-                units.extend(list(getattr(chx, "units", []) or []))
+            spike_counts.append(int(len(st)))
         except Exception:
             pass
 
-    out["n_units"] = int(len(units))
+    event_counts = {}
+
+    for ev in events:
+        name = getattr(ev, "name", None) or "unnamed_event"
+        name = str(name)
+
+        try:
+            event_counts[name] = event_counts.get(name, 0) + int(len(ev))
+        except Exception:
+            event_counts[name] = event_counts.get(name, 0)
+
+    epoch_counts = {}
+
+    for ep in epochs:
+        name = getattr(ep, "name", None) or "unnamed_epoch"
+        name = str(name)
+
+        try:
+            epoch_counts[name] = epoch_counts.get(name, 0) + int(len(ep))
+        except Exception:
+            epoch_counts[name] = epoch_counts.get(name, 0)
+
+    summary = {
+        "name": make_json_safe(getattr(segment, "name", None)),
+        "n_spiketrains": int(len(spiketrains)),
+        "n_spikes_total": int(sum(spike_counts)),
+        "min_spikes_per_spiketrain": int(min(spike_counts)) if spike_counts else None,
+        "max_spikes_per_spiketrain": int(max(spike_counts)) if spike_counts else None,
+        "mean_spikes_per_spiketrain": float(sum(spike_counts) / len(spike_counts)) if spike_counts else None,
+        "n_analogsignals": int(len(analogsignals)),
+        "n_events": int(len(events)),
+        "n_event_times_total": int(sum(event_counts.values())),
+        "event_names": sorted(list(event_counts.keys())),
+        "event_counts": event_counts,
+        "n_epochs": int(len(epochs)),
+        "n_epoch_times_total": int(sum(epoch_counts.values())),
+        "epoch_names": sorted(list(epoch_counts.keys())),
+        "epoch_counts": epoch_counts,
+    }
+
+    summary.update(annotation_summary(segment))
 
     if include_object_details:
-        out["unit_summaries"] = [summarize_unit(unit) for unit in units[:200]]
-        out["unit_summaries_truncated"] = len(units) > 200
+        summary["spiketrains_preview"] = [summarize_spiketrain(st) for st in spiketrains[:10]]
+        summary["analogsignals"] = [summarize_analogsignal(sig) for sig in analogsignals]
+        summary["events"] = [summarize_event(ev) for ev in events]
+        summary["epochs"] = [summarize_epoch(ep) for ep in epochs]
 
-    for segment in segments:
-        seg_out = {
-            "name": json_safe(getattr(segment, "name", None)),
-            "description": json_safe(getattr(segment, "description", None)),
-            "n_spiketrains": int(len(getattr(segment, "spiketrains", []) or [])),
-            "n_analogsignals": int(len(getattr(segment, "analogsignals", []) or [])),
-            "n_events": int(len(getattr(segment, "events", []) or [])),
-            "n_epochs": int(len(getattr(segment, "epochs", []) or [])),
-            "spiketrain_summaries": [],
-            "analogsignal_summaries": [],
-            "event_summaries": [],
-            "epoch_summaries": [],
-        }
-
-        seg_out.update(summarize_annotations(segment))
-
-        spike_total = 0
-        for st in getattr(segment, "spiketrains", []) or []:
-            try:
-                spike_total += int(len(st))
-            except Exception:
-                pass
-
-        event_total = 0
-        for ev in getattr(segment, "events", []) or []:
-            try:
-                event_total += int(len(ev))
-            except Exception:
-                pass
-
-        epoch_total = 0
-        for ep in getattr(segment, "epochs", []) or []:
-            try:
-                epoch_total += int(len(ep))
-            except Exception:
-                pass
-
-        out["n_spiketrains"] += seg_out["n_spiketrains"]
-        out["n_spikes_total"] += spike_total
-        out["n_analogsignals"] += seg_out["n_analogsignals"]
-        out["n_events"] += seg_out["n_events"]
-        out["n_event_times_total"] += event_total
-        out["n_epochs"] += seg_out["n_epochs"]
-        out["n_epoch_times_total"] += epoch_total
-
-        seg_out["n_spikes_total"] = spike_total
-        seg_out["n_event_times_total"] = event_total
-        seg_out["n_epoch_times_total"] = epoch_total
-
-        if include_object_details:
-            seg_out["spiketrain_summaries"] = [
-                summarize_spiketrain(st) for st in (getattr(segment, "spiketrains", []) or [])[:200]
-            ]
-            seg_out["spiketrain_summaries_truncated"] = seg_out["n_spiketrains"] > 200
-
-            seg_out["analogsignal_summaries"] = [
-                summarize_analogsignal(sig) for sig in (getattr(segment, "analogsignals", []) or [])[:50]
-            ]
-            seg_out["analogsignal_summaries_truncated"] = seg_out["n_analogsignals"] > 50
-
-            seg_out["event_summaries"] = [
-                summarize_event(ev) for ev in (getattr(segment, "events", []) or [])[:100]
-            ]
-            seg_out["event_summaries_truncated"] = seg_out["n_events"] > 100
-
-            seg_out["epoch_summaries"] = [
-                summarize_epoch(ep) for ep in (getattr(segment, "epochs", []) or [])[:100]
-            ]
-            seg_out["epoch_summaries_truncated"] = seg_out["n_epochs"] > 100
-
-        out["segment_summaries"].append(seg_out)
-
-    out["has_spike_metadata"] = out["n_spiketrains"] > 0 or out["n_units"] > 0
-    out["has_unit_metadata"] = out["n_units"] > 0
-    out["has_lfp_metadata"] = out["n_analogsignals"] > 0
-    out["has_event_metadata"] = out["n_events"] > 0
-    out["has_epoch_metadata"] = out["n_epochs"] > 0
-
-    return json_safe(out)
+    return summary
 
 
-def load_pickle(path):
-    """
-    Load one pickle after compatibility patch.
-    """
+def summarize_loaded_object(obj, include_object_details=True):
+    object_type = type(obj).__name__
 
-    patch_old_neo_pickle_compatibility(verbose=False)
-    with open(path, "rb") as f:
+    segments = list(getattr(obj, "segments", []) or [])
+
+    summary = {
+        "object_type": object_type,
+        "object_module": type(obj).__module__,
+        "name": make_json_safe(getattr(obj, "name", None)),
+        "description": make_json_safe(getattr(obj, "description", None)),
+        "file_origin": make_json_safe(getattr(obj, "file_origin", None)),
+        "n_segments": int(len(segments)),
+        "n_units": count_items(obj, "units"),
+        "n_channel_indexes": count_items(obj, "channel_indexes"),
+        "n_recordingchannelgroups": count_items(obj, "recordingchannelgroups"),
+    }
+
+    summary.update(annotation_summary(obj))
+
+    segment_summaries = [
+        summarize_segment(seg, include_object_details)
+        for seg in segments
+    ]
+
+    summary["segments"] = segment_summaries
+
+    summary["n_spiketrains"] = int(sum(seg.get("n_spiketrains", 0) for seg in segment_summaries))
+    summary["n_spikes_total"] = int(sum(seg.get("n_spikes_total", 0) for seg in segment_summaries))
+    summary["n_analogsignals"] = int(sum(seg.get("n_analogsignals", 0) for seg in segment_summaries))
+    summary["n_events"] = int(sum(seg.get("n_events", 0) for seg in segment_summaries))
+    summary["n_event_times_total"] = int(sum(seg.get("n_event_times_total", 0) for seg in segment_summaries))
+    summary["n_epochs"] = int(sum(seg.get("n_epochs", 0) for seg in segment_summaries))
+    summary["n_epoch_times_total"] = int(sum(seg.get("n_epoch_times_total", 0) for seg in segment_summaries))
+
+    summary["has_spike_metadata"] = summary["n_spiketrains"] > 0
+    summary["has_lfp_metadata"] = summary["n_analogsignals"] > 0
+    summary["has_event_metadata"] = summary["n_events"] > 0
+    summary["has_epoch_metadata"] = summary["n_epochs"] > 0
+
+    return make_json_safe(summary)
+
+
+def load_pickle(file_path):
+    install_old_neo_pickle_patches(verbose=False)
+
+    with open(file_path, "rb") as f:
         return pickle.load(f)
 
 
-def extract_one_file(path, dataset_root, include_object_details=True):
-    """
-    Extract internal metadata from one TouchAndSee pickle.
-    """
-
-    path = Path(path)
-    dataset_root = Path(dataset_root)
-
-    file_info = parse_touchandsee_filename(path)
+def extract_one_file(file_path, dataset_path, include_object_details=True):
+    file_metadata = parse_touchandsee_file_metadata(file_path, dataset_path)
 
     result = {
-        "file_metadata": {
-            "path": str(path.relative_to(dataset_root)) if dataset_root in path.parents else str(path),
-            "absolute_path": str(path),
-            "file_name": path.name,
-            "file_extension": path.suffix,
-            "file_size_bytes": int(path.stat().st_size),
-            "file_size_mb": round(path.stat().st_size / (1024 * 1024), 3),
-            **file_info,
-        },
+        "file_metadata": file_metadata,
         "touchandsee_extraction": {
             "attempted": True,
             "success": False,
@@ -1159,69 +871,45 @@ def extract_one_file(path, dataset_root, include_object_details=True):
     }
 
     try:
-        obj = load_pickle(path)
+        obj = load_pickle(file_path)
+
         result["touchandsee_extraction"]["success"] = True
         result["touchandsee_extraction"]["object_type"] = type(obj).__name__
-
-        # Most files are expected to be Neo Blocks.
-        if hasattr(obj, "segments"):
-            result["touchandsee_extraction"]["object_summary"] = summarize_neo_block(
-                obj,
-                include_object_details=include_object_details,
-            )
-        else:
-            result["touchandsee_extraction"]["object_summary"] = {
-                "object_type": type(obj).__name__,
-                "repr": str(obj)[:500],
-            }
+        result["touchandsee_extraction"]["object_summary"] = summarize_loaded_object(
+            obj,
+            include_object_details=include_object_details,
+        )
 
     except Exception as error:
         result["touchandsee_extraction"]["success"] = False
         result["touchandsee_extraction"]["error"] = repr(error)
         result["touchandsee_extraction"]["traceback"] = traceback.format_exc()
 
-    return result
+    return make_json_safe(result)
 
 
 def build_dataset_summary(file_results):
-    """
-    Dataset-level summary across files.
-    """
-
-    pkl_results = [
-        item for item in file_results
-        if item["file_metadata"].get("file_extension") == ".pkl"
+    successful = [
+        x for x in file_results
+        if x.get("touchandsee_extraction", {}).get("success")
     ]
 
-    successes = [
-        item for item in pkl_results
-        if item["touchandsee_extraction"].get("success") is True
+    failed = [
+        x for x in file_results
+        if not x.get("touchandsee_extraction", {}).get("success")
     ]
 
-    failures = [
-        item for item in pkl_results
-        if item["touchandsee_extraction"].get("success") is False
-    ]
+    subjects = sorted(set(
+        x.get("file_metadata", {}).get("subject_id")
+        for x in file_results
+        if x.get("file_metadata", {}).get("subject_id")
+    ))
 
-    subjects = sorted(
-        list(
-            set(
-                item["file_metadata"].get("subject_id")
-                for item in pkl_results
-                if item["file_metadata"].get("subject_id")
-            )
-        )
-    )
-
-    sessions = sorted(
-        list(
-            set(
-                item["file_metadata"].get("session_id")
-                for item in pkl_results
-                if item["file_metadata"].get("session_id")
-            )
-        )
-    )
+    sessions = sorted(set(
+        x.get("file_metadata", {}).get("session_id")
+        for x in file_results
+        if x.get("file_metadata", {}).get("session_id")
+    ))
 
     totals = {
         "n_spiketrains": 0,
@@ -1232,49 +920,45 @@ def build_dataset_summary(file_results):
         "n_event_times_total": 0,
         "n_epochs": 0,
         "n_epoch_times_total": 0,
+        "n_sessions_with_spike_metadata": 0,
+        "n_sessions_with_lfp_metadata": 0,
+        "n_sessions_with_event_metadata": 0,
     }
 
-    sessions_with_spikes = 0
-    sessions_with_lfp = 0
-    sessions_with_events = 0
+    for item in successful:
+        summary = item.get("touchandsee_extraction", {}).get("object_summary") or {}
 
-    for item in successes:
-        summary = (
-            item.get("touchandsee_extraction", {})
-            .get("object_summary", {})
-        )
-
-        for key in totals:
-            totals[key] += int(summary.get(key) or 0)
-
-        if summary.get("has_spike_metadata"):
-            sessions_with_spikes += 1
-        if summary.get("has_lfp_metadata"):
-            sessions_with_lfp += 1
-        if summary.get("has_event_metadata"):
-            sessions_with_events += 1
+        totals["n_spiketrains"] += summary.get("n_spiketrains") or 0
+        totals["n_spikes_total"] += summary.get("n_spikes_total") or 0
+        totals["n_units"] += summary.get("n_units") or 0
+        totals["n_analogsignals"] += summary.get("n_analogsignals") or 0
+        totals["n_events"] += summary.get("n_events") or 0
+        totals["n_event_times_total"] += summary.get("n_event_times_total") or 0
+        totals["n_epochs"] += summary.get("n_epochs") or 0
+        totals["n_epoch_times_total"] += summary.get("n_epoch_times_total") or 0
+        totals["n_sessions_with_spike_metadata"] += 1 if summary.get("has_spike_metadata") else 0
+        totals["n_sessions_with_lfp_metadata"] += 1 if summary.get("has_lfp_metadata") else 0
+        totals["n_sessions_with_event_metadata"] += 1 if summary.get("has_event_metadata") else 0
 
     return {
         "n_files": int(len(file_results)),
-        "n_pickle_files": int(len(pkl_results)),
-        "n_pickle_success": int(len(successes)),
-        "n_pickle_failure": int(len(failures)),
+        "n_pickle_files": int(len(file_results)),
+        "n_pickle_success": int(len(successful)),
+        "n_pickle_failure": int(len(failed)),
         "n_subjects_detected": int(len(subjects)),
         "subjects_detected": subjects,
         "n_sessions_detected": int(len(sessions)),
         "sessions_detected": sessions,
-        **totals,
-        "n_sessions_with_spike_metadata": int(sessions_with_spikes),
-        "n_sessions_with_lfp_metadata": int(sessions_with_lfp),
-        "n_sessions_with_event_metadata": int(sessions_with_events),
+        **{k: int(v) for k, v in totals.items()},
     }
 
 
-def extract_touchandsee_dataset(dataset_path, output_folder=None, include_object_details=True, test_one=False):
-    """
-    Extract internal metadata from all TouchAndSee pickle files.
-    """
-
+def extract_touchandsee_dataset(
+    dataset_path,
+    output_folder=None,
+    test_one=False,
+    include_object_details=True,
+):
     dataset_path = Path(dataset_path)
 
     if output_folder is None:
@@ -1284,68 +968,68 @@ def extract_touchandsee_dataset(dataset_path, output_folder=None, include_object
 
     output_folder.mkdir(parents=True, exist_ok=True)
 
-    patch_old_neo_pickle_compatibility(verbose=True)
-
-    pkl_files = sorted(dataset_path.rglob("*.pkl"))
+    pickle_files = find_pickle_files(dataset_path)
 
     if test_one:
-        pkl_files = pkl_files[:1]
+        pickle_files = pickle_files[:1]
 
-    print("Dataset path:", dataset_path)
-    print("Pickle files found:", len(pkl_files))
+    print("Found pickle files:", len(pickle_files))
 
     results = []
 
-    for path in pkl_files:
-        print("Extracting TouchAndSee:", path.name)
+    for i, file_path in enumerate(pickle_files, start=1):
+        print(f"[{i}/{len(pickle_files)}] Extracting:", file_path.name)
+
         result = extract_one_file(
-            path=path,
-            dataset_root=dataset_path,
+            file_path=file_path,
+            dataset_path=dataset_path,
             include_object_details=include_object_details,
         )
-        results.append(result)
 
-        if result["touchandsee_extraction"]["success"] is False:
-            print("  FAILED:", result["touchandsee_extraction"]["error"])
-        else:
-            summary = result["touchandsee_extraction"]["object_summary"] or {}
+        success = result.get("touchandsee_extraction", {}).get("success")
+
+        if success:
+            summary = result["touchandsee_extraction"].get("object_summary") or {}
             print(
                 "  OK:",
+                "segments=", summary.get("n_segments"),
                 "spiketrains=", summary.get("n_spiketrains"),
                 "spikes=", summary.get("n_spikes_total"),
                 "analogsignals=", summary.get("n_analogsignals"),
                 "events=", summary.get("n_events"),
             )
+        else:
+            print("  FAIL:", result.get("touchandsee_extraction", {}).get("error"))
 
-    dataset_metadata = {
+        results.append(result)
+
+    output = {
         "dataset_name": dataset_path.name,
         "dataset_folder": str(dataset_path),
         "date_extraction": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "extractor": "touchandsee_internal_neo_pickle_extractor_v10",
+        "extractor": EXTRACTOR_NAME,
         "include_object_details": bool(include_object_details),
         "dataset_summary": build_dataset_summary(results),
         "files": results,
     }
 
     suffix = "_touchandsee_internal_metadata_TEST.json" if test_one else "_touchandsee_internal_metadata.json"
-    output_json = output_folder / (dataset_path.name + suffix)
+    output_path = output_folder / (dataset_path.name + suffix)
 
-    with open(output_json, "w", encoding="utf-8") as f:
-        json.dump(dataset_metadata, f, indent=2)
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(output, f, indent=2)
 
-    print()
-    print("TouchAndSee extraction finished")
-    print("Output:", output_json)
+    print("\nFinished.")
+    print("Output:", output_path)
     print("Dataset summary:")
-    print(json.dumps(dataset_metadata["dataset_summary"], indent=2))
+    print(json.dumps(output["dataset_summary"], indent=2))
 
-    return dataset_metadata
+    return output
 
 
 if __name__ == "__main__":
-
     parser = argparse.ArgumentParser(
-        description="Extract internal metadata from TouchAndSee Neo pickle dataset."
+        description="Extract compact internal metadata from old TouchAndSee Neo pickle files."
     )
 
     parser.add_argument(
@@ -1360,15 +1044,15 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "--no_object_details",
+        "--test_one",
         action="store_true",
-        help="Only save counts/summaries, no per-spiketrain/event summaries.",
+        help="Extract only the first pickle file for debugging.",
     )
 
     parser.add_argument(
-        "--test_one",
+        "--no_object_details",
         action="store_true",
-        help="Only test the first pickle file.",
+        help="Skip per-object previews and keep only compact counts.",
     )
 
     args = parser.parse_args()
@@ -1376,6 +1060,6 @@ if __name__ == "__main__":
     extract_touchandsee_dataset(
         dataset_path=args.dataset_path,
         output_folder=args.output_folder,
-        include_object_details=not args.no_object_details,
         test_one=args.test_one,
+        include_object_details=not args.no_object_details,
     )
