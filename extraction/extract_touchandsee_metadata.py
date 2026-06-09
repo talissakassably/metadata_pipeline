@@ -154,6 +154,125 @@ def patch_old_neo_pickle_compatibility(verbose=True):
         if verbose:
             print("Could not patch analogsignal compatibility:", repr(error))
 
+
+
+    # Patch Event reconstruction. Old pickles may pass a Segment object where
+    # modern Neo expects an annotations mapping. For metadata extraction, links
+    # to parent Segment are not needed during unpickling, so we drop invalid
+    # annotations/array_annotations.
+    try:
+        import neo.core.event as event_module
+
+        if hasattr(event_module, "_new_event"):
+            original_function = event_module._new_event
+            signature = inspect.signature(original_function)
+
+            def patched_new_event(*args, **kwargs):
+                bound = signature.bind_partial(*args, **kwargs)
+
+                if "annotations" in signature.parameters:
+                    annotations = bound.arguments.get("annotations")
+                    if annotations is None or not isinstance(annotations, dict):
+                        bound.arguments["annotations"] = {}
+
+                if "array_annotations" in signature.parameters:
+                    array_annotations = bound.arguments.get("array_annotations")
+                    if array_annotations is None or not isinstance(array_annotations, dict):
+                        bound.arguments["array_annotations"] = {}
+
+                try:
+                    return original_function(*bound.args, **bound.kwargs)
+                except TypeError as error:
+                    message = str(error)
+                    if "argument after ** must be a mapping" in message:
+                        # Retry with invalid mapping-like arguments removed.
+                        retry_arguments = dict(bound.arguments)
+                        if "annotations" in retry_arguments:
+                            retry_arguments["annotations"] = {}
+                        if "array_annotations" in retry_arguments:
+                            retry_arguments["array_annotations"] = {}
+                        return original_function(**retry_arguments)
+                    raise
+                except ValueError as error:
+                    message = str(error)
+                    if "Incorrect length of array annotation" in message:
+                        retry_arguments = dict(bound.arguments)
+                        if "array_annotations" in retry_arguments:
+                            retry_arguments["array_annotations"] = {}
+                        return original_function(**retry_arguments)
+                    raise
+
+            event_module._new_event = patched_new_event
+            applied.append("neo.core.event._new_event")
+
+        if hasattr(event_module, "Event"):
+            cls = event_module.Event
+            original_new = cls.__new__
+
+            def patched_event_new(cls_, *args, **kwargs):
+                if kwargs.get("annotations") is None or not isinstance(kwargs.get("annotations", {}), dict):
+                    kwargs["annotations"] = {}
+                if kwargs.get("array_annotations") is None or not isinstance(kwargs.get("array_annotations", {}), dict):
+                    kwargs["array_annotations"] = {}
+                return original_new(cls_, *args, **kwargs)
+
+            cls.__new__ = staticmethod(patched_event_new)
+            applied.append("neo.core.event.Event.__new__")
+
+    except Exception as error:
+        if verbose:
+            print("Could not patch event compatibility:", repr(error))
+
+    # Patch Epoch reconstruction for the same old-pickle issue.
+    try:
+        import neo.core.epoch as epoch_module
+
+        for function_name in ["_new_epoch", "_new_Epoch"]:
+            if not hasattr(epoch_module, function_name):
+                continue
+
+            original_function = getattr(epoch_module, function_name)
+            signature = inspect.signature(original_function)
+
+            def make_patched_epoch_function(original_function, signature):
+                def patched_epoch_function(*args, **kwargs):
+                    bound = signature.bind_partial(*args, **kwargs)
+
+                    if "annotations" in signature.parameters:
+                        annotations = bound.arguments.get("annotations")
+                        if annotations is None or not isinstance(annotations, dict):
+                            bound.arguments["annotations"] = {}
+
+                    if "array_annotations" in signature.parameters:
+                        array_annotations = bound.arguments.get("array_annotations")
+                        if array_annotations is None or not isinstance(array_annotations, dict):
+                            bound.arguments["array_annotations"] = {}
+
+                    try:
+                        return original_function(*bound.args, **bound.kwargs)
+                    except (TypeError, ValueError) as error:
+                        message = str(error)
+                        if (
+                            "argument after ** must be a mapping" in message
+                            or "Incorrect length of array annotation" in message
+                        ):
+                            retry_arguments = dict(bound.arguments)
+                            if "annotations" in retry_arguments:
+                                retry_arguments["annotations"] = {}
+                            if "array_annotations" in retry_arguments:
+                                retry_arguments["array_annotations"] = {}
+                            return original_function(**retry_arguments)
+                        raise
+
+                return patched_epoch_function
+
+            setattr(epoch_module, function_name, make_patched_epoch_function(original_function, signature))
+            applied.append("neo.core.epoch." + function_name)
+
+    except Exception as error:
+        if verbose:
+            print("Could not patch epoch compatibility:", repr(error))
+
     if verbose:
         if applied:
             print("Applied compatibility patches:")
@@ -881,7 +1000,7 @@ def extract_touchandsee_dataset(dataset_path, output_folder=None, include_object
         "dataset_name": dataset_path.name,
         "dataset_folder": str(dataset_path),
         "date_extraction": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "extractor": "touchandsee_internal_neo_pickle_extractor",
+        "extractor": "touchandsee_internal_neo_pickle_extractor_v3",
         "include_object_details": bool(include_object_details),
         "dataset_summary": build_dataset_summary(results),
         "files": results,
