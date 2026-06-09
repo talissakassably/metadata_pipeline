@@ -115,11 +115,18 @@ def infer_dataset_short_name(dataset_name):
 
 
 def infer_source_type(dataset):
-    if "sessions" in dataset and "openfield" in str(dataset.get("extractor", "")).lower():
+    extractor = str(dataset.get("extractor", "")).lower()
+    dataset_name = str(dataset.get("dataset_name", "")).lower()
+
+    if "sessions" in dataset and "openfield" in extractor:
         return "openfield"
 
-    if "sessions" in dataset and "legacy_touchscreen" in str(dataset.get("extractor", "")).lower():
+    if "sessions" in dataset and "legacy_touchscreen" in extractor:
         return "legacy_touchscreen"
+
+    # New TouchAndSee internal Neo pickle extractor output
+    if "files" in dataset and ("touchandsee" in extractor or "01681" in dataset_name or "p25b4e" in dataset_name):
+        return "regular_pickle_or_touchandsee"
 
     if "files" in dataset:
         extensions = dataset.get("extensions_searched", [])
@@ -463,6 +470,7 @@ def harmonize_regular_pickle_or_touchandsee(dataset):
         file_meta = item.get("file_metadata") or {}
         pickle_info = item.get("pickle_extraction") or {}
         neo_info = item.get("neo_extraction") or {}
+        touchandsee_info = item.get("touchandsee_extraction") or {}
 
         ext = file_meta.get("file_extension")
 
@@ -472,9 +480,15 @@ def harmonize_regular_pickle_or_touchandsee(dataset):
 
         pickle_success = pickle_info.get("success") is True
         neo_success = neo_info.get("success") is True
-        success = pickle_success or neo_success
+        touchandsee_success = touchandsee_info.get("success") is True
+        success = pickle_success or neo_success or touchandsee_success
 
-        object_summary = pickle_info.get("object_summary") or {}
+        object_summary = (
+            touchandsee_info.get("object_summary")
+            or pickle_info.get("object_summary")
+            or neo_info.get("object_summary")
+            or {}
+        )
 
         row = {
             "dataset_short_name": dataset_short_name,
@@ -499,9 +513,9 @@ def harmonize_regular_pickle_or_touchandsee(dataset):
             "raw_spike_events_total": None,
             "sorted_units_mclust": None,
             "sorted_unit_spikes_total_mclust": None,
-            "n_lfp_channels": object_summary.get("n_lfp_channels"),
+            "n_lfp_channels": object_summary.get("n_lfp_channels") or object_summary.get("n_analogsignals"),
             "n_electrodes": object_summary.get("n_electrodes"),
-            "n_trials": object_summary.get("n_trials"),
+            "n_trials": object_summary.get("n_trials") or object_summary.get("n_segments"),
             "n_event_objects": object_summary.get("n_events"),
             "n_event_times_total": object_summary.get("n_event_times_total"),
             "n_position_samples": object_summary.get("n_position_samples"),
@@ -517,8 +531,8 @@ def harmonize_regular_pickle_or_touchandsee(dataset):
             "has_spike_metadata": to_number(object_summary.get("n_spikes_total"), 0) > 0,
             "has_unit_metadata": to_number(object_summary.get("n_units"), 0) > 0 or to_number(object_summary.get("n_spiketrains"), 0) > 0,
             "has_sorted_unit_metadata": to_number(object_summary.get("n_units"), 0) > 0,
-            "has_lfp_metadata": to_number(object_summary.get("n_lfp_channels"), 0) > 0,
-            "has_trial_metadata": to_number(object_summary.get("n_trials"), 0) > 0,
+            "has_lfp_metadata": to_number(object_summary.get("n_lfp_channels") or object_summary.get("n_analogsignals"), 0) > 0,
+            "has_trial_metadata": to_number(object_summary.get("n_trials") or object_summary.get("n_segments"), 0) > 0,
             "has_event_metadata": to_number(object_summary.get("n_events"), 0) > 0,
             "has_position_metadata": to_number(object_summary.get("n_position_samples"), 0) > 0,
             "has_sampling_rate_metadata": has_any_text(object_summary.get("sampling_rates_hz")),
