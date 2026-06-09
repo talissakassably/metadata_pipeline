@@ -377,7 +377,7 @@ def patch_old_neo_pickle_compatibility(verbose=True):
 
                     try:
                         return original_function(*bound.args, **bound.kwargs)
-                    except (TypeError, ValueError) as error:
+                    except (TypeError, ValueError, AttributeError) as error:
                         message = str(error)
                         if (
                             "argument after ** must be a mapping" in message
@@ -458,12 +458,20 @@ def patch_old_neo_pickle_compatibility(verbose=True):
                     if array_annotations is None or not isinstance(array_annotations, dict):
                         bound.arguments["array_annotations"] = {}
 
+                # Old pickles can put a Segment-like object in the waveforms slot.
+                # Modern Neo expects an array with .shape. For metadata extraction we
+                # do not need waveforms, so drop anything that is not array-like.
+                if "waveforms" in signature.parameters:
+                    waveforms = bound.arguments.get("waveforms")
+                    if waveforms is not None and not hasattr(waveforms, "shape"):
+                        bound.arguments["waveforms"] = None
+
                 if "copy" in signature.parameters:
                     bound.arguments["copy"] = None
 
                 try:
                     return original_function(*bound.args, **bound.kwargs)
-                except (TypeError, ValueError) as error:
+                except (TypeError, ValueError, AttributeError) as error:
                     message = str(error)
                     if (
                         "argument after ** must be a mapping" in message
@@ -471,12 +479,17 @@ def patch_old_neo_pickle_compatibility(verbose=True):
                         or "you must specify units" in message
                         or "Unable to convert between units" in message
                         or "copy" in message
+                        or "object has no attribute 'shape'" in message
                     ):
                         retry_arguments = dict(bound.arguments)
                         if "annotations" in retry_arguments:
                             retry_arguments["annotations"] = {}
                         if "array_annotations" in retry_arguments:
                             retry_arguments["array_annotations"] = {}
+                        if "waveforms" in retry_arguments:
+                            waveforms = retry_arguments.get("waveforms")
+                            if waveforms is not None and not hasattr(waveforms, "shape"):
+                                retry_arguments["waveforms"] = None
                         if "copy" in retry_arguments:
                             retry_arguments["copy"] = None
                         # SpikeTrain times are time-like; seconds is the safest fallback.
@@ -500,12 +513,16 @@ def patch_old_neo_pickle_compatibility(verbose=True):
                         kwargs["array_annotations"] = {}
                     if "copy" in kwargs:
                         kwargs["copy"] = None
+                    if "waveforms" in kwargs:
+                        waveforms = kwargs.get("waveforms")
+                        if waveforms is not None and not hasattr(waveforms, "shape"):
+                            kwargs["waveforms"] = None
                     if kwargs.get("units") is None:
                         kwargs["units"] = "s"
 
                     try:
                         return original_new(cls_, *args, **kwargs)
-                    except (TypeError, ValueError) as error:
+                    except (TypeError, ValueError, AttributeError) as error:
                         message = str(error)
                         if (
                             "argument after ** must be a mapping" in message
@@ -513,9 +530,14 @@ def patch_old_neo_pickle_compatibility(verbose=True):
                             or "you must specify units" in message
                             or "Unable to convert between units" in message
                             or "copy" in message
+                            or "object has no attribute 'shape'" in message
                         ):
                             kwargs["annotations"] = {}
                             kwargs["array_annotations"] = {}
+                            if "waveforms" in kwargs:
+                                waveforms = kwargs.get("waveforms")
+                                if waveforms is not None and not hasattr(waveforms, "shape"):
+                                    kwargs["waveforms"] = None
                             kwargs["units"] = kwargs.get("units") or "s"
                             kwargs.pop("copy", None)
                             return original_new(cls_, *args, **kwargs)
@@ -1257,7 +1279,7 @@ def extract_touchandsee_dataset(dataset_path, output_folder=None, include_object
         "dataset_name": dataset_path.name,
         "dataset_folder": str(dataset_path),
         "date_extraction": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "extractor": "touchandsee_internal_neo_pickle_extractor_v8",
+        "extractor": "touchandsee_internal_neo_pickle_extractor_v9",
         "include_object_details": bool(include_object_details),
         "dataset_summary": build_dataset_summary(results),
         "files": results,
