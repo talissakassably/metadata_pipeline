@@ -38,7 +38,7 @@ from pathlib import Path
 from datetime import datetime
 
 
-EXTRACTOR_NAME = "touchandsee_internal_neo_pickle_extractor_v12"
+EXTRACTOR_NAME = "touchandsee_internal_neo_pickle_extractor_v13"
 
 LARGE_FIELD_KEYWORDS = [
     "waveform",
@@ -540,15 +540,27 @@ def install_old_neo_pickle_patches(verbose=True):
                 )
 
             def patched_new_spiketrain(*args, **kwargs):
+                """
+                Very old Neo pickles sometimes pass Segment objects in fields where
+                newer Neo expects waveforms/annotations. For this metadata extractor,
+                we do not need to reconstruct full Neo SpikeTrain objects. We only need
+                len(times), so always return a lightweight fallback object.
+                """
                 try:
                     bound = signature.bind_partial(*args, **kwargs)
-                    arguments = bound.arguments
+                    arguments = dict(bound.arguments)
                 except Exception:
-                    # Last resort: map only the most important positional values.
                     arguments = dict(kwargs)
-                    if len(args) > 1:
+
+                    # Old Neo _new_spiketrain commonly stores times as the second
+                    # positional argument: (cls, times, ...). Keep only what is safe.
+                    if len(args) >= 2:
                         arguments.setdefault("times", args[1])
-                    if len(args) > 2:
+                    elif len(args) >= 1:
+                        arguments.setdefault("times", args[0])
+
+                    # Try to capture optional timing fields from positional args.
+                    if len(args) >= 3:
                         arguments.setdefault("t_stop", args[2])
 
                 _sanitize_mapping_arguments(arguments)
@@ -556,26 +568,7 @@ def install_old_neo_pickle_patches(verbose=True):
                 _ensure_units(arguments)
                 _sanitize_spiketrain_times(arguments)
 
-                if "copy" in arguments:
-                    arguments["copy"] = None
-
-                try:
-                    # Prefer Neo reconstruction when possible.
-                    try:
-                        bound = signature.bind_partial(*args, **kwargs)
-                        for k, v in arguments.items():
-                            bound.arguments[k] = v
-                        return original(*bound.args, **bound.kwargs)
-                    except Exception:
-                        retry = dict(arguments)
-                        retry.pop("copy", None)
-                        if retry.get("units") is None:
-                            retry["units"] = "s"
-                        return original(**retry)
-                except Exception:
-                    # For metadata extraction we can still keep a lightweight spike train
-                    # with len(times), instead of failing the whole pickle.
-                    return _legacy_spiketrain_from_arguments(arguments)
+                return _legacy_spiketrain_from_arguments(arguments)
 
             st_module._new_spiketrain = patched_new_spiketrain
             applied.append("neo.core.spiketrain._new_spiketrain with fallback")
