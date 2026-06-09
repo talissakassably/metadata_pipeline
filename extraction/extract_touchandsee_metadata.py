@@ -128,26 +128,28 @@ def patch_old_neo_pickle_compatibility(verbose=True):
             cls = analogsignal.AnalogSignal
             original_new = cls.__new__
 
-            def patched_new(cls_, *args, **kwargs):
-                if kwargs.get("annotations") is None:
-                    kwargs["annotations"] = {}
-                # Drop old / invalid array annotations; they can have the wrong length
-                # for modern Neo and are not needed for metadata summaries.
-                kwargs["array_annotations"] = {}
-                if "copy" in kwargs:
-                    kwargs["copy"] = None
+            def make_patched_analogsignal_new(original_new):
+                def patched_new(cls_, *args, **kwargs):
+                    if kwargs.get("annotations") is None:
+                        kwargs["annotations"] = {}
+                    # Drop old / invalid array annotations; they can have the wrong length
+                    # for modern Neo and are not needed for metadata summaries.
+                    kwargs["array_annotations"] = {}
+                    if "copy" in kwargs:
+                        kwargs["copy"] = None
 
-                try:
-                    return original_new(cls_, *args, **kwargs)
-                except ValueError as error:
-                    message = str(error)
-                    if "copy" in message or "Incorrect length of array annotation" in message:
-                        kwargs.pop("copy", None)
-                        kwargs["array_annotations"] = {}
+                    try:
                         return original_new(cls_, *args, **kwargs)
-                    raise
+                    except ValueError as error:
+                        message = str(error)
+                        if "copy" in message or "Incorrect length of array annotation" in message:
+                            kwargs.pop("copy", None)
+                            kwargs["array_annotations"] = {}
+                            return original_new(cls_, *args, **kwargs)
+                        raise
+                return patched_new
 
-            cls.__new__ = staticmethod(patched_new)
+            cls.__new__ = staticmethod(make_patched_analogsignal_new(original_new))
             applied.append("neo.core.analogsignal.AnalogSignal.__new__")
 
     except Exception as error:
@@ -209,14 +211,26 @@ def patch_old_neo_pickle_compatibility(verbose=True):
             cls = event_module.Event
             original_new = cls.__new__
 
-            def patched_event_new(cls_, *args, **kwargs):
-                if kwargs.get("annotations") is None or not isinstance(kwargs.get("annotations", {}), dict):
-                    kwargs["annotations"] = {}
-                if kwargs.get("array_annotations") is None or not isinstance(kwargs.get("array_annotations", {}), dict):
-                    kwargs["array_annotations"] = {}
-                return original_new(cls_, *args, **kwargs)
+            def make_patched_event_new(original_new):
+                def patched_event_new(cls_, *args, **kwargs):
+                    if kwargs.get("annotations") is None or not isinstance(kwargs.get("annotations", {}), dict):
+                        kwargs["annotations"] = {}
+                    if kwargs.get("array_annotations") is None or not isinstance(kwargs.get("array_annotations", {}), dict):
+                        kwargs["array_annotations"] = {}
 
-            cls.__new__ = staticmethod(patched_event_new)
+                    try:
+                        return original_new(cls_, *args, **kwargs)
+                    except ValueError as error:
+                        message = str(error)
+                        # Some old pickles have incompatible units attached to events.
+                        # For metadata extraction, keep the times and force standard seconds.
+                        if "Unable to convert between units" in message:
+                            kwargs["units"] = "s"
+                            return original_new(cls_, *args, **kwargs)
+                        raise
+                return patched_event_new
+
+            cls.__new__ = staticmethod(make_patched_event_new(original_new))
             applied.append("neo.core.event.Event.__new__")
 
     except Exception as error:
@@ -1000,7 +1014,7 @@ def extract_touchandsee_dataset(dataset_path, output_folder=None, include_object
         "dataset_name": dataset_path.name,
         "dataset_folder": str(dataset_path),
         "date_extraction": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "extractor": "touchandsee_internal_neo_pickle_extractor_v3",
+        "extractor": "touchandsee_internal_neo_pickle_extractor_v4",
         "include_object_details": bool(include_object_details),
         "dataset_summary": build_dataset_summary(results),
         "files": results,
