@@ -1,0 +1,5 @@
+dataset_short_name,n_rows,has_subject_metadata_fraction,has_session_metadata_fraction,has_session_date_fraction,has_spike_metadata_fraction,has_unit_metadata_fraction,has_lfp_metadata_fraction,has_trial_metadata_fraction,has_event_metadata_fraction,has_position_metadata_fraction,has_sampling_rate_metadata_fraction,has_brain_region_metadata_fraction,extraction_success_fraction,has_standardized_format_fraction
+legacy_touchscreen,25,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.0,1.0,1.0,0.0
+nwb_ca1,53,1.0,1.0,1.0,1.0,1.0,0.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+openfield_ca1,114,1.0,1.0,1.0,1.0,1.0,1.0,0.0,0.0,0.8157894736842105,1.0,0.0,1.0,0.0
+touchandsee,46,1.0,1.0,1.0,0.021739130434782608,1.0,1.0,1.0,1.0,0.0,0.0,0.0,1.0,0.0

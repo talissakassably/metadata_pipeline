@@ -2,6 +2,7 @@
 """Unsupervised ML analysis: PCA and KMeans clustering."""
 
 import numpy as np
+import pandas as pd
 
 def build_ml_matrix(df):
     """
