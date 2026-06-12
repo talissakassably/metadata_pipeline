@@ -1,0 +1,5 @@
+dataset_short_name,n_rows,mean_cross_dataset_reuse_score,mean_data_analysis_potential_score,n_can_do_spike_analysis,n_can_do_lfp_analysis,n_can_do_behavior_analysis,n_can_do_spike_behavior_analysis,n_can_do_spike_position_analysis,n_can_do_cross_dataset_comparison,total_best_units,total_best_spikes,total_lfp_channels,total_trials,total_events,recording_profile_groups
+legacy_touchscreen,25,0.9090909090909091,1.0,25,25,25,25,25,25,1213.0,36609948.0,3182.0,3554,924811.0,spike_behavior
+nwb_ca1,53,0.9090909090909088,0.6666666666666664,53,0,53,53,53,53,124313.0,0.0,0.0,0,0.0,spike_behavior
+openfield_ca1,114,0.7679425837320573,0.8771929824561403,114,114,93,93,93,0,1109.0,46230352.0,666.0,0,0.0,spike_behavior; spike_lfp
+touchandsee,46,0.45849802371541476,0.5072463768115942,1,46,46,1,0,0,106089.0,283058.0,7485.0,2495,14970.0,lfp_only; spike_behavior
