@@ -14,13 +14,9 @@ Goal:
     Move from simple metadata profiling to metadata-guided data reuse.
 
 Run:
-    python meta_analysis/build_metadata_enriched_features.py ^
-        meta_analysis/outputs/ca1_harmonized_sessions.csv
-
-Or with explicit output folder:
-    python meta_analysis/build_metadata_enriched_features.py ^
-        meta_analysis/outputs/ca1_harmonized_sessions.csv ^
-        --output_dir meta_analysis/outputs
+    py meta_analysis\\build_metadata_enriched_features.py ^
+        meta_analysis\\outputs\\ca1_harmonized_sessions.csv ^
+        --output_dir meta_analysis\\outputs
 """
 
 import argparse
@@ -30,7 +26,16 @@ import numpy as np
 import pandas as pd
 
 
+# ---------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------
+
+
 def to_bool_series(series):
+    """
+    Convert mixed boolean/string/numeric values to booleans.
+    """
+
     if series.dtype == bool:
         return series.fillna(False)
 
@@ -44,6 +49,10 @@ def to_bool_series(series):
 
 
 def safe_numeric(df, column, default=0.0):
+    """
+    Return a numeric column. If absent, create a default series.
+    """
+
     if column not in df.columns:
         return pd.Series(default, index=df.index)
 
@@ -51,6 +60,10 @@ def safe_numeric(df, column, default=0.0):
 
 
 def safe_text(df, column):
+    """
+    Return a string column. If absent, create an empty string series.
+    """
+
     if column not in df.columns:
         return pd.Series("", index=df.index)
 
@@ -58,8 +71,21 @@ def safe_text(df, column):
 
 
 def safe_ratio(numerator, denominator):
-    numerator = pd.to_numeric(numerator, errors="coerce").fillna(0)
-    denominator = pd.to_numeric(denominator, errors="coerce").fillna(0)
+    """
+    Safe division. Works when denominator is either a Series or a scalar.
+    Returns 0 if denominator is missing or zero.
+    """
+
+    numerator = pd.to_numeric(numerator, errors="coerce")
+
+    if isinstance(denominator, pd.Series):
+        denominator = pd.to_numeric(denominator, errors="coerce")
+    else:
+        denominator = pd.Series(denominator, index=numerator.index)
+        denominator = pd.to_numeric(denominator, errors="coerce")
+
+    numerator = numerator.fillna(0)
+    denominator = denominator.fillna(0)
 
     ratio = np.where(denominator > 0, numerator / denominator, 0)
 
@@ -67,6 +93,10 @@ def safe_ratio(numerator, denominator):
 
 
 def make_missing_requirements(row):
+    """
+    Human-readable explanation of what blocks stronger reuse.
+    """
+
     missing = []
 
     if not row["has_subject_metadata"]:
@@ -84,7 +114,11 @@ def make_missing_requirements(row):
     if not row["has_lfp_metadata"]:
         missing.append("LFP metadata")
 
-    if not row["has_trial_metadata"] and not row["has_event_metadata"] and not row["has_position_metadata"]:
+    if (
+        not row["has_trial_metadata"]
+        and not row["has_event_metadata"]
+        and not row["has_position_metadata"]
+    ):
         missing.append("behavioral metadata")
 
     if not row["has_sampling_rate_metadata"]:
@@ -100,6 +134,10 @@ def make_missing_requirements(row):
 
 
 def recommend_analysis_type(row):
+    """
+    Assign the most suitable analysis type from available data.
+    """
+
     if row["can_do_spike_behavior_analysis"]:
         return "spike-behavior analysis"
 
@@ -121,6 +159,11 @@ def recommend_analysis_type(row):
     return "metadata curation only"
 
 
+# ---------------------------------------------------------------------
+# Main feature construction
+# ---------------------------------------------------------------------
+
+
 def build_metadata_enriched_features(input_csv, output_dir=None):
     input_csv = Path(input_csv)
 
@@ -132,6 +175,10 @@ def build_metadata_enriched_features(input_csv, output_dir=None):
     output_dir.mkdir(parents=True, exist_ok=True)
 
     df = pd.read_csv(input_csv)
+
+    # -----------------------------------------------------------------
+    # Identity / descriptive columns
+    # -----------------------------------------------------------------
 
     identity_columns = [
         "dataset_short_name",
@@ -150,6 +197,10 @@ def build_metadata_enriched_features(input_csv, output_dir=None):
 
     for column in identity_columns:
         df[column] = safe_text(df, column)
+
+    # -----------------------------------------------------------------
+    # Boolean metadata flags
+    # -----------------------------------------------------------------
 
     bool_columns = [
         "extraction_success",
@@ -175,6 +226,10 @@ def build_metadata_enriched_features(input_csv, output_dir=None):
             df[column] = False
         df[column] = to_bool_series(df[column])
 
+    # -----------------------------------------------------------------
+    # Quantitative electrophysiology/session features
+    # -----------------------------------------------------------------
+
     numeric_columns = [
         "recording_duration_s",
         "n_units",
@@ -197,7 +252,14 @@ def build_metadata_enriched_features(input_csv, output_dir=None):
         df[column] = safe_numeric(df, column, default=0)
 
     # Best available quantitative features across heterogeneous formats.
-    df["best_unit_count"] = df[["n_units", "n_spiketrains", "sorted_units_mclust"]].max(axis=1)
+    # Some datasets store curated unit spikes, others raw spike events.
+    df["best_unit_count"] = df[
+        [
+            "n_units",
+            "n_spiketrains",
+            "sorted_units_mclust",
+        ]
+    ].max(axis=1)
 
     df["best_spike_count"] = df[
         [
@@ -215,7 +277,12 @@ def build_metadata_enriched_features(input_csv, output_dir=None):
         ]
     ].max(axis=1)
 
+    # -----------------------------------------------------------------
+    # Derived quantitative features
+    # -----------------------------------------------------------------
+
     duration_min = safe_ratio(df["recording_duration_s"], 60)
+
     df["recording_duration_min"] = duration_min
 
     df["spikes_per_unit"] = safe_ratio(df["best_spike_count"], df["best_unit_count"])
@@ -226,6 +293,7 @@ def build_metadata_enriched_features(input_csv, output_dir=None):
     df["lfp_channels_per_unit"] = safe_ratio(df["n_lfp_channels"], df["best_unit_count"])
     df["electrodes_per_unit"] = safe_ratio(df["n_electrodes"], df["best_unit_count"])
 
+    # Log-transformed versions useful for PCA/ML.
     log_columns = [
         "best_unit_count",
         "best_spike_count",
@@ -242,7 +310,10 @@ def build_metadata_enriched_features(input_csv, output_dir=None):
     for column in log_columns:
         df["log_" + column] = np.log1p(df[column].clip(lower=0))
 
-    # Reuse flags
+    # -----------------------------------------------------------------
+    # Metadata-enriched reuse flags
+    # -----------------------------------------------------------------
+
     df["can_do_spike_analysis"] = (
         df["extraction_success"]
         & df["has_spike_metadata"]
@@ -294,6 +365,10 @@ def build_metadata_enriched_features(input_csv, output_dir=None):
         )
     )
 
+    # -----------------------------------------------------------------
+    # Scores
+    # -----------------------------------------------------------------
+
     reuse_score_components = [
         "can_do_spike_analysis",
         "can_do_lfp_analysis",
@@ -310,6 +385,7 @@ def build_metadata_enriched_features(input_csv, output_dir=None):
 
     df["cross_dataset_reuse_score"] = df[reuse_score_components].mean(axis=1)
 
+    # More neural-data-oriented score. This downweights pure metadata.
     data_reuse_components = [
         "can_do_spike_analysis",
         "can_do_lfp_analysis",
@@ -324,12 +400,35 @@ def build_metadata_enriched_features(input_csv, output_dir=None):
     df["missing_requirements"] = df.apply(make_missing_requirements, axis=1)
     df["recommended_analysis_type"] = df.apply(recommend_analysis_type, axis=1)
 
+    # -----------------------------------------------------------------
+    # Useful categorical simplifications for future AFC/ACM
+    # -----------------------------------------------------------------
+
     context = df["behavioral_context"].str.lower()
 
-    df["context_open_field"] = context.str.contains("open field|navigation", regex=True)
-    df["context_object"] = context.str.contains("object|obj", regex=True)
-    df["context_task"] = context.str.contains("task|touchscreen|touchandsee|sequence|figure", regex=True)
-    df["context_sleep"] = context.str.contains("sleep", regex=True)
+    df["context_open_field"] = context.str.contains(
+        "open field|navigation",
+        regex=True,
+        na=False,
+    )
+
+    df["context_object"] = context.str.contains(
+        "object|obj",
+        regex=True,
+        na=False,
+    )
+
+    df["context_task"] = context.str.contains(
+        "task|touchscreen|touchandsee|sequence|figure",
+        regex=True,
+        na=False,
+    )
+
+    df["context_sleep"] = context.str.contains(
+        "sleep",
+        regex=True,
+        na=False,
+    )
 
     df["recording_profile_group"] = np.select(
         [
@@ -350,6 +449,10 @@ def build_metadata_enriched_features(input_csv, output_dir=None):
         ],
         default="metadata_only",
     )
+
+    # -----------------------------------------------------------------
+    # Output files
+    # -----------------------------------------------------------------
 
     enriched_path = output_dir / "ca1_metadata_enriched_features.csv"
     reuse_path = output_dir / "ca1_reuse_recommendations.csv"
@@ -400,7 +503,9 @@ def build_metadata_enriched_features(input_csv, output_dir=None):
             "total_lfp_channels": group["n_lfp_channels"].sum(),
             "total_trials": group["n_trials"].sum(),
             "total_events": group["n_event_times_total"].sum(),
-            "recording_profile_groups": "; ".join(sorted(group["recording_profile_group"].unique())),
+            "recording_profile_groups": "; ".join(
+                sorted(group["recording_profile_group"].unique())
+            ),
         }
 
         grouped_rows.append(row)
