@@ -1,0 +1,23 @@
+{
+  "paths": {
+    "openfield_root": "C:\\Users\\tkassably\\Downloads\\d-40faae41-7e72-4c3c-9abf-91dea149158d",
+    "nwb_root": "C:\\Users\\tkassably\\Downloads\\d-885b4936-9345-43bd-880e-eebc19898ded",
+    "legacy_touchscreen_root": "C:\\Users\\tkassably\\Downloads\\d-d406a98c-ae5c-4fb3-9f0c-4cf4de9b1094-hbp-data-002061-data",
+    "touchandsee_root": "C:\\Users\\tkassably\\Downloads\\p25b4e-Pennartz_SGA1_T3.3.3-hbp-01681"
+  },
+  "outputs": {
+    "extracted_metadata": "outputs/extracted_metadata",
+    "biological_tables": "outputs/biological_tables",
+    "case_study": "outputs/case_studies/biological_cross_dataset",
+    "meta_analysis": "outputs/meta_analysis"
+  },
+  "notes": {
+    "legacy_touchscreen": "Run this step in the neo_legacy environment if your main environment cannot load Neo 0.8/NIX objects.",
+    "recommended_order": [
+      "extract",
+      "biological_tables",
+      "case_study",
+      "meta_analysis"
+    ]
+  }
+}
