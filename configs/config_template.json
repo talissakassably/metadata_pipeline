@@ -18,6 +18,20 @@
       "biological_tables",
       "case_study",
       "meta_analysis"
+    ],
+    "environment_warning": "Do not force old Neo/NIX pickle datasets into the base environment. Run those extractors separately in neo_legacy, then export biological tables in base."
+  },
+  "environment_plan": {
+    "base": [
+      "openfield",
+      "nwb",
+      "touchandsee_if_supported",
+      "biological_tables",
+      "case_study"
+    ],
+    "neo_legacy": [
+      "legacy_touchscreen",
+      "old_neo_nix_pickles"
     ]
   }
 }

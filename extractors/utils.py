@@ -1,107 +1,196 @@
 # -*- coding: utf-8 -*-
-"""General helper functions for CA1 metadata meta-analysis."""
+"""
+Shared utility functions for extractor scripts.
 
+This file is intentionally self-contained because the extractor scripts are
+executed as standalone scripts from the `extractors/` folder.
+"""
+
+from __future__ import annotations
+
+from datetime import datetime
+from pathlib import Path
 import math
 
-def safe_get(mapping, key, default=None):
-    if isinstance(mapping, dict):
-        return mapping.get(key, default)
-    return default
 
+def make_json_safe(value):
+    """
+    Convert Python / NumPy / pandas / Neo / quantities objects into JSON-safe
+    values without expanding large arrays.
+    """
+    if value is None:
+        return None
 
-def as_bool(value):
-    return bool(value) if value is not None else False
+    if isinstance(value, (str, int, float, bool)):
+        try:
+            if isinstance(value, float) and (math.isnan(value) or math.isinf(value)):
+                return None
+        except Exception:
+            pass
+        return value
 
+    if isinstance(value, Path):
+        return str(value)
 
-def to_number(value, default=0):
+    if isinstance(value, datetime):
+        return str(value)
+
+    # NumPy objects
     try:
-        if value is None:
-            return default
-        if isinstance(value, bool):
+        import numpy as np
+
+        if isinstance(value, np.integer):
             return int(value)
-        if isinstance(value, (int, float)):
-            if math.isnan(value):
-                return default
+
+        if isinstance(value, np.floating):
+            value = float(value)
+            if math.isnan(value) or math.isinf(value):
+                return None
             return value
-        return float(value)
+
+        if isinstance(value, np.bool_):
+            return bool(value)
+
+        if isinstance(value, np.ndarray):
+            if value.size > 50:
+                return {
+                    "array_summary": True,
+                    "shape": list(value.shape),
+                    "dtype": str(value.dtype),
+                }
+            return [make_json_safe(x) for x in value.tolist()]
     except Exception:
-        return default
+        pass
 
+    # Pandas values
+    try:
+        import pandas as pd
 
-def normalize_text(value):
-    if value is None:
-        return ""
-    if isinstance(value, list):
-        return "; ".join(str(v) for v in value)
-    return str(value)
+        if pd.isna(value):
+            return None
+    except Exception:
+        pass
 
+    # Quantities / Neo time values
+    try:
+        if hasattr(value, "magnitude") and hasattr(value, "units"):
+            magnitude = value.magnitude
+            try:
+                import numpy as np
+                arr = np.asarray(magnitude)
+                if arr.size == 1:
+                    return {
+                        "value": make_json_safe(arr.reshape(-1)[0]),
+                        "unit": str(value.units),
+                    }
+                return {
+                    "quantity_summary": True,
+                    "shape": list(arr.shape),
+                    "dtype": str(arr.dtype),
+                    "unit": str(value.units),
+                }
+            except Exception:
+                return str(value)
+    except Exception:
+        pass
 
-def list_to_text(value):
-    if value is None:
-        return ""
-    if isinstance(value, list):
-        return "; ".join(str(v) for v in value)
     if isinstance(value, dict):
-        return "; ".join(str(k) for k in value.keys())
-    return str(value)
+        out = {}
+        for k, v in value.items():
+            out[str(k)] = make_json_safe(v)
+        return out
+
+    if isinstance(value, (list, tuple, set)):
+        values = list(value)
+        if len(values) > 100:
+            return {
+                "list_summary": True,
+                "length": len(values),
+                "preview": [make_json_safe(x) for x in values[:10]],
+            }
+        return [make_json_safe(x) for x in values]
+
+    try:
+        return str(value)
+    except Exception:
+        return None
 
 
-def infer_dataset_short_name(dataset_name):
-    name = str(dataset_name)
+def unique_values(values, max_values=50):
+    """
+    Return sorted unique JSON-safe values from an iterable.
+    """
+    try:
+        values = list(values)
+    except Exception:
+        return []
 
-    if "40faae41" in name:
-        return "openfield_ca1"
+    cleaned = []
+    for value in values:
+        safe = make_json_safe(value)
+        if safe is None:
+            continue
+        if isinstance(safe, (dict, list)):
+            safe = str(safe)
+        cleaned.append(str(safe))
 
-    if "885b4936" in name:
-        return "nwb_ca1"
-
-    if "d406a98c" in name or "002061" in name:
-        return "legacy_touchscreen"
-
-    if "p25b4e" in name or "01681" in name or "Pennartz" in name:
-        return "touchandsee"
-
-    return name[:40]
-
-
-def infer_source_type(dataset):
-    extractor = str(dataset.get("extractor", "")).lower()
-    dataset_name = str(dataset.get("dataset_name", "")).lower()
-
-    if "sessions" in dataset and "openfield" in extractor:
-        return "openfield"
-
-    if "sessions" in dataset and "legacy_touchscreen" in extractor:
-        return "legacy_touchscreen"
-
-    # New TouchAndSee internal Neo pickle extractor output
-    if "files" in dataset and ("touchandsee" in extractor or "01681" in dataset_name or "p25b4e" in dataset_name):
-        return "regular_pickle_or_touchandsee"
-
-    if "files" in dataset:
-        extensions = dataset.get("extensions_searched", [])
-        if ".nwb" in extensions:
-            return "nwb"
-        if ".pkl" in extensions:
-            return "regular_pickle_or_touchandsee"
-
-    return "unknown"
+    unique = sorted(set(cleaned))
+    return unique[:max_values]
 
 
-def has_any_text(value):
-    if value is None:
-        return False
-    if isinstance(value, list):
-        return len(value) > 0
-    if isinstance(value, dict):
-        return len(value) > 0
-    return str(value).strip() != ""
+def dataframe_unique_values(df, column_name, max_values=50):
+    """
+    Return unique values from a dataframe column.
+    """
+    if df is None or column_name not in df.columns:
+        return []
+
+    try:
+        return unique_values(df[column_name].dropna().tolist(), max_values=max_values)
+    except Exception:
+        return []
 
 
-def sum_dict_values(d):
-    if not isinstance(d, dict):
-        return 0
-    total = 0
-    for value in d.values():
-        total += to_number(value, default=0)
-    return total
+def dataframe_column_summary(df, column_name):
+    """
+    Summarize a numeric dataframe column.
+    """
+    if df is None or column_name not in df.columns:
+        return None
+
+    try:
+        import pandas as pd
+
+        values = pd.to_numeric(df[column_name], errors="coerce").dropna()
+
+        if len(values) == 0:
+            return None
+
+        return make_json_safe({
+            "n": int(len(values)),
+            "min": float(values.min()),
+            "max": float(values.max()),
+            "mean": float(values.mean()),
+            "median": float(values.median()),
+            "std": float(values.std()) if len(values) > 1 else 0.0,
+        })
+    except Exception:
+        return None
+
+
+def safe_file_size_mb(path):
+    try:
+        path = Path(path)
+        return round(path.stat().st_size / 1024 / 1024, 3)
+    except Exception:
+        return None
+
+
+def safe_relpath(path, root):
+    try:
+        return str(Path(path).relative_to(Path(root)))
+    except Exception:
+        try:
+            return str(Path(path))
+        except Exception:
+            return ""
