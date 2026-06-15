@@ -1,0 +1,2 @@
+dataset_short_name,n_sessions,total_units,median_units_per_session,median_session_firing_rate_hz,median_total_spikes,median_duration_s
+nwb_ca1,53,124313,1357.0,1.4115127897055186,6129344.0,1527.5458333333333
