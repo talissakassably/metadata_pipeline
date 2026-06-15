@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Feature engineering and scoring for harmonized CA1 metadata rows.
+"""Feature engineering for the CA1 metadata-enriched meta-analysis.
 
-This updated version explicitly integrates quantitative metadata / recording-level
-variables into the meta-analysis, not only binary metadata availability flags.
+This module transforms harmonized session rows into an analysis-ready table.
+It keeps the interpretation simple:
+
+1. Metadata completeness: which descriptions are present?
+2. Quantitative recording profile: units, spikes, LFP, trials/events, duration.
+3. Reuse potential: which analyses are realistically possible?
 """
 
 import numpy as np
@@ -98,19 +102,8 @@ OPENMINDS_FLAGS = [
     "has_standardized_format",
 ]
 
-REUSE_FLAGS = [
-    "can_do_spike_analysis",
-    "can_do_lfp_analysis",
-    "can_do_behavior_analysis",
-    "can_do_position_analysis",
-    "can_do_spike_behavior_analysis",
-    "can_do_spike_position_analysis",
-    "can_do_lfp_behavior_analysis",
-    "can_do_cross_dataset_comparison",
-]
-
-# Quantitative variables used in the updated PCA / ML meta-analysis.
-# These are intentionally not dataset identifiers.
+# Quantitative variables used for PCA/KMeans.
+# These intentionally combine metadata-derived quality scores and recording-level quantities.
 QUANTITATIVE_ML_FEATURES = [
     "metadata_completeness_score",
     "ephys_richness_score",
@@ -136,22 +129,13 @@ QUANTITATIVE_ML_FEATURES = [
     "log_electrodes_per_unit",
 ]
 
-# Categorical metadata used for AFC/ACM-like analysis.
-#
-# Important:
-# We intentionally EXCLUDE dataset_short_name, source_type, source_format,
-# recording_system and raw behavioral_context from the default AFC/ACM analysis.
-# Otherwise the categorical analysis mostly rediscovers dataset/file-format
-# identity instead of showing reusable metadata profiles.
+# Categorical variables for ACM-like analysis.
+# We exclude raw source_type/source_format/recording_system by default so the analysis
+# does not simply rediscover file-format identity.
 CATEGORICAL_FEATURES = [
     "metadata_profile_label",
     "recommended_analysis_type",
     "recording_profile_group",
-
-    "extraction_success",
-    "has_subject_metadata",
-    "has_session_metadata",
-    "has_session_date",
     "has_recording_duration",
     "has_spike_metadata",
     "has_unit_metadata",
@@ -163,7 +147,6 @@ CATEGORICAL_FEATURES = [
     "has_sampling_rate_metadata",
     "has_brain_region_metadata",
     "has_standardized_format",
-
     "can_do_spike_analysis",
     "can_do_lfp_analysis",
     "can_do_behavior_analysis",
@@ -172,7 +155,6 @@ CATEGORICAL_FEATURES = [
     "can_do_spike_position_analysis",
     "can_do_lfp_behavior_analysis",
     "can_do_cross_dataset_comparison",
-
     "context_open_field",
     "context_object",
     "context_task",
@@ -205,8 +187,65 @@ def _safe_ratio(numerator, denominator):
     return pd.Series(values, index=numerator.index).replace([np.inf, -np.inf], 0).fillna(0)
 
 
+def make_missing_requirements(row):
+    missing = []
+    if not row.get("has_subject_metadata", False):
+        missing.append("subject metadata")
+    if not row.get("has_session_metadata", False):
+        missing.append("session metadata")
+    if not row.get("has_session_date", False):
+        missing.append("session date")
+    if not row.get("has_spike_metadata", False):
+        missing.append("spike/unit metadata")
+    if not row.get("has_lfp_metadata", False):
+        missing.append("LFP metadata")
+    if (not row.get("has_trial_metadata", False)
+        and not row.get("has_event_metadata", False)
+        and not row.get("has_position_metadata", False)):
+        missing.append("behavioral metadata")
+    if not row.get("has_sampling_rate_metadata", False):
+        missing.append("sampling-rate metadata")
+    if not row.get("has_brain_region_metadata", False):
+        missing.append("brain-region metadata")
+    return "none" if not missing else "; ".join(missing)
+
+
+def recommend_analysis_type(row):
+    if row.get("can_do_spike_behavior_analysis", False):
+        return "spike-behavior analysis"
+    if row.get("can_do_spike_position_analysis", False):
+        return "spike-position / navigation analysis"
+    if row.get("can_do_lfp_behavior_analysis", False):
+        return "LFP-behavior analysis"
+    if row.get("can_do_spike_analysis", False):
+        return "spike/unit analysis"
+    if row.get("can_do_lfp_analysis", False):
+        return "LFP metadata-level analysis"
+    if row.get("can_do_behavior_analysis", False):
+        return "behavior-only metadata analysis"
+    return "metadata curation only"
+
+
+def assign_profile_label(row):
+    if not row.get("extraction_success", False):
+        return "metadata-limited / extraction failed"
+    if row.get("can_do_spike_behavior_analysis", False):
+        return "spike+behavior reusable profile"
+    if row.get("can_do_spike_position_analysis", False):
+        return "spike+position navigation profile"
+    if row.get("has_standardized_format", False) and row.get("has_unit_metadata", False):
+        return "standardized unit-rich profile"
+    if row.get("has_lfp_metadata", False) and row.get("has_unit_metadata", False):
+        return "spike+LFP ephys profile"
+    if row.get("has_unit_metadata", False):
+        return "unit-only ephys profile"
+    if row.get("has_lfp_metadata", False):
+        return "LFP-only ephys profile"
+    return "metadata-limited profile"
+
+
 def prepare_dataframe(rows):
-    """Create the harmonized session table and all engineered features."""
+    """Create the enriched session-level analysis table."""
     df = pd.DataFrame(rows)
 
     for col in FLAG_COLUMNS:
@@ -224,13 +263,11 @@ def prepare_dataframe(rows):
             df[col] = ""
         df[col] = df[col].fillna("").astype(str)
 
-    # Classical metadata quality scores.
     df["metadata_completeness_score"] = df[COMPLETENESS_FLAGS].mean(axis=1)
     df["ephys_richness_score"] = df[EPHYS_FLAGS].mean(axis=1)
     df["behavior_richness_score"] = df[BEHAVIOR_FLAGS].mean(axis=1)
     df["openminds_readiness_score"] = df[OPENMINDS_FLAGS].mean(axis=1)
 
-    # Best available quantitative variables across heterogeneous formats.
     df["best_unit_count"] = df[["n_units", "n_spiketrains", "sorted_units_mclust"]].max(axis=1)
     df["best_spike_count"] = df[["n_spikes_total", "sorted_unit_spikes_total_mclust", "raw_spike_events_total"]].max(axis=1)
     df["best_behavior_count"] = df[["n_trials", "n_event_times_total", "n_position_samples"]].max(axis=1)
@@ -244,7 +281,6 @@ def prepare_dataframe(rows):
     df["lfp_channels_per_unit"] = _safe_ratio(df["n_lfp_channels"], df["best_unit_count"])
     df["electrodes_per_unit"] = _safe_ratio(df["n_electrodes"], df["best_unit_count"])
 
-    # Log-scaled quantities for PCA/ML. This helps reduce dominance of very large counts.
     log_sources = [
         "n_units", "n_spikes_total", "raw_spike_events_total", "n_lfp_channels",
         "n_electrodes", "n_trials", "n_event_times_total", "n_position_samples",
@@ -254,9 +290,9 @@ def prepare_dataframe(rows):
         "lfp_channels_per_unit", "electrodes_per_unit",
     ]
     for col in log_sources:
-        df["log_" + col] = np.log1p(pd.to_numeric(df[col], errors="coerce").fillna(0).clip(lower=0))
+        values = pd.to_numeric(df[col], errors="coerce").fillna(0).clip(lower=0)
+        df["log_" + col] = np.log1p(values)
 
-    # Reuse flags: these give a concrete interpretation of the metadata-enriched table.
     df["can_do_spike_analysis"] = (
         df["extraction_success"] & df["has_spike_metadata"] & df["has_unit_metadata"] & (df["best_unit_count"] > 0)
     )
@@ -311,45 +347,3 @@ def prepare_dataframe(rows):
     df["metadata_profile_label"] = df.apply(assign_profile_label, axis=1)
 
     return df
-
-
-def make_missing_requirements(row):
-    missing = []
-    if not row.get("has_subject_metadata", False): missing.append("subject metadata")
-    if not row.get("has_session_metadata", False): missing.append("session metadata")
-    if not row.get("has_session_date", False): missing.append("session date")
-    if not row.get("has_spike_metadata", False): missing.append("spike/unit metadata")
-    if not row.get("has_lfp_metadata", False): missing.append("LFP metadata")
-    if not row.get("has_trial_metadata", False) and not row.get("has_event_metadata", False) and not row.get("has_position_metadata", False):
-        missing.append("behavioral metadata")
-    if not row.get("has_sampling_rate_metadata", False): missing.append("sampling-rate metadata")
-    if not row.get("has_brain_region_metadata", False): missing.append("brain-region metadata")
-    return "none" if not missing else "; ".join(missing)
-
-
-def recommend_analysis_type(row):
-    if row.get("can_do_spike_behavior_analysis", False): return "spike-behavior analysis"
-    if row.get("can_do_spike_position_analysis", False): return "spike-position / navigation analysis"
-    if row.get("can_do_lfp_behavior_analysis", False): return "LFP-behavior analysis"
-    if row.get("can_do_spike_analysis", False): return "spike/unit analysis"
-    if row.get("can_do_lfp_analysis", False): return "LFP metadata-level analysis"
-    if row.get("can_do_behavior_analysis", False): return "behavior-only metadata analysis"
-    return "metadata curation only"
-
-
-def assign_profile_label(row):
-    if not row.get("extraction_success", False):
-        return "metadata-limited / extraction failed"
-    if row.get("can_do_spike_behavior_analysis", False):
-        return "spike+behavior reusable profile"
-    if row.get("can_do_spike_position_analysis", False):
-        return "spike+position navigation profile"
-    if row.get("has_standardized_format", False) and row.get("has_unit_metadata", False):
-        return "standardized NWB unit-rich profile"
-    if row.get("has_lfp_metadata", False) and row.get("has_unit_metadata", False):
-        return "spike+LFP ephys profile"
-    if row.get("has_unit_metadata", False):
-        return "unit-only ephys profile"
-    if row.get("has_lfp_metadata", False):
-        return "LFP-only ephys profile"
-    return "metadata-limited profile"

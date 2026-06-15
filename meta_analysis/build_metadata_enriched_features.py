@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Compatibility wrapper.
+"""Optional compatibility wrapper.
 
-The updated pipeline now builds enriched features directly inside
-run_ca1_metadata_meta_analysis.py. This script is only kept if you want to enrich
-an already-existing ca1_harmonized_sessions.csv.
+Use only if you already have a harmonized CSV and want to rebuild enriched features.
+The main pipeline now does this automatically.
 """
 
 import argparse
@@ -25,8 +24,8 @@ def main():
     input_csv = Path(args.harmonized_csv)
     output_dir = Path(args.output_dir) if args.output_dir else input_csv.parent
     output_dir.mkdir(parents=True, exist_ok=True)
-    raw = pd.read_csv(input_csv).to_dict(orient="records")
-    df = prepare_dataframe(raw)
+    rows = pd.read_csv(input_csv).to_dict(orient="records")
+    df = prepare_dataframe(rows)
     df.to_csv(output_dir / "ca1_metadata_enriched_features.csv", index=False)
     print("Done:", output_dir / "ca1_metadata_enriched_features.csv")
 
