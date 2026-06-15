@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Unsupervised ML analysis: quantitative PCA, KMeans, and AFC/ACM-like analysis."""
+"""Unsupervised ML analysis: quantitative PCA, KMeans, and improved AFC/ACM-like analysis."""
 
 import numpy as np
 import pandas as pd
@@ -12,10 +12,11 @@ def build_ml_matrix(df):
     used_features = [col for col in QUANTITATIVE_ML_FEATURES if col in df.columns]
     if len(used_features) < 2:
         raise ValueError("Not enough quantitative features for PCA.")
+
     X = df[used_features].copy()
     for col in X.columns:
         X[col] = pd.to_numeric(X[col], errors="coerce").fillna(0).astype(float)
-    # Remove constant columns after conversion.
+
     nunique = X.nunique(dropna=True)
     X = X.loc[:, nunique > 1]
     return X, list(X.columns)
@@ -106,16 +107,48 @@ def run_pca_and_clustering(df, n_clusters=4):
     print("PCA explained variance ratio:", pca.explained_variance_ratio_)
     print("KMeans n_clusters:", n_clusters)
     print("Silhouette score:", sil)
-
     return df_ml, pca, feature_columns, sil, loadings, explained, quality_report
 
 
-def run_categorical_afc_mca(df, n_clusters=4):
-    """Run ACM-like analysis using one-hot categorical metadata + PCA.
+def _clean_categorical_value(value):
+    if pd.isna(value):
+        return "missing"
+    text = str(value).strip()
+    if text == "":
+        return "missing"
+    return text
 
-    Strictly speaking, AFC is for a contingency table and ACM is for multiple
-    categorical variables. Because this pipeline uses multiple categorical
-    metadata columns, this is an ACM-like analysis.
+
+def _add_jitter_to_duplicate_profiles(coord_df, X_cat, jitter_scale=0.08, random_state=42):
+    rng = np.random.default_rng(random_state)
+    profile_key = X_cat.astype(str).agg("||".join, axis=1)
+    duplicate_counts = profile_key.map(profile_key.value_counts())
+
+    coord_df = coord_df.copy()
+    coord_df["duplicate_profile_count"] = duplicate_counts.values
+    jitter_x = np.zeros(len(coord_df))
+    jitter_y = np.zeros(len(coord_df))
+
+    for profile in profile_key[duplicate_counts > 1].unique():
+        idx = np.where(profile_key.values == profile)[0]
+        if len(idx) > 1:
+            jitter_x[idx] = rng.normal(0, jitter_scale, size=len(idx))
+            jitter_y[idx] = rng.normal(0, jitter_scale, size=len(idx))
+
+    coord_df["mca_1_plot"] = coord_df["mca_1"] + jitter_x
+    coord_df["mca_2_plot"] = coord_df["mca_2"] + jitter_y
+    return coord_df
+
+
+def run_categorical_afc_mca(df, n_clusters=4):
+    """Run improved ACM-like analysis using one-hot categorical metadata + PCA.
+
+    Strictly speaking, AFC is for a two-way contingency table and ACM is for
+    multiple categorical variables. Because the pipeline uses multiple
+    categorical metadata columns, this is an ACM-like analysis.
+
+    The categorical feature list intentionally excludes dataset/source format
+    variables so the analysis does not only rediscover dataset identity.
     """
     try:
         from sklearn.preprocessing import OneHotEncoder
@@ -134,11 +167,12 @@ def run_categorical_afc_mca(df, n_clusters=4):
     X_cat = df[used_features].copy()
     quality_rows = []
     for col in X_cat.columns:
-        X_cat[col] = X_cat[col].fillna("missing").astype(str)
+        X_cat[col] = X_cat[col].apply(_clean_categorical_value).astype(str)
+        values = sorted(X_cat[col].unique())
         quality_rows.append({
             "feature": col,
             "n_categories": int(X_cat[col].nunique(dropna=False)),
-            "categories_preview": "; ".join(sorted(X_cat[col].unique())[:25]),
+            "categories_preview": "; ".join(values[:25]),
             "used_for_categorical_analysis": True,
         })
     quality_report = pd.DataFrame(quality_rows)
@@ -151,18 +185,29 @@ def run_categorical_afc_mca(df, n_clusters=4):
     X_encoded = encoder.fit_transform(X_cat)
     feature_names = encoder.get_feature_names_out(used_features)
     X_df = pd.DataFrame(X_encoded, columns=feature_names, index=df.index)
+
     nunique = X_df.nunique(dropna=True)
     X_df = X_df.loc[:, nunique > 1]
+
+    # Remove extremely rare category columns that can create isolated outliers.
+    category_counts = X_df.sum(axis=0)
+    X_df = X_df.loc[:, category_counts >= 2]
+
+    if X_df.shape[1] < 2:
+        print("Not enough non-constant categorical indicators after filtering.")
+        return None, None, None, quality_report, None
 
     X_scaled, _, _ = standardize_matrix(X_df)
 
     pca = PCA(n_components=2, random_state=42)
     coords = pca.fit_transform(X_scaled)
 
-    coord_df = pd.DataFrame({"mca_1": coords[:, 0], "mca_2": coords[:, 1]})
+    coord_df = pd.DataFrame({"mca_1": coords[:, 0], "mca_2": coords[:, 1]}, index=df.index)
     for col in ["dataset_short_name", "session_id", "subject_id", "behavioral_context", "recording_profile_group", "recommended_analysis_type"]:
         if col in df.columns:
-            coord_df[col] = df[col]
+            coord_df[col] = df[col].values
+
+    coord_df = _add_jitter_to_duplicate_profiles(coord_df, X_cat)
 
     n_samples = X_scaled.shape[0]
     n_clusters = int(min(n_clusters, max(2, n_samples - 1)))
@@ -182,6 +227,7 @@ def run_categorical_afc_mca(df, n_clusters=4):
     ).reset_index(names="category_feature")
     loadings["abs_Dim1_loading"] = loadings["Dim1_loading"].abs()
     loadings["abs_Dim2_loading"] = loadings["Dim2_loading"].abs()
+    loadings["max_abs_loading"] = loadings[["abs_Dim1_loading", "abs_Dim2_loading"]].max(axis=1)
 
     explained = pd.DataFrame({
         "dimension": ["Dim1", "Dim2"],
@@ -189,6 +235,7 @@ def run_categorical_afc_mca(df, n_clusters=4):
     })
 
     print("AFC/ACM categorical features used:", used_features)
+    print("AFC/ACM one-hot indicators retained:", X_df.shape[1])
     print("AFC/ACM explained variance ratio:", pca.explained_variance_ratio_)
     print("AFC/ACM silhouette score:", sil)
 

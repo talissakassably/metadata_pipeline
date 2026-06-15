@@ -137,14 +137,17 @@ QUANTITATIVE_ML_FEATURES = [
 ]
 
 # Categorical metadata used for AFC/ACM-like analysis.
+#
+# Important:
+# We intentionally EXCLUDE dataset_short_name, source_type, source_format,
+# recording_system and raw behavioral_context from the default AFC/ACM analysis.
+# Otherwise the categorical analysis mostly rediscovers dataset/file-format
+# identity instead of showing reusable metadata profiles.
 CATEGORICAL_FEATURES = [
-    "source_type",
-    "source_format",
-    "recording_system",
-    "behavioral_context",
     "metadata_profile_label",
     "recommended_analysis_type",
     "recording_profile_group",
+
     "extraction_success",
     "has_subject_metadata",
     "has_session_metadata",
@@ -160,6 +163,7 @@ CATEGORICAL_FEATURES = [
     "has_sampling_rate_metadata",
     "has_brain_region_metadata",
     "has_standardized_format",
+
     "can_do_spike_analysis",
     "can_do_lfp_analysis",
     "can_do_behavior_analysis",
@@ -168,6 +172,7 @@ CATEGORICAL_FEATURES = [
     "can_do_spike_position_analysis",
     "can_do_lfp_behavior_analysis",
     "can_do_cross_dataset_comparison",
+
     "context_open_field",
     "context_object",
     "context_task",

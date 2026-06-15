@@ -1,8 +1,4 @@
 feature,n_categories,categories_preview,used_for_categorical_analysis
-source_type,4,legacy_touchscreen; nwb; openfield; touchandsee_pickle,True
-source_format,4,Axona/Neuralynx/MClust/OptiTrack; NWB; Neo pickle; legacy Neo/NIX,True
-recording_system,13,20403313322; 20403313401; 20403313402; 20403313482; Axona; Neo pickle; Neuralynx; legacy Neo/NIX; neuropixel_2_19122505151; neuropixel_2_19122519093; neuropixel_2_19122519211; neuropixels_1_18408403091; neuropixels_2_19122509121; neuropixels_2_19122502062; neuropixels_2_19122511841; neuropixels_2_19122514182; neuropixels_2_19122510811; neuropixels_2_20403311343; neuropixels_2_20403311393; neuropixels_2_20403311113; neuropixels_2_20403311151; neuropixels_2_20403320473,True
-behavioral_context,28,"2 OF sessions with short pot break inbetween, some jumping; 35 mins; OF; decent coverage; still plugged in from previous session in room 2.408; NWB electrophysiology; OF; OF and obj; OF tall walls; OF, LEC was likely deep layers; OF, OBJ; OF, obj, obj, obj; TouchAndSee; figure-eight; object events; open field (motive crashed); open field / navigation; open field and objA of WWW; open field, WHAT, and WHERE; open field, WHEN1; open field, open field; open field; novel object; open field; object; open field; party lights; seq1; seq2; seq2, comparison probes; sequence task",True
 metadata_profile_label,2,spike+LFP ephys profile; spike+behavior reusable profile,True
 recommended_analysis_type,3,LFP-behavior analysis; spike-behavior analysis; spike/unit analysis,True
 recording_profile_group,3,lfp_only; spike_behavior; spike_lfp,True

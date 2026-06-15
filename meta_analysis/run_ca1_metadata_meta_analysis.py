@@ -38,6 +38,7 @@ from meta_analysis.plotting import (
     plot_clusters,
     plot_reuse_score_by_dataset,
     plot_categorical_mca,
+    plot_categorical_mca_top_drivers,
 )
 
 
@@ -138,6 +139,7 @@ def run_pipeline(input_paths, output_dir, n_clusters=4):
     plot_clusters(df_ml, figures_dir)
     plot_reuse_score_by_dataset(dataset_summary, figures_dir)
     plot_categorical_mca(mca_coordinates, figures_dir)
+    plot_categorical_mca_top_drivers(mca_loadings, figures_dir)
 
     write_interpretation_markdown(
         output_dir,

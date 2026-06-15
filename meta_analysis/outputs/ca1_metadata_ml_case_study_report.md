@@ -28,7 +28,7 @@ Can automatically extracted metadata, including quantitative recording-level var
 ## AFC/ACM-like categorical analysis
 
 - Categorical metadata were analysed separately with an ACM-like approach based on one-hot encoded metadata categories.
-- Categorical clustering silhouette score: 0.632
+- Categorical clustering silhouette score: 0.772
 
 ## Interpretation angle
 

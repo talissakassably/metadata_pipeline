@@ -86,19 +86,51 @@ def plot_reuse_score_by_dataset(dataset_summary, figures_dir):
 
 
 def plot_categorical_mca(mca_coordinates, figures_dir):
+    """Improved AFC/ACM-like scatter plot with jitter and centroids."""
     if mca_coordinates is None or mca_coordinates.empty:
         return
-    plt.figure(figsize=(8, 6))
+
+    x_col = "mca_1_plot" if "mca_1_plot" in mca_coordinates.columns else "mca_1"
+    y_col = "mca_2_plot" if "mca_2_plot" in mca_coordinates.columns else "mca_2"
+
+    plt.figure(figsize=(9, 7))
     if "dataset_short_name" in mca_coordinates.columns:
         for dataset in sorted(mca_coordinates["dataset_short_name"].unique()):
             subset = mca_coordinates[mca_coordinates["dataset_short_name"] == dataset]
-            plt.scatter(subset["mca_1"], subset["mca_2"], label=dataset, alpha=0.8)
+            plt.scatter(subset[x_col], subset[y_col], label=dataset, alpha=0.55, s=35)
+
+        centroids = mca_coordinates.groupby("dataset_short_name")[["mca_1", "mca_2"]].mean()
+        for dataset, row in centroids.iterrows():
+            plt.scatter(row["mca_1"], row["mca_2"], marker="X", s=180, edgecolor="black", linewidth=1.0)
+            plt.text(row["mca_1"], row["mca_2"], "  " + str(dataset), fontsize=9, va="center")
         plt.legend()
     else:
-        plt.scatter(mca_coordinates["mca_1"], mca_coordinates["mca_2"], alpha=0.8)
+        plt.scatter(mca_coordinates[x_col], mca_coordinates[y_col], alpha=0.55, s=35)
+
+    plt.axhline(0, linewidth=0.8)
+    plt.axvline(0, linewidth=0.8)
     plt.xlabel("Dimension 1")
     plt.ylabel("Dimension 2")
-    plt.title("AFC/ACM-like analysis of categorical metadata")
+    plt.title("AFC/ACM-like analysis of categorical metadata, excluding format variables")
     plt.tight_layout()
-    plt.savefig(figures_dir / "06_categorical_afc_mca.png", dpi=200)
+    plt.savefig(figures_dir / "06_categorical_afc_mca.png", dpi=250)
+    plt.close()
+
+
+def plot_categorical_mca_top_drivers(mca_loadings, figures_dir):
+    """Barplot of the strongest category contributors to AFC/ACM dimensions."""
+    if mca_loadings is None or mca_loadings.empty:
+        return
+    if "max_abs_loading" not in mca_loadings.columns:
+        return
+
+    top = mca_loadings.sort_values("max_abs_loading", ascending=False).head(15).copy()
+    top = top.sort_values("max_abs_loading", ascending=True)
+
+    plt.figure(figsize=(10, 6))
+    plt.barh(top["category_feature"], top["max_abs_loading"])
+    plt.xlabel("Maximum absolute loading on Dimension 1 or 2")
+    plt.title("Top categorical metadata drivers of AFC/ACM dimensions")
+    plt.tight_layout()
+    plt.savefig(figures_dir / "07_categorical_afc_mca_top_drivers.png", dpi=250)
     plt.close()
