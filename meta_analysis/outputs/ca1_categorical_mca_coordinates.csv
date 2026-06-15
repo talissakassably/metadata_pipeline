@@ -1,0 +1,239 @@
+mca_1,mca_2,dataset_short_name,session_id,subject_id,behavioral_context,recording_profile_group,recommended_analysis_type,categorical_cluster
+1.8256248939890045,5.387950464446,openfield_ca1,24101_2018-03-22,24101,open field / navigation,spike_lfp,spike/unit analysis,0
+1.8256248939890074,5.387950464446005,openfield_ca1,24101_2018-03-24,24101,open field / navigation,spike_lfp,spike/unit analysis,0
+1.825624893989031,5.3879504644459795,openfield_ca1,24101_2018-03-26,24101,open field / navigation,spike_lfp,spike/unit analysis,0
+1.8256248939890207,5.387950464445998,openfield_ca1,24101_2018-03-27,24101,open field / navigation,spike_lfp,spike/unit analysis,0
+1.8256248939890194,5.3879504644459875,openfield_ca1,24101_2018-04-03,24101,open field / navigation,spike_lfp,spike/unit analysis,0
+1.8256248939890238,5.3879504644459635,openfield_ca1,24101_2018-04-04,24101,open field / navigation,spike_lfp,spike/unit analysis,0
+1.8256248939889994,5.387950464445975,openfield_ca1,24101_2018-04-05,24101,open field / navigation,spike_lfp,spike/unit analysis,0
+1.8256248939890207,5.38795046444598,openfield_ca1,24101_2018-04-06,24101,open field / navigation,spike_lfp,spike/unit analysis,0
+1.8256248939890127,5.387950464445981,openfield_ca1,24101_2018-04-11,24101,open field / navigation,spike_lfp,spike/unit analysis,0
+1.8256248939890125,5.387950464445981,openfield_ca1,24101_2018-04-13,24101,open field / navigation,spike_lfp,spike/unit analysis,0
+1.8256248939890165,5.387950464445983,openfield_ca1,24101_2018-04-17,24101,open field / navigation,spike_lfp,spike/unit analysis,0
+1.825624893989013,5.387950464445983,openfield_ca1,24101_2018-04-18,24101,open field / navigation,spike_lfp,spike/unit analysis,0
+1.8256248939890154,5.38795046444598,openfield_ca1,24101_2018-04-23,24101,open field / navigation,spike_lfp,spike/unit analysis,0
+1.8256248939890078,5.387950464445977,openfield_ca1,24101_2018-04-24,24101,open field / navigation,spike_lfp,spike/unit analysis,0
+1.825624893989012,5.387950464445982,openfield_ca1,24101_2018-04-25,24101,open field / navigation,spike_lfp,spike/unit analysis,0
+1.8256248939890138,5.38795046444598,openfield_ca1,24101_2018-04-30,24101,open field / navigation,spike_lfp,spike/unit analysis,0
+1.8256248939890127,5.387950464445982,openfield_ca1,24101_2018-05-02,24101,open field / navigation,spike_lfp,spike/unit analysis,0
+1.825624893989013,5.387950464445982,openfield_ca1,24101_2018-05-03,24101,open field / navigation,spike_lfp,spike/unit analysis,0
+1.825624893989012,5.387950464445981,openfield_ca1,24101_2018-05-04,24101,open field / navigation,spike_lfp,spike/unit analysis,0
+1.8256248939890127,5.387950464445981,openfield_ca1,24101_2018-05-07,24101,open field / navigation,spike_lfp,spike/unit analysis,0
+1.8256248939890136,5.3879504644459795,openfield_ca1,24101_2018-05-08,24101,open field / navigation,spike_lfp,spike/unit analysis,0
+-2.895661507006555,4.002538431547851,openfield_ca1,24116_2018-04-03,24116,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,24116_2018-04-05,24116,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,24116_2018-04-06,24116,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.895661507006555,4.002538431547851,openfield_ca1,24116_2018-04-19,24116,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547852,openfield_ca1,24116_2018-04-20,24116,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,24116_2018-04-22,24116,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,24116_2018-04-25,24116,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.895661507006555,4.002538431547852,openfield_ca1,24116_2018-04-26,24116,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,24116_2018-04-27,24116,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.895661507006554,4.00253843154785,openfield_ca1,24116_2018-04-30,24116,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,24116_2018-05-02,24116,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,24116_2018-05-03,24116,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,24116_2018-05-04,24116,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-04-29,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547852,openfield_ca1,25398_2019-04-30,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547852,openfield_ca1,25398_2019-05-01,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-05-02,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-05-03,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-05-06,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-05-07,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-05-08,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.895661507006555,4.00253843154785,openfield_ca1,25398_2019-05-09,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-05-10,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-05-11,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-05-14,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-05-15,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-05-16,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-06-21,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065563,4.002538431547852,openfield_ca1,25398_2019-06-24,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065537,4.002538431547851,openfield_ca1,25398_2019-06-25,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-06-27,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.895661507006553,4.002538431547851,openfield_ca1,25398_2019-06-28,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.895661507006555,4.00253843154785,openfield_ca1,25398_2019-07-02,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.895661507006555,4.002538431547851,openfield_ca1,25398_2019-07-03,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.895661507006554,4.002538431547851,openfield_ca1,25398_2019-07-04,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-07-30,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-07-31,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-08-01,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-08-02,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-08-07,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-08-08,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-08-09,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-08-13,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.895661507006555,4.00253843154785,openfield_ca1,25398_2019-08-14,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-08-15,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-09-03,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-09-04,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-09-16,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-09-17,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-09-18,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-09-19,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-09-20,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-10-07,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-10-08,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.895661507006555,4.00253843154785,openfield_ca1,25398_2019-10-09,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-10-10,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-10-23,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,25398_2019-10-24,25398,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26019_2020-01-06,26019,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26019_2020-01-07,26019,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26019_2020-01-08,26019,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26019_2020-01-09,26019,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26019_2020-01-10,26019,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26019_2020-01-13,26019,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26019_2020-01-14,26019,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.895661507006555,4.00253843154785,openfield_ca1,26019_2020-01-15,26019,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26019_2020-01-16,26019,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26019_2020-01-17,26019,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26019_2020-01-20,26019,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26019_2020-01-21,26019,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26019_2020-01-22,26019,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26019_2020-01-23,26019,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26019_2020-01-27,26019,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26019_2020-01-29,26019,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26019_2020-01-30,26019,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26191_2020-04-01,26191,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.895661507006555,4.00253843154785,openfield_ca1,26191_2020-04-02,26191,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26191_2020-04-03,26191,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26191_2020-04-04,26191,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26191_2020-04-05,26191,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26191_2020-04-07,26191,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26191_2020-04-09,26191,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26191_2020-04-10,26191,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26191_2020-04-14,26191,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26191_2020-04-15,26191,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26191_2020-04-16,26191,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26191_2020-04-17,26191,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.895661507006555,4.00253843154785,openfield_ca1,26191_2020-04-20,26191,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26191_2020-04-21,26191,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26191_2020-04-23,26191,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26191_2020-04-24,26191,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26191_2020-04-25,26191,open field / navigation,spike_behavior,spike-behavior analysis,0
+-2.8956615070065546,4.002538431547851,openfield_ca1,26191_2020-04-27,26191,open field / navigation,spike_behavior,spike-behavior analysis,0
+-4.2783655301900945,-6.0991535606672524,nwb_ca1,26863_2020-Nov-04_12-46-06,26863_Ash,35 mins; OF; decent coverage; still plugged in from previous session in room 2.408,spike_behavior,spike-behavior analysis,2
+-5.002264199652201,-6.104109858347892,nwb_ca1,26863_2020-Nov-05_10-26-23,26863_Ash,open field; object,spike_behavior,spike-behavior analysis,2
+-4.272753828714373,-6.100005129705651,nwb_ca1,26965_2020-Dec-07_15-52-32,26965_Bubinga,NWB electrophysiology,spike_behavior,spike-behavior analysis,2
+-4.272753828714373,-6.100005129705651,nwb_ca1,26965_2020-Dec-07_16-51-52,26965_Bubinga,NWB electrophysiology,spike_behavior,spike-behavior analysis,2
+-3.6491729219036197,-6.490886799955897,nwb_ca1,26965_2020-Dec-08_10-46-12,26965_Bubinga,figure-eight,spike_behavior,spike-behavior analysis,2
+-4.620754692458931,-5.325798066116775,nwb_ca1,26965_2020-Dec-08_11-29-48,26965_Bubinga,open field (motive crashed),spike_behavior,spike-behavior analysis,2
+-4.6214734161653075,-5.327024822019759,nwb_ca1,26965_2020-Dec-08_14-36-11,26965_Bubinga,open field; party lights,spike_behavior,spike-behavior analysis,2
+-3.6491729219036197,-6.490886799955897,nwb_ca1,26965_2020-Dec-09_11-52-59,26965_Bubinga,figure-eight,spike_behavior,spike-behavior analysis,2
+-4.995535220933991,-6.102062587089961,nwb_ca1,26965_2020-Dec-09_12-10-58,26965_Bubinga,open field; object,spike_behavior,spike-behavior analysis,2
+-4.6214734161653075,-5.327024822019759,nwb_ca1,26965_2020-Dec-11_10-58-11,26965_Bubinga,open field; party lights,spike_behavior,spike-behavior analysis,2
+-4.9963499763776795,-6.109899133566461,nwb_ca1,26966_2020-Dec-14_15-18-10,26966_Cedar,open field; novel object,spike_behavior,spike-behavior analysis,2
+-4.275153547079054,-6.11032905098932,nwb_ca1,26966_2020-Dec-14_16-26-40,26966_Cedar,NWB electrophysiology,spike_behavior,spike-behavior analysis,2
+-3.6515726402683,-6.501210721239566,nwb_ca1,26966_2020-Dec-15_11-47-50,26966_Cedar,figure-eight,spike_behavior,spike-behavior analysis,2
+-4.997934939298672,-6.112386508373629,nwb_ca1,26966_2020-Dec-16_11-48-01,26966_Cedar,open field; object,spike_behavior,spike-behavior analysis,2
+-4.277815533557998,-6.121879632130565,nwb_ca1,27284_2021-Jun-15_19-16-52,27284_Douglas,"2 OF sessions with short pot break inbetween, some jumping",spike_behavior,spike-behavior analysis,2
+-4.626134732767557,-6.913084679641711,nwb_ca1,27284_2021-Jun-16_08-24-12,27284_Douglas,sleep,spike_behavior,spike-behavior analysis,2
+-4.277815533557997,-6.121879632130565,nwb_ca1,27284_2021-Jun-16_14-33-11,27284_Douglas,OF tall walls,spike_behavior,spike-behavior analysis,2
+-4.650923023881509,-6.895095691403852,nwb_ca1,27284_2021-Jun-17_15-01-36,27284_Douglas,OF and obj,spike_behavior,spike-behavior analysis,2
+-5.0002881339965795,-6.123898733689287,nwb_ca1,27284_2021-Jun-18_11-01-41,27284_Douglas,open field and objA of WWW,spike_behavior,spike-behavior analysis,2
+-3.985888708495855,-7.275014856495782,nwb_ca1,27285_2021-Jul-01_08-10-45,27285_Elm,"sleep, sequence task",spike_behavior,spike-behavior analysis,2
+-4.265383060886269,-6.103622588398218,nwb_ca1,27285_2021-Jul-01_12-33-30,27285_Elm,"seq2, comparison probes",spike_behavior,spike-behavior analysis,2
+-4.614748171001341,-5.332425630683654,nwb_ca1,27285_2021-Jul-01_13-26-22,27285_Elm,"open field, WHAT, and WHERE",spike_behavior,spike-behavior analysis,2
+-4.614748171001342,-5.332425630683654,nwb_ca1,27285_2021-Jul-02_13-23-12,27285_Elm,"open field, WHEN1",spike_behavior,spike-behavior analysis,2
+-3.642563421196465,-6.495819377540692,nwb_ca1,27285_2021-Jun-30_10-03-39,27285_Elm,sequence task,spike_behavior,spike-behavior analysis,2
+-3.642563421196465,-6.495819377540692,nwb_ca1,27285_2021-Jun-30_13-05-14,27285_Elm,sequence task,spike_behavior,spike-behavior analysis,2
+-4.614748171001342,-5.332425630683655,nwb_ca1,27285_2021-Jun-30_13-59-11,27285_Elm,"open field, open field",spike_behavior,spike-behavior analysis,2
+-4.277149278916081,-6.135233398660079,nwb_ca1,27963_2022-Feb-08_21-14-27,27963_Hemlock,OF,spike_behavior,spike-behavior analysis,2
+-4.623562433855069,-6.921768200902327,nwb_ca1,27963_2022-Feb-09_08-02-57,27963_Hemlock,sleep,spike_behavior,spike-behavior analysis,2
+-4.648979317009445,-6.905841486928991,nwb_ca1,27963_2022-Feb-10_11-06-56,27963_Hemlock,"OF, obj, obj, obj",spike_behavior,spike-behavior analysis,2
+-4.648979317009445,-6.905841486928991,nwb_ca1,27963_2022-Feb-10_14-07-47,27963_Hemlock,"OF, obj, obj, obj",spike_behavior,spike-behavior analysis,2
+-4.277149278916081,-6.135233398660079,nwb_ca1,27963_2022-Feb-11_14-58-41,27963_Hemlock,OF,spike_behavior,spike-behavior analysis,2
+-4.274472403971855,-6.128102600916324,nwb_ca1,28003_2022-Mar-07_20-44-03,28003_Ironwood,"OF, LEC was likely deep layers",spike_behavior,spike-behavior analysis,2
+-4.276496804889717,-6.132452072313215,nwb_ca1,28003_2022-Mar-08_11-22-53,28003_Ironwood,OF,spike_behavior,spike-behavior analysis,2
+-4.276496804889717,-6.132452072313215,nwb_ca1,28003_2022-Mar-08_11-38-59,28003_Ironwood,OF,spike_behavior,spike-behavior analysis,2
+-4.648302790460523,-6.902908324930867,nwb_ca1,28003_2022-Mar-08_15-04-04,28003_Ironwood,object events,spike_behavior,spike-behavior analysis,2
+-4.622909959828706,-6.918986874555463,nwb_ca1,28003_2022-Mar-09_07-54-00,28003_Ironwood,sleep,spike_behavior,spike-behavior analysis,2
+-4.648302790460523,-6.902908324930867,nwb_ca1,28003_2022-Mar-10_10-53-58,28003_Ironwood,object events,spike_behavior,spike-behavior analysis,2
+-4.656143961116433,-6.927170335109039,nwb_ca1,29629_2024-Oct-29_15-05-13,29629_Karri,"OF, OBJ",spike_behavior,spike-behavior analysis,2
+-4.62759265240963,-6.935942117361061,nwb_ca1,29629_2024-Oct-30_05-40-15,29629_Karri,sleep,spike_behavior,spike-behavior analysis,2
+-4.656143961116433,-6.927170335109039,nwb_ca1,29629_2024-Oct-30_15-13-05,29629_Karri,"OF, OBJ",spike_behavior,spike-behavior analysis,2
+-4.628653111248777,-6.9321910803904725,nwb_ca1,29630_2024-Sep-17_07-08-26,29630_Juniper,sleep,spike_behavior,spike-behavior analysis,2
+-4.657204419955579,-6.923419298138452,nwb_ca1,29630_2024-Sep-17_09-22-08,29630_Juniper,"OF, OBJ",spike_behavior,spike-behavior analysis,2
+-4.2817637948273495,-6.144866667371167,nwb_ca1,29630_2024-Sep-17_13-26-08,29630_Juniper,seq1,spike_behavior,spike-behavior analysis,2
+-4.628653111248777,-6.9321910803904725,nwb_ca1,29630_2024-Sep-17_23-09-30,29630_Juniper,sleep,spike_behavior,spike-behavior analysis,2
+-4.657204419955579,-6.923419298138452,nwb_ca1,29630_2024-Sep-18_10-18-21,29630_Juniper,"OF, OBJ",spike_behavior,spike-behavior analysis,2
+-4.281763794827349,-6.144866667371168,nwb_ca1,29630_2024-Sep-18_14-20-12,29630_Juniper,seq2,spike_behavior,spike-behavior analysis,2
+-4.657204419955579,-6.923419298138452,nwb_ca1,29630_2024-Sep-18_15-19-16,29630_Juniper,"OF, OBJ",spike_behavior,spike-behavior analysis,2
+-4.628653111248777,-6.9321910803904725,nwb_ca1,29630_2024-Sep-19_05-09-20,29630_Juniper,sleep,spike_behavior,spike-behavior analysis,2
+-4.2817637948273495,-6.144866667371167,nwb_ca1,29630_2024-Sep-19_11-15-17,29630_Juniper,seq1,spike_behavior,spike-behavior analysis,2
+-4.657204419955579,-6.923419298138452,nwb_ca1,29630_2024-Sep-20_09-49-05,29630_Juniper,"OF, OBJ",spike_behavior,spike-behavior analysis,2
+-4.2817637948273495,-6.144866667371167,nwb_ca1,29630_2024-Sep-20_10-32-21,29630_Juniper,seq1,spike_behavior,spike-behavior analysis,2
+-4.281763794827349,-6.144866667371168,nwb_ca1,29630_2024-Sep-20_13-20-20,29630_Juniper,seq2,spike_behavior,spike-behavior analysis,2
+-4.281763794827349,-6.144866667371168,nwb_ca1,29630_2024-Sep-24_14-25-53,29630_Juniper,seq2,spike_behavior,spike-behavior analysis,2
+-0.18468301226463077,-3.425170164196551,legacy_touchscreen,rat-14_190130,rat-14,touchscreen / tactile-visual task,spike_behavior,spike-behavior analysis,3
+-0.18468301226463077,-3.425170164196551,legacy_touchscreen,rat-14_190131,rat-14,touchscreen / tactile-visual task,spike_behavior,spike-behavior analysis,3
+-0.18468301226463077,-3.425170164196551,legacy_touchscreen,rat-14_190202,rat-14,touchscreen / tactile-visual task,spike_behavior,spike-behavior analysis,3
+-0.18468301226463077,-3.425170164196551,legacy_touchscreen,rat-14_190204,rat-14,touchscreen / tactile-visual task,spike_behavior,spike-behavior analysis,3
+-0.18468301226463077,-3.425170164196551,legacy_touchscreen,rat-14_190205,rat-14,touchscreen / tactile-visual task,spike_behavior,spike-behavior analysis,3
+-0.18468301226463077,-3.425170164196551,legacy_touchscreen,rat-14_190206,rat-14,touchscreen / tactile-visual task,spike_behavior,spike-behavior analysis,3
+-0.18468301226463077,-3.425170164196551,legacy_touchscreen,rat-14_190207,rat-14,touchscreen / tactile-visual task,spike_behavior,spike-behavior analysis,3
+-0.18468301226463069,-3.425170164196551,legacy_touchscreen,rat-16_181012,rat-16,touchscreen / tactile-visual task,spike_behavior,spike-behavior analysis,3
+-0.18468301226463077,-3.425170164196551,legacy_touchscreen,rat-16_181013,rat-16,touchscreen / tactile-visual task,spike_behavior,spike-behavior analysis,3
+-0.18468301226463077,-3.425170164196551,legacy_touchscreen,rat-16_181015,rat-16,touchscreen / tactile-visual task,spike_behavior,spike-behavior analysis,3
+-0.18468301226463077,-3.425170164196551,legacy_touchscreen,rat-16_181016,rat-16,touchscreen / tactile-visual task,spike_behavior,spike-behavior analysis,3
+-0.18468301226463077,-3.425170164196551,legacy_touchscreen,rat-16_181021,rat-16,touchscreen / tactile-visual task,spike_behavior,spike-behavior analysis,3
+-0.18468301226463077,-3.425170164196551,legacy_touchscreen,rat-16_181022,rat-16,touchscreen / tactile-visual task,spike_behavior,spike-behavior analysis,3
+-0.18468301226463077,-3.425170164196551,legacy_touchscreen,rat-16_181023,rat-16,touchscreen / tactile-visual task,spike_behavior,spike-behavior analysis,3
+-0.18468301226463077,-3.425170164196551,legacy_touchscreen,rat-16_181024,rat-16,touchscreen / tactile-visual task,spike_behavior,spike-behavior analysis,3
+-0.18468301226463077,-3.425170164196551,legacy_touchscreen,rat-16_181025,rat-16,touchscreen / tactile-visual task,spike_behavior,spike-behavior analysis,3
+-0.18468301226463077,-3.425170164196551,legacy_touchscreen,rat-16_181029,rat-16,touchscreen / tactile-visual task,spike_behavior,spike-behavior analysis,3
+-0.18468301226463077,-3.425170164196551,legacy_touchscreen,rat-26_190625,rat-26,touchscreen / tactile-visual task,spike_behavior,spike-behavior analysis,3
+-0.18468301226463069,-3.425170164196551,legacy_touchscreen,rat-26_190626,rat-26,touchscreen / tactile-visual task,spike_behavior,spike-behavior analysis,3
+-0.18468301226463077,-3.425170164196551,legacy_touchscreen,rat-26_190627,rat-26,touchscreen / tactile-visual task,spike_behavior,spike-behavior analysis,3
+-0.18468301226463077,-3.425170164196551,legacy_touchscreen,rat-26_190702,rat-26,touchscreen / tactile-visual task,spike_behavior,spike-behavior analysis,3
+-0.18468301226463077,-3.425170164196551,legacy_touchscreen,rat-27_191128,rat-27,touchscreen / tactile-visual task,spike_behavior,spike-behavior analysis,3
+-0.18468301226463077,-3.425170164196551,legacy_touchscreen,rat-27_191204,rat-27,touchscreen / tactile-visual task,spike_behavior,spike-behavior analysis,3
+-0.18468301226463077,-3.425170164196551,legacy_touchscreen,rat-27_191209,rat-27,touchscreen / tactile-visual task,spike_behavior,spike-behavior analysis,3
+-0.18468301226463077,-3.425170164196551,legacy_touchscreen,rat-27_191210,rat-27,touchscreen / tactile-visual task,spike_behavior,spike-behavior analysis,3
+5.413547853877483,-1.1807904992995835,touchandsee,Ramachandran_samp20_2012-08-09,Ramachandran,TouchAndSee,spike_behavior,spike-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Ramachandran_samp21_2012-08-10,Ramachandran,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Ramachandran_samp22_2012-08-11,Ramachandran,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Ramachandran_samp23_2012-08-12,Ramachandran,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612228,touchandsee,Ramachandran_samp24_2012-08-13,Ramachandran,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Ramachandran_samp25_2012-08-14,Ramachandran,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Ramachandran_samp26_2012-08-15,Ramachandran,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Ramachandran_samp27_2012-08-16,Ramachandran,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Ramachandran_samp28_2012-08-17,Ramachandran,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Ramachandran_samp29_2012-08-18,Ramachandran,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Ramachandran_samp30_2012-08-20,Ramachandran,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Ramachandran_samp31_2012-08-21,Ramachandran,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Ramachandran_samp32_2012-08-22,Ramachandran,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Ramachandran_samp33_2012-08-22,Ramachandran,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Taskmaster_samp1_2012-01-03,Taskmaster,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612228,touchandsee,Taskmaster_samp10_2012-01-15,Taskmaster,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Taskmaster_samp11_2012-01-16,Taskmaster,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Taskmaster_samp12_2012-01-17,Taskmaster,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Taskmaster_samp13_2012-01-18,Taskmaster,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Taskmaster_samp14_2011-12-22,Taskmaster,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Taskmaster_samp15_2011-12-23,Taskmaster,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Taskmaster_samp16_2011-12-24,Taskmaster,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Taskmaster_samp17_2011-12-25,Taskmaster,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Taskmaster_samp18_2011-12-29,Taskmaster,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Taskmaster_samp19_2011-12-30,Taskmaster,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Taskmaster_samp2_2012-01-03,Taskmaster,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612228,touchandsee,Taskmaster_samp3_2012-01-04,Taskmaster,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Taskmaster_samp4_2012-01-05,Taskmaster,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Taskmaster_samp5_2012-01-06,Taskmaster,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Taskmaster_samp6_2012-01-10,Taskmaster,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Taskmaster_samp7_2012-01-11,Taskmaster,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Taskmaster_samp8_2012-01-12,Taskmaster,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Taskmaster_samp9_2012-01-14,Taskmaster,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Turing_samp34_2012-09-14,Turing,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Turing_samp35_2012-09-15,Turing,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Turing_samp36_2012-09-15,Turing,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Turing_samp37_2012-09-16,Turing,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612228,touchandsee,Turing_samp38_2012-09-17,Turing,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Turing_samp39_2012-09-18,Turing,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Turing_samp40_2012-09-19,Turing,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Turing_samp41_2012-09-19,Turing,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Turing_samp42_2012-09-20,Turing,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Turing_samp43_2012-09-21,Turing,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Turing_samp44_2012-09-22,Turing,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Turing_samp45_2012-09-25,Turing,TouchAndSee,lfp_only,LFP-behavior analysis,1
+10.34774038956282,-1.3657189636612221,touchandsee,Turing_samp46_2012-09-26,Turing,TouchAndSee,lfp_only,LFP-behavior analysis,1
