@@ -353,7 +353,21 @@ def extract_touchandsee(data):
             "detail_level": "session_plus_preview_trials",
         })
 
-        for seg in ((obj.get("segments", {}) or {}).get("preview", []) or []):
+        # TouchAndSee JSONs are not always shaped the same way:
+        # - some extractor versions store segments as {"preview": [...]}
+        # - other versions store segments directly as a list [...]
+        # - some compact outputs do not store segment previews at all
+        segments_obj = obj.get("segments", [])
+        if isinstance(segments_obj, dict):
+            segment_preview = segments_obj.get("preview", []) or []
+        elif isinstance(segments_obj, list):
+            segment_preview = segments_obj
+        else:
+            segment_preview = []
+
+        for seg in segment_preview:
+            if not isinstance(seg, dict):
+                continue
             trials.append({
                 "dataset_short_name": "touchandsee",
                 "session_id": session_id,

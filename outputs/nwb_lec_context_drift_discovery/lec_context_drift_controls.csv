@@ -1,0 +1,4 @@
+control,spearman_r,p_value,interpretation
+unit_count_available_vs_TOI,0.23022797737120732,0.1529473393254355,Checks whether context effect may be confounded by available unit count.
+duration_vs_TOI,0.40393996247654795,0.009740004424536049,Checks whether context effect may be confounded by recording duration.
+n_bins_vs_TOI,0.40409063589169114,0.00971022359103242,Checks whether context effect may be confounded by number of time bins.

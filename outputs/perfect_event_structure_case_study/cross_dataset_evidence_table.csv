@@ -1,0 +1,5 @@
+dataset,original_biological_context,case_study_contribution,main_metric,usable_units,evidence_strength
+NWB hippocampal-entorhinal,"LEC/MEC/CA1 event structure, sequence, object, sleep, open field",Tests true spike-time population temporal drift by region and context,TOI from binned spike-time population vectors,53,strong
+TouchAndSee object-memory,trial-based object/memory behavior,Tests whether trial type/outcome is reflected in trial activity summaries,"Cliff's delta for memory vs normal, correct vs incorrect, and trial-order drift",38,moderate
+Legacy touchscreen multisensory object,visual/tactile/multisensory object and outcome task,Tests whether extracted trial records support outcome/modality activity analysis,Trial-level contrast effects if activity records are present,0,task metadata only / not usable for activity
+Openfield CA1 continuous spatial foraging,continuous open-field CA1 spatial foraging,Provides continuous spatial reference and contrasts absence of trial/event structure,"recording duration, sorted unit yield, LFP availability",35,contextual_reference

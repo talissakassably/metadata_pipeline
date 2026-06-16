@@ -1,0 +1,5 @@
+dataset,raw_spike_time_drift,trial_outcome_modulation,memory_or_trial_type_modulation,event_rich_task_structure,continuous_spatial_reference,lfp_availability,cross_area_potential
+NWB hippocampal-entorhinal,1.0,0.0,0,0.7,0.5,0,1.0
+TouchAndSee object-memory,0.0,1.0,1,0.8,0.0,0,0.0
+Legacy touchscreen multisensory object,0.0,0.6,0,1.0,0.0,1,0.8
+Openfield CA1 continuous spatial foraging,0.4,0.0,0,0.0,1.0,1,0.0

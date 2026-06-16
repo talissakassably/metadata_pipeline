@@ -1,0 +1,11 @@
+group_col,feature,groups,n_observations,kruskal_H,p_value,eta_squared_approx,p_value_bh
+dataset_short_name,n_events_total,legacy_touchscreen; nwb_ca1; openfield_ca1; touchandsee,238,200.11621639851734,3.981540303440636e-43,0.842376993156057,3.9815403034406367e-42
+dataset_short_name,n_trials,legacy_touchscreen; nwb_ca1; openfield_ca1; touchandsee,238,197.61109048200439,1.3845986974364925e-42,0.8316713268461726,6.922993487182463e-42
+dataset_short_name,n_lfp_channels,legacy_touchscreen; nwb_ca1; openfield_ca1; touchandsee,238,191.69139591846394,2.6316719902370567e-41,0.8063734868310425,8.772239967456856e-41
+dataset_short_name,n_units,legacy_touchscreen; nwb_ca1; openfield_ca1; touchandsee,238,185.0191370537038,7.2691194819097315e-40,0.7778595600585632,1.817279870477433e-39
+dataset_short_name,biological_table_completeness_score,legacy_touchscreen; nwb_ca1; openfield_ca1; touchandsee,238,147.7171618280184,8.188270087918628e-32,0.6184494095214461,1.6376540175837258e-31
+dataset_short_name,events_per_trial,legacy_touchscreen; touchandsee,52,50.75246151712656,1.0478107614653594e-12,0.9950492303425312,1.7463512691089322e-12
+dataset_short_name,spikes_per_trial,legacy_touchscreen; touchandsee,52,43.10512606902949,5.187616092214844e-11,0.8421025213805897,7.410880131735491e-11
+dataset_short_name,spikes_per_unit,legacy_touchscreen; openfield_ca1; touchandsee,166,42.841017675499764,4.979562780940933e-10,0.25055839064723784,6.224453476176167e-10
+dataset_short_name,mean_firing_rate_hz_filled,legacy_touchscreen; openfield_ca1,120,23.17650408208842,1.4779208820433507e-06,0.18793647527193577,1.6421343133815009e-06
+dataset_short_name,n_spikes_total,legacy_touchscreen; openfield_ca1; touchandsee,185,13.815383859510801,0.001000063351233341,0.06491969153577364,0.001000063351233341

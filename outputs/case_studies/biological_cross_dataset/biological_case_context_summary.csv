@@ -1,0 +1,8 @@
+behavioral_context,n_sessions,n_datasets,median_n_units,median_n_spikes_total,median_n_trials,median_completeness
+object_task,71,2,780.0,0.0,48.0,0.6666666666666666
+open_field,124,2,8.0,0.0,0.0,0.5
+open_field_object,16,1,1257.0,,0.0,0.3333333333333333
+other,4,1,1689.0,,0.0,0.3333333333333333
+sequence_task,12,1,5386.5,,0.0,0.3333333333333333
+sleep,8,1,2424.5,,0.0,0.3333333333333333
+unknown,3,1,393.0,,0.0,0.3333333333333333

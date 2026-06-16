@@ -1,0 +1,5 @@
+dataset_short_name,n_sessions,n_subjects,median_n_units,median_n_spikes_total,median_n_trials,median_n_events,median_n_lfp_channels,median_completeness
+legacy_touchscreen,25,2,0.0,0.0,0.0,0.0,0.0,0.0
+nwb_ca1,53,9,1357.0,,0.0,1.0,0.0,0.3333333333333333
+openfield_ca1,114,5,8.0,0.0,0.0,0.0,4.0,0.5
+touchandsee,46,3,1644.0,0.0,52.0,312.0,156.0,0.6666666666666666

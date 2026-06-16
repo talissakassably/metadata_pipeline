@@ -1,0 +1,2 @@
+contrast,group_a,group_b,median_a,median_b,cliffs_delta_a_minus_b,p_value,n_a,n_b,p_value_bh
+object_context vs open_field,object_context,open_field,0.0010499041064985172,0.0007138121591063185,0.5,0.34285714285714286,4,4,0.34285714285714286

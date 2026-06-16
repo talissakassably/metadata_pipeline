@@ -1,0 +1,6 @@
+dataset,analysis_family,session_id,subject_id,context,region,metric,value,n_units,n_bins,status,evidence_level
+NWB hippocampal-entorhinal,raw_spike_time_population_drift,26863_2020-Nov-04_12-46-06,26863_Ash,open_field,LEC,TOI,0.0008907057527890517,100,213,ok,strong_raw_spike_times
+NWB hippocampal-entorhinal,raw_spike_time_population_drift,26863_2020-Nov-05_10-26-23,26863_Ash,object_or_object_openfield,LEC,TOI,0.0007397665733786575,100,153,ok,strong_raw_spike_times
+NWB hippocampal-entorhinal,raw_spike_time_population_drift,26965_2020-Dec-07_15-52-32,26965_Bubinga,unknown,LEC,TOI,0.0013067780381175345,100,129,ok,strong_raw_spike_times
+NWB hippocampal-entorhinal,raw_spike_time_population_drift,26965_2020-Dec-07_16-51-52,26965_Bubinga,unknown,LEC,TOI,0.0005916634098291954,100,90,ok,strong_raw_spike_times
+NWB hippocampal-entorhinal,raw_spike_time_population_drift,26965_2020-Dec-08_10-46-12,26965_Bubinga,sequence_task,LEC,TOI,0.0006411838847084192,100,91,ok,strong_raw_spike_times

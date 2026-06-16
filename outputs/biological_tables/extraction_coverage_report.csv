@@ -1,0 +1,5 @@
+dataset_short_name,n_session_rows,n_unit_rows,n_trial_rows,unit_table_type,trial_table_type,has_session_level_activity,has_session_level_task,has_lfp_availability,median_completeness
+legacy_touchscreen,25,18,18,preview_only,preview_only,True,True,True,0.0
+nwb_ca1,53,0,0,not_available,not_available,True,True,False,0.3333333333333333
+openfield_ca1,114,517,0,full_or_dictionary_units,not_available,True,False,True,0.5
+touchandsee,46,0,227,not_available,preview_only,True,True,True,0.6666666666666666

@@ -1,0 +1,5 @@
+dataset,role,evidence_strength,evidence_score,usable_sessions,main_result_type
+NWB hippocampal-entorhinal,true spike-time temporal drift across context,strong,5,5,TOI / distance-lag population drift
+TouchAndSee object-memory,trial-level object/memory/outcome modulation,moderate,4,38,Cliff's delta and trial-order activity drift
+Legacy touchscreen multisensory object,event-rich multisensory task structure; limited activity reuse,task-structure-only,1,6,task/event structure + optional trial activity
+Openfield CA1 continuous spatial foraging,continuous spatial reference,contextual_reference,3,35,"duration, sorted units, spikes, LFP availability"

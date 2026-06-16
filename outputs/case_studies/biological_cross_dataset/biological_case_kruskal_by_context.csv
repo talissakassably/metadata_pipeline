@@ -1,0 +1,9 @@
+group_col,feature,groups,n_observations,kruskal_H,p_value,eta_squared_approx,p_value_bh
+behavioral_context,n_trials,object_task; open_field; open_field_object; other; sequence_task; sleep; unknown,238,152.74096796051077,2.0366359326503323e-30,0.6352422855433367,1.6293087461202659e-29
+behavioral_context,n_events_total,object_task; open_field; open_field_object; other; sequence_task; sleep; unknown,238,139.25988205735203,1.435937629217908e-27,0.5768826063088832,5.743750516871632e-27
+behavioral_context,n_lfp_channels,object_task; open_field; open_field_object; other; sequence_task; sleep; unknown,238,102.89101987735334,6.252351856493118e-20,0.4194416444907071,1.6672938283981646e-19
+behavioral_context,n_units,object_task; open_field; open_field_object; other; sequence_task; sleep; unknown,238,86.77072935402936,1.417899684943556e-16,0.3496568370304301,2.835799369887112e-16
+behavioral_context,biological_table_completeness_score,object_task; open_field; open_field_object; other; sequence_task; sleep; unknown,238,68.86261219068848,6.99461630392366e-13,0.27213252030601076,1.1191386086277856e-12
+behavioral_context,mean_firing_rate_hz_filled,object_task; open_field,120,23.17650408208842,1.4779208820433507e-06,0.18793647527193577,1.970561176057801e-06
+behavioral_context,n_spikes_total,object_task; open_field,185,7.763627142301972,0.005330879951044129,0.03695971116012006,0.006092434229764719
+behavioral_context,spikes_per_unit,object_task; open_field,166,3.7277460598582453,0.05351556248021817,0.01663259792596491,0.05351556248021817
